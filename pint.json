@@ -1,0 +1,14 @@
+{
+  "preset": "psr12",
+  "exclude": ["storage", "bootstrap"],
+  "rules": {
+    "@Symfony": true,
+    "no_alternative_syntax": true,
+    "strict_param": true,
+    "declare_strict_types": true,
+    "yoda_style": true,
+    "concat_space": {
+      "spacing": "one"
+    }
+  }
+}
