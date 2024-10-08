@@ -28,7 +28,9 @@ return new class extends Migration {
             $table->json('images')->nullable();
             $table->char('address', 255)->nullable();
             $table->char('nationality', 255)->nullable();
-            $table->tinyInteger('academic_status')->nullable()->comment('1=Graduated, 2=Post Graduated, 3=1-4th year university student, 4=Others');
+            $table->tinyInteger('academic_status')
+                ->nullable()
+                ->comment('1=Graduated, 2=Post Graduated, 3=1-4th year university student, 4=Others');
             $table->integer('institute_id')->nullable();
             $table->char('institute_name', 255)->nullable();
             $table->tinyInteger('identification_type')->nullable();
