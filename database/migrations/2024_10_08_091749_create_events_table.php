@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->char('title', 255);
-            $table->text('description')->nullable();
-            $table->char('image', 255)->nullable();
+            $table->text('description');
+            $table->char('image', 255);
             $table->date('date')->nullable();
             $table->tinyInteger('is_highlighted')->default(0);
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');
