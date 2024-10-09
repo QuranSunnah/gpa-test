@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->char('name', 255);
             $table->char('slug', 255)->nullable();
+            $table->text('description')->nullable();
             $table->integer('parent')->nullable()->comment('category_id');
             $table->char('image', 255)->nullable();
             $table->integer('order')->default(0);
