@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
             $table->char('title', 255);
+            $table->char('slug', 255);
             $table->json('media_info');
             $table->json('others')->nullable();
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');
