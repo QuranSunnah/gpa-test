@@ -1,6 +1,5 @@
 <?php
 
-use App\Constants\StaticConstant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->char('answers', 255);
             $table->json('feedbacks')->nullable();
             $table->integer('time_limit')->nullable();
-            $table->tinyInteger('status')->default(StaticConstant::STATUS_ACTIVE); 
+            $table->tinyInteger('status')->default(config('common.status.active')); 
             $table->timestamps();
             $table->softDeletes();
         });
