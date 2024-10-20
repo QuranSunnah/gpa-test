@@ -12,19 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resources', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->char('title', 255);
-            $table->integer('course_id');
-            $table->integer('category_id');
-            $table->char('file_path', 255);
-            $table->integer('marks');
-            $table->integer('pass_marks_percentage');
-            $table->text('instructions')->nullable();
-            $table->json('others')->nullable();
+            $table->json('social_info')->nullable();
+            $table->json('contact_info')->nullable();
+            $table->json('about_us')->nullable();
+            $table->json('system_settings')->nullable();
+            $table->text('guideline')->nullable();
             $table->tinyInteger('status')->default(config('common.status.active'));
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('resources');
+        Schema::dropIfExists('settings');
     }
 };
