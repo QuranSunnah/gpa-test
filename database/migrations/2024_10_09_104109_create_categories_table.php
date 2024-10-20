@@ -20,6 +20,7 @@ return new class extends Migration
             $table->char('image', 255)->nullable();
             $table->integer('order')->default(0);
             $table->boolean('is_top')->default(1);
+            $table->boolean('is_highlighted')->default(0);
             $table->json('others')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
