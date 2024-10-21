@@ -37,7 +37,7 @@ return new class extends Migration
             $table->json('media_info')->nullable();
             $table->json('others')->nullable();
             $table->boolean('is_top')->default(config('common.confirmation.no'));
-            $table->tinyInteger('status')->default(config('common.status.active'));
+            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
             $table->timestamps();
             $table->softDeletes();
         });

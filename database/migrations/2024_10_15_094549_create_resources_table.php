@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('pass_marks_percentage');
             $table->text('instructions')->nullable();
             $table->json('others')->nullable();
-            $table->tinyInteger('status')->default(config('common.status.active'));
+            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
             $table->timestamps();
             $table->softDeletes();
         });

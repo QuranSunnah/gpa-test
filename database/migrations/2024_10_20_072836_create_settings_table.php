@@ -19,8 +19,9 @@ return new class extends Migration
             $table->json('about_us')->nullable();
             $table->json('system_settings')->nullable();
             $table->text('guideline')->nullable();
-            $table->tinyInteger('status')->default(config('common.status.active'));
+            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
