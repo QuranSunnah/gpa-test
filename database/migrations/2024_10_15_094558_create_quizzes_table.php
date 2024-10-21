@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('attempt_time')->default(0);
             $table->integer('penalty_time')->default(0);
             $table->text('instructions')->nullable();
-            $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
             $table->timestamps();
             $table->softDeletes();
         });
