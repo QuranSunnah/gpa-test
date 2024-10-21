@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_top')->default(1);
             $table->boolean('is_highlighted')->default(0);
             $table->json('others')->nullable();
-            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
+            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
         });
