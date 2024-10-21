@@ -20,7 +20,7 @@ return new class extends Migration
             $table->char('answers', 255);
             $table->json('feedbacks')->nullable();
             $table->integer('time_limit')->nullable();
-            $table->tinyInteger('status')->default(config('common.status.active')); 
+            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive'); 
             $table->timestamps();
             $table->softDeletes();
         });
