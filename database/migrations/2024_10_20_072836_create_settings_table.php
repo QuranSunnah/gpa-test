@@ -12,15 +12,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->char('title', 255);
-            $table->integer('category_id');
-            $table->tinyInteger('type')->comment('1=text,2=single,3=multiple');
-            $table->json('options')->nullable();
-            $table->char('answers', 255);
-            $table->json('feedbacks')->nullable();
-            $table->integer('time_limit')->nullable();
+            $table->json('social_platform_info')->nullable();
+            $table->json('contact_info')->nullable();
+            $table->json('about_us')->nullable();
+            $table->json('system_settings')->nullable();
+            $table->text('guideline')->nullable();
             $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
@@ -32,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('settings');
     }
 };

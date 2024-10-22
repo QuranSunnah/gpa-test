@@ -12,16 +12,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
             $table->id();
             $table->char('title', 255);
-            $table->integer('category_id');
-            $table->tinyInteger('type')->comment('1=text,2=single,3=multiple');
-            $table->json('options')->nullable();
-            $table->char('answers', 255);
-            $table->json('feedbacks')->nullable();
-            $table->integer('time_limit')->nullable();
-            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
+            $table->integer('course_id');
+            $table->integer('trainer_id')->nullable()->comment('user_id');
+            $table->integer('order')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('sections');
     }
 };
