@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->char('answers', 255);
             $table->json('feedbacks')->nullable();
             $table->integer('time_limit')->nullable();
-            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive'); 
+            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
         });

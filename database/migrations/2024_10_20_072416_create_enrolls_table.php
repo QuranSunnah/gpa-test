@@ -1,12 +1,12 @@
 <?php
 
-use App\Constants\StaticConstant;
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id');
             $table->integer('course_id');
-            $table->date('start_at')->nullable();
-            $table->date('end_at')->nullable();
-            $table->integer('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
+            $table->timestamp('start_at')->nullable();
+            $table->timestamp('end_at')->nullable();
+            $table->integer('status')->default(1)->comment('1=active,0=inactive');
             $table->timestamps();
             $table->softDeletes();
         });

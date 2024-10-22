@@ -1,12 +1,12 @@
 <?php
 
-use App\Constants\StaticConstant;
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,30 +14,28 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
             $table->bigInteger('instructor_id');
+            $table->integer('category_id');
             $table->char('title', 255);
-            $table->char('slug', 255)->nullable();
+            $table->char('slug', 255)->unique(); // auto generated, unique and customizable by user
+            $table->tinyInteger('type')->default(1)->comment('1=Free,2=Paid,3=Premium,4=Request');
             $table->text('short_description')->nullable();
             $table->text('full_descriptoin')->nullable();
-            $table->integer('category_id');
-            $table->tinyInteger('type')->default(config('common.courseType.free'));
             $table->integer('duration')->default(0);
-            $table->json('curriculum')->nullable();
             $table->json('outcomes')->nullable();
             $table->json('requirements')->nullable();
             $table->json('live_class')->nullable();
-            $table->json('tag')->nullable();
-            $table->tinyInteger('language')->default(config('common.language.english'));
+            $table->json('faq')->nullable();
+            $table->tinyInteger('language')->default(1)->comment('1=English,2=Bangla');
             $table->float('price')->nullable();
             $table->float('discount')->nullable();
-            $table->tinyInteger('level')->default(config('common.courseLevel.beginner'));
+            $table->tinyInteger('level')->default(1)->comment('1=Beginner,2=Intermediate,3=Advanced');
             $table->integer('pass_marks');
-            $table->boolean('is_certification_final_exam_required')->default(config('common.confirmation.no'));
+            $table->boolean('is_certification_final_exam_required')->default(0)->comment('0=No,1=Yes');
             $table->json('media_info')->nullable();
             $table->json('others')->nullable();
-            $table->boolean('is_top')->default(config('common.confirmation.no'));
-            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
+            $table->boolean('is_top')->default(0)->comment('0=No,1=Yes');
+            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
         });

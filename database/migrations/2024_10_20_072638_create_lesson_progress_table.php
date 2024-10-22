@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->integer('course_id');
             $table->json('lessons');
             $table->boolean('is_passed');
-            $table->decimal('total_marks', 4);
+            $table->decimal('total_marks', 5, 2)->default(0.00)->comment('Max value is 100.00');
             $table->timestamps();
         });
     }

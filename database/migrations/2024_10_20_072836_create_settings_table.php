@@ -1,12 +1,12 @@
 <?php
 
-use App\Constants\StaticConstant;
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->json('social_info')->nullable();
+            $table->json('social_platform_info')->nullable();
             $table->json('contact_info')->nullable();
             $table->json('about_us')->nullable();
             $table->json('system_settings')->nullable();
             $table->text('guideline')->nullable();
-            $table->tinyInteger('status')->default(config('common.status.active'))->comment('1=active,0=inactive');
+            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+// laravel follows snakeCase(underscore based) convention for key name in config file
+
 return [
     'page_limit' => 20,
     'status' => [
@@ -8,20 +12,21 @@ return [
     ],
     'confirmation' => [
         'no' => 0,
-        'yes' => 1
+        'yes' => 1,
     ],
     'courseType' => [
-        'free'  =>  1,
-        'paid'  =>  2,
+        'free' => 1,
+        'paid' => 2,
         'premium' => 3,
-        'request' => 4
+        'request' => 4,
     ],
     'courseLevel' => [
         'beginner' => 1,
         'intermediate' => 2,
-        'advanced' => 3
+        'advanced' => 3,
     ],
     'language' => [
-        'english'   => 1
-    ]
+        'english' => 1,
+        'bangla' => 2,
+    ],
 ];
