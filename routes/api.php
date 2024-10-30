@@ -9,6 +9,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'prefix' => 'v1'], func
     Route::get('/partners', 'PartnerController@index');
     Route::get('/mentors', 'MentorController@index');
     Route::get('/testimonials', 'TestimonialController@index');
+    Route::get('/courses', 'CourseController@index');
 });
 
 // Route::middleware(['auth:api'])
