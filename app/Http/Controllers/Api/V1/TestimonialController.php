@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\TestimonialRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Traits\ApiResponse;
 
 class TestimonialController extends Controller
 {
-    public function __construct(private TestimonialRepository $repository)
-    {
-    }
+    use ApiResponse;
+
+    public function __construct(private TestimonialRepository $repository) {}
 
     public function index(Request $request)
     {
-        return response()->json(['data' => $this->repository->paginate($request->query->all())], Response::HTTP_OK);
+        return $this->paginateResponse($this->repository->paginate($request->query->all()));
     }
 }

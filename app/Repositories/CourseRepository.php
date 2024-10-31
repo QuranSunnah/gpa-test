@@ -19,12 +19,9 @@ class CourseRepository implements Repository
             'courses.media_info',
             'is_top',
             'courses.duration',
-            \DB::raw('COUNT(DISTINCT lessons.id) as total_lessons'),
-            \DB::raw('COUNT(DISTINCT enrolls.id) as total_enrollments')
+            // 'total_lessons',
+            // 'total_enrollments'
         )
-            ->leftJoin('lessons', 'courses.id', '=', 'lessons.course_id')
-            ->leftJoin('enrolls', 'courses.id', '=', 'enrolls.course_id')
-            ->groupBy('courses.id')
             ->search($filters)
             ->filter($filters)
             ->sort($filters)

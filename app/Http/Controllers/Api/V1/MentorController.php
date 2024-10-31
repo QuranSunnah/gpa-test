@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\MentorRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Traits\ApiResponse;
 
 class MentorController extends Controller
 {
-    public function __construct(private MentorRepository $repository)
-    {
-    }
+    use ApiResponse;
+
+    public function __construct(private MentorRepository $repository) {}
 
     public function index(Request $request)
     {
-        return response()->json(['data' => $this->repository->paginate($request->query->all())], Response::HTTP_OK);
+        $this->paginateResponse($this->repository->paginate($request->query->all()));
     }
 }
