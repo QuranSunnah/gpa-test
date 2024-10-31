@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
-use Illuminate\Http\Response;
 use App\Traits\ApiResponse;
 
 class SliderController extends Controller

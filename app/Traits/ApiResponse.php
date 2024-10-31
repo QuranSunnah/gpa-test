@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 trait ApiResponse
 {
@@ -18,7 +18,7 @@ trait ApiResponse
         ], Response::HTTP_OK);
     }
 
-    public function response(LengthAwarePaginator $paginateData, string $message = "Data found"): JsonResponse
+    public function response(LengthAwarePaginator $paginateData, string $message = 'Data found'): JsonResponse
     {
         return response()->json([
             'status' => Response::HTTP_OK,

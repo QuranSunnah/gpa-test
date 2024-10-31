@@ -6,15 +6,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\TestimonialRepository;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private TestimonialRepository $repository) {}
+    public function __construct(private TestimonialRepository $repository)
+    {
+    }
 
     public function index(Request $request)
     {
