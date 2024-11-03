@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Course;
+use App\Models\Category;
 
 class CourseRepository implements Repository
 {
@@ -27,5 +28,30 @@ class CourseRepository implements Repository
             ->sort($filters)
             ->active()
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
+    }
+
+    public function topCategoryCourses($limit)
+    {
+        return Category::with(['courses' => function ($query) {
+            $query->select(
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'short_description',
+                'media_info',
+                'is_top',
+                'duration',
+                'total_lessons',
+                'total_enrollments'
+            )
+                ->orderBy('id', 'DESC')
+                ->limit(config('common.pagi_limit'));
+        }])
+            ->where('is_top', 1)
+            ->active()
+            ->orderBy('name', 'ASC')
+            ->limit($limit ?? config('common.pagi_limit'))
+            ->get();
     }
 }

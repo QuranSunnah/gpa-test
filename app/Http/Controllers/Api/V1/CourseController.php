@@ -13,9 +13,7 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CourseRepository $repository)
-    {
-    }
+    public function __construct(private CourseRepository $repository) {}
 
     public function index(Request $request)
     {
@@ -24,6 +22,8 @@ class CourseController extends Controller
 
     public function topCategoryCourses(Request $request)
     {
-        return $this->paginateResponse($this->repository->paginate($request->query->all()));
+        return $this->response(
+            $this->repository->topCategoryCourses($request->query('limit'))
+        );
     }
 }
