@@ -11,7 +11,7 @@ class CategoryRepository
     public function getTopList()
     {
         return Category::select('id', 'slug', 'name')
-            ->where('is_top', 1)
+            ->where('is_top', config('common.confirmation.yes'))
             ->active()
             ->orderBy('name', 'ASC')
             ->get();
@@ -24,7 +24,7 @@ class CategoryRepository
             \DB::raw('SUM(courses.total_lessons) as total_lessons'),
             \DB::raw('SUM(courses.total_enrollments) as total_enrollments'),
         )
-            ->where('categories.is_top', 1)
+            ->where('categories.is_top', config('common.confirmation.yes'))
             ->leftJoin('courses', 'categories.id', '=', 'courses.category_id')
             ->active()
             ->orderBy('name', 'ASC')
