@@ -19,8 +19,8 @@ class CourseRepository implements Repository
             'courses.media_info',
             'is_top',
             'courses.duration',
-            // 'total_lessons',
-            // 'total_enrollments'
+            'total_lessons',
+            'total_enrollments'
         )
             ->search($filters)
             ->filter($filters)

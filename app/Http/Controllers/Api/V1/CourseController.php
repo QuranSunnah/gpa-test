@@ -21,4 +21,9 @@ class CourseController extends Controller
     {
         return $this->paginateResponse($this->repository->paginate($request->query->all()));
     }
+
+    public function topCategoryCourses(Request $request)
+    {
+        return $this->paginateResponse($this->repository->paginate($request->query->all()));
+    }
 }

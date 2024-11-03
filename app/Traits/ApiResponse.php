@@ -18,12 +18,12 @@ trait ApiResponse
         ], Response::HTTP_OK);
     }
 
-    public function response(LengthAwarePaginator $paginateData, string $message = 'Data found'): JsonResponse
+    public function response($data, string $message = 'Data found'): JsonResponse
     {
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => $message,
-            'data' => $paginateData,
+            'data' => $data,
         ], Response::HTTP_OK);
     }
 }

@@ -10,6 +10,9 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
     Route::get('/mentors', 'MentorController@index');
     Route::get('/testimonials', 'TestimonialController@index');
     Route::get('/courses', 'CourseController@index');
+    Route::get('/top-categories/list', 'CategoryController@topList');
+    Route::get('/top-categories/report', 'CategoryController@report');
+    Route::get('/top-categories/courses', 'CourseController@topCategoryCourses');
 });
 
 // Route::middleware(['auth:api'])
