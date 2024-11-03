@@ -34,7 +34,7 @@ trait Filter
     }
 
     /**
-     * This method is using for creating relational query.
+     * This method is using for creating relational query
      * For this method we have to create getLikeFilterFields method in relational table otherwise it throws error.
      *
      * @return $query
