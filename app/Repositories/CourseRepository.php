@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Course;
 use App\Models\Category;
+use App\Models\Course;
 
 class CourseRepository implements Repository
 {
