@@ -84,10 +84,7 @@ trait Filter
 
     public function scopeSort(Builder $query, array $filters = []): Builder
     {
-        $table = $this->getTable();
-        $query->orderBy($table . '.' . ($filters['orderby'] ?? 'id'), $filters['dir'] ?? 'desc');
-
-        return $query;
+        return $query->orderBy($this->getTable() . '.' . ($filters['orderby'] ?? 'id'), $filters['dir'] ?? 'desc');
     }
 
     public function scopeSearch(Builder $query, array $filters = []): Builder
@@ -101,8 +98,6 @@ trait Filter
 
     public function scopeActive(Builder $query): Builder
     {
-        $table = $this->getTable();
-
-        return $query->where($table . '.status', config('common.status.active'));
+        return $query->where($this->getTable() . '.status', config('common.status.active'));
     }
 }

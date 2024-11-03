@@ -48,7 +48,7 @@ class CourseRepository implements Repository
                 ->orderBy('id', 'DESC')
                 ->limit(config('common.pagi_limit'));
         }])
-            ->where('is_top', 1)
+            ->where('is_top', config('common.confirmation.yes'))
             ->active()
             ->orderBy('name', 'ASC')
             ->limit($limit ?? config('common.pagi_limit'))
