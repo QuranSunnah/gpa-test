@@ -13,10 +13,9 @@ trait Filter
     public function scopeFilter(Builder $query, array $filters = []): Builder
     {
         if ($filters) {
-            $defaultFillableFields = $this->fillable;
             $table = $this->getTable();
             foreach ($filters as $field => $value) {
-                if ((!in_array($field, $defaultFillableFields, true) || !$value) && $value != '0') {
+                if ((!in_array($field, $this->filterAbleFields, true) || !$value) && $value != '0') {
                     continue;
                 }
 
@@ -56,7 +55,6 @@ trait Filter
         }
 
         if ($filters) {
-            $defaultFillableFields = $model->getFillable();
             $likeFilterFields = [];
             if (method_exists($model, 'getLikeFilterFields')) {
                 $likeFilterFields = $model->getLikeFilterFields();
@@ -64,7 +62,7 @@ trait Filter
 
             $table = $model->getTable();
             foreach ($filters as $field => $value) {
-                if ((!in_array($field, $defaultFillableFields, true) || !$value) && $value != '0') {
+                if ((!in_array($field, $this->filterAbleFields, true) || !$value) && $value != '0') {
                     continue;
                 }
                 $query->whereHas($relationName, function ($query) use ($field, $value, $likeFilterFields, $table) {

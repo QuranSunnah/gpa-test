@@ -15,7 +15,7 @@ class Course extends Model
     use HasFactory;
     use Filter;
 
-    protected $fillable = [
+    protected $filterAbleFields = [
         'title',
         'category_id',
         'is_top',
