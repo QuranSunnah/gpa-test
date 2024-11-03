@@ -5,7 +5,7 @@ declare(strict_types=1);
 // laravel follows snakeCase(underscore based) convention for key name in config file
 
 return [
-    'page_limit' => 20,
+    'pagi_limit' => 20,
     'status' => [
         'active' => 1,
         'inactive' => 0,

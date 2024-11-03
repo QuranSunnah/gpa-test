@@ -4,10 +4,43 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Course extends Model
 {
     use HasFactory;
+    use Filter;
+
+    protected $fillable = [
+        'title',
+        'category_id',
+        'is_top',
+    ];
+
+    protected $casts = [
+        'outcomes' => 'array',
+        'requirements' => 'array',
+        'live_class' => 'array',
+        'faq' => 'array',
+        'media_info' => 'array',
+        'others' => 'array',
+    ];
+
+    public function buildSearchQuery(Builder $query, string $searchStr): Builder
+    {
+        if (!empty($searchStr)) {
+            $query->where('courses.title', 'like', '%' . $searchStr . '%');
+        }
+
+        return $query;
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

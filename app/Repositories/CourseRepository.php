@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories;
+
+use App\Models\Category;
+use App\Models\Course;
+
+class CourseRepository implements Repository
+{
+    public function paginate(array $filters = [])
+    {
+        return Course::select(
+            'courses.id',
+            'courses.title',
+            'slug',
+            'category_id',
+            'short_description',
+            'courses.media_info',
+            'is_top',
+            'courses.duration',
+            'total_lessons',
+            'total_enrollments'
+        )
+            ->search($filters)
+            ->filter($filters)
+            ->sort($filters)
+            ->active()
+            ->paginate($filters['limit'] ?? config('common.pagi_limit'));
+    }
+
+    public function topCategoryCourses($limit)
+    {
+        return Category::with(['courses' => function ($query) {
+            $query->select(
+                'id',
+                'title',
+                'slug',
+                'category_id',
+                'short_description',
+                'media_info',
+                'is_top',
+                'duration',
+                'total_lessons',
+                'total_enrollments'
+            )
+                ->orderBy('id', 'DESC')
+                ->limit(config('common.pagi_limit'));
+        }])
+            ->where('is_top', 1)
+            ->active()
+            ->orderBy('name', 'ASC')
+            ->limit($limit ?? config('common.pagi_limit'))
+            ->get();
+    }
+}
