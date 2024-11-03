@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->tinyInteger('type')->default(1)->comment('1=Free,2=Paid,3=Premium,4=Request');
             $table->text('short_description')->nullable();
             $table->text('full_description')->nullable();
-            $table->integer('duration')->default(0);
+            $table->integer('duration')->default(0)->comment('in seconds');
             $table->json('outcomes')->nullable();
             $table->json('requirements')->nullable();
             $table->json('live_class')->nullable();

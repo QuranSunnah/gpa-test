@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-            $table->integer('total_enrollment')->default(0);
-            $table->integer('total_lesson')->default(0);
-            $table->integer('total_lesson_duration')->default(0)->comment('in seconds');
+            $table->integer('total_enrollments')->default(0);
+            $table->integer('total_lessons')->default(0);
         });
     }
 
