@@ -14,7 +14,9 @@ class NewsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private NewsRepository $repository) {}
+    public function __construct(private NewsRepository $repository)
+    {
+    }
 
     public function index(Request $request): JsonResponse
     {
