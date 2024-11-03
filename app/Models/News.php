@@ -14,7 +14,7 @@ class News extends Model
     use HasFactory;
     use Filter;
 
-    protected $fillable = [
+    protected $filterAbleFields = [
         'is_highlighted',
     ];
 
