@@ -10,6 +10,10 @@ class NewsRepository implements Repository
 {
     public function paginate(array $filters = [])
     {
-        return News::sort($filters)->paginate($filters['limit'] ?? config('common.pagi_limit'));
+        return News::search($filters)
+            ->filter($filters)
+            ->sort($filters)
+            ->active()
+            ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 }
