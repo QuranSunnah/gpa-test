@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->char('title', 255);
             $table->integer('course_id');
-            $table->integer('trainer_id')->nullable()->comment('user_id');
+            $table->integer('trainer_id')->nullable();
             $table->integer('order')->default(0);
             $table->timestamps();
             $table->softDeletes();
