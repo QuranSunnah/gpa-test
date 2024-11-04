@@ -12,6 +12,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
     Route::get('/news', 'NewsController@index');
     Route::get('/events', 'EventsController@index');
     Route::get('/courses', 'CourseController@index');
+    Route::get('/courses/{id}', 'CourseController@show');
     Route::get('/top-categories/list', 'CategoryController@topList');
     Route::get('/top-categories/report', 'CategoryController@report');
     Route::get('/top-categories/courses', 'CourseController@topCategoryCourses');

@@ -18,8 +18,10 @@ return new class extends Migration {
             $table->integer('section_id');
             $table->integer('course_id');
             $table->tinyInteger('type')->comment('1=Youtube,2=Vimeo,3=Video file');
-            $table->tinyInteger('morph_type')->comment('1=quize,2=exam,3=resource,4=video');
-            $table->integer('morph_id')->default(0);
+            $table->char('contentable_type', 255)->nullable()
+                ->comment('App\Models\Quiz or App\Models\Examination or App\Models\Resource');
+            $table->unsignedInteger('contentable_id')->nullable();
+            $table->index(['contentable_type', 'contentable_id']);
             $table->integer('duration')->default(0);
             $table->json('media_info')->nullable();
             $table->integer('order')->default(0);
