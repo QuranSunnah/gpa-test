@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('file_managers', function (Blueprint $table) {
             $table->id();
             $table->char('name', 255);
-            $table->integer('chategory_id');
+            $table->integer('category_id');
             $table->char('video_path', 255);
             $table->timestamps();
             $table->softDeletes();
