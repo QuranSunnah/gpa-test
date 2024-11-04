@@ -13,8 +13,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-            $table->integer('total_enrollments')->default(0);
-            $table->integer('total_lessons')->default(0);
+            $table->after('is_top', function (Blueprint $table) {
+                $table->integer('total_lessons')->default(0);
+                $table->integer('total_enrollments')->default(0);
+            });
         });
     }
 
@@ -24,6 +26,8 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('courses', function (Blueprint $table) {
+            $table->dropColumn('total_lessons');
+            $table->dropColumn('total_enrollments');
         });
     }
 };
