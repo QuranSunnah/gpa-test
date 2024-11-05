@@ -24,5 +24,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
 
 // Route::middleware(['auth:api'])
 //     ->prefix('v1')
-//     ->namespace('App\Http\Controllers\Api')
-//     ->group(function () {});
+//     ->namespace('App\Http\Controllers\Api\V1')
+//     ->group(function () {
+//         Route::get('/courses/{id}', 'CourseController@show');
+//     });
