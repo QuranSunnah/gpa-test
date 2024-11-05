@@ -26,7 +26,12 @@ class CourseController extends Controller
     public function topCategoryCourses(Request $request): JsonResponse
     {
         return $this->response(
-            $this->repository->topCategoryCourses($request->query('limit'))
+            $this->repository->getTopCategoryCourses($request->query('limit'))
         );
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        return $this->response($this->repository->findById($id), 'Course details found');
     }
 }
