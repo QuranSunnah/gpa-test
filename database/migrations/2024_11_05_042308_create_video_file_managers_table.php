@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file_managers', function (Blueprint $table) {
+        Schema::create('video_file_managers', function (Blueprint $table) {
             $table->id();
             $table->char('name', 255);
             $table->integer('category_id');
-            $table->char('video_path', 255);
+            $table->char('path', 255);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('file_managers');
+        Schema::dropIfExists('video_file_managers');
     }
 };
