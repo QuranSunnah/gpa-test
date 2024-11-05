@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+Route::group(['namespace' => 'App\Http\Controllers\Api\V1\Auth', 'prefix' => 'v1/auth'], function () {
+    Route::post('/register', 'RegisterController');
+});
+
 Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], function () {
     Route::get('/sliders/{id}', 'SliderController@show');
     Route::get('/partners', 'PartnerController@index');

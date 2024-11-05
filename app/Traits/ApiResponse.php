@@ -18,12 +18,12 @@ trait ApiResponse
         ], Response::HTTP_OK);
     }
 
-    public function response($data, string $message = 'Data found'): JsonResponse
+    public function response($data, string $message = 'Data found', $status = Response::HTTP_OK): JsonResponse
     {
         return response()->json([
-            'status' => Response::HTTP_OK,
+            'status' => $status,
             'message' => $message,
             'data' => $data,
-        ], Response::HTTP_OK);
+        ], $status);
     }
 }

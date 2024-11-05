@@ -36,7 +36,8 @@ return new class extends Migration {
             $table->tinyInteger('identification_type')->nullable();
             $table->char('identification_number', 150)->nullable();
             $table->json('social_links')->nullable();
-            $table->char('designation', 255)->nullable();
+            $table->tinyInteger('designation')->nullable()
+                ->comment('1=Student,2=Service Holder,3=Self Employed,4=Others');
             $table->longText('about_yourself')->nullable();
             $table->longText('biography')->nullable();
             $table->timestamp('last_login')->nullable();

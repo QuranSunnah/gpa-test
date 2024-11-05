@@ -15,6 +15,8 @@ npm install
 npm install --global yarn
 composer install
 php artisan migrate:fresh --seed
+php artisan passport:install (first time)
+php artisan passport:client --personal (first time)
 ```
 
 ### To run project in development mode
