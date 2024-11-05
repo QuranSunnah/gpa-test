@@ -16,6 +16,7 @@ return new class extends Migration
             $table->char('name', 255);
             $table->integer('category_id');
             $table->char('path', 255);
+            $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');
             $table->timestamps();
             $table->softDeletes();
         });
