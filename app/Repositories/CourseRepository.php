@@ -30,7 +30,7 @@ class CourseRepository implements Repository
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 
-    public function getTopCategoryCourses($limit)
+    public function getTopCategoryCourses(string|int $limit)
     {
         return Category::with(['courses' => function ($query) {
             $query->select(
@@ -65,7 +65,6 @@ class CourseRepository implements Repository
                 $query->with('contentable')->orderBy('order', 'asc');
             },
         ])
-            ->where('id', $id)
-            ->get();
+            ->findOrFail($id);
     }
 }

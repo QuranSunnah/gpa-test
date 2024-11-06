@@ -29,4 +29,10 @@ return [
         'english' => 1,
         'bangla' => 2,
     ],
+    'designation' => [
+        'student' => 1,
+        'service_holder' => 2,
+        'self_employed' => 3,
+        'others' => 4,
+    ],
 ];
