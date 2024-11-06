@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 if ($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
                     return response()->json(['message' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-                } else if ($exception instanceof ModelNotFoundException) {
+                } else if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
                     return response()->json(
                         [
                             'message' => config('app.debug') === true ? $exception->getMessage() : 'Data not found',
