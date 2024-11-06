@@ -14,7 +14,7 @@ class LoginService implements LoginServiceInterface
     public function login(LoginRequest $request): array
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
-            throw new UnauthorizedException('Invalid credentials');
+            throw new UnauthorizedException('Invalid login credentials');
         }
 
         $user = Auth::user();
