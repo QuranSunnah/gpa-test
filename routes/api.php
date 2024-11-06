@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'App\Http\Controllers\Api\V1\Auth', 'prefix' => 'v1/auth'], function () {
-    Route::post('/register', 'RegisterController');
-    Route::post('/login', 'LoginController');
-    Route::post('/logout', 'LoginController@logout')->middleware(['auth:api']);
+Route::group(['prefix' => 'v1/auth'], function () {
+    Route::post('/register', Api\V1\Auth\RegisterController::class);
+    Route::post('/login', Api\V1\Auth\LoginController::class);
+    Route::post('/logout', [Api\V1\Auth\LoginController::class, 'logout'])->middleware(['auth:api']);
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], function () {
-    Route::get('/sliders/{id}', 'SliderController@show');
-    Route::get('/partners', 'PartnerController@index');
-    Route::get('/mentors', 'MentorController@index');
-    Route::get('/testimonials', 'TestimonialController@index');
-    Route::get('/news', 'NewsController@index');
-    Route::get('/events', 'EventsController@index');
-    Route::get('/courses', 'CourseController@index');
-    Route::get('/courses/{id}', 'CourseController@show');
-    Route::get('/top-categories/list', 'CategoryController@topList');
-    Route::get('/top-categories/report', 'CategoryController@report');
-    Route::get('/top-categories/courses', 'CourseController@topCategoryCourses');
+Route::group(['prefix' => 'v1'], function () {
+    Route::get('/sliders/{id}', [Api\V1\SliderController::class, 'show']);
+    Route::get('/partners', [Api\V1\PartnerController::class, 'index']);
+    Route::get('/mentors', [Api\V1\MentorController::class, 'index']);
+    Route::get('/testimonials', [Api\V1\TestimonialController::class, 'index']);
+    Route::get('/news', [Api\V1\NewsController::class, 'index']);
+    Route::get('/events', [Api\V1\EventsController::class, 'index']);
+    Route::get('/courses', [Api\V1\CourseController::class, 'index']);
+    Route::get('/courses/{id}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
+    Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
+    Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
 });
 
 Route::middleware(['auth:api'])
