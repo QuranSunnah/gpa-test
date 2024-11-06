@@ -14,8 +14,7 @@ return new class extends Migration {
     {
         Schema::create('instructors', function (Blueprint $table) {
             $table->id();
-            $table->char('first_name', 255);
-            $table->char('last_name', 255);
+            $table->char('name', 255);
             $table->text('biography')->nullable();
             $table->char('photo', 255)->nullable();
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');

@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->char('title', 255);
             $table->integer('section_id');
             $table->integer('course_id');
-            $table->tinyInteger('type')->comment('1=Youtube,2=Vimeo,3=Video file');
             $table->char('contentable_type', 255)->nullable()
                 ->comment('App\Models\Quiz or App\Models\Examination or App\Models\Resource');
             $table->unsignedInteger('contentable_id')->nullable();
