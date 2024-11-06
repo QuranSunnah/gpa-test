@@ -15,14 +15,14 @@ class RegisterController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private RegisterServiceInterface $registerService)
+    public function __construct(private RegisterServiceInterface $service)
     {
     }
 
     public function __invoke(RegisterRequest $request): JsonResponse
     {
         return $this->response(
-            $this->registerService->register($request),
+            $this->service->register($request),
             'Registration successfull',
             Response::HTTP_CREATED
         );

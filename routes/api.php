@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'App\Http\Controllers\Api\V1\Auth', 'prefix' => 'v1/auth'], function () {
     Route::post('/register', 'RegisterController');
+    Route::post('/login', 'LoginController');
+    Route::post('/logout', 'LoginController@logout')->middleware(['auth:api']);
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], function () {
@@ -22,9 +24,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
     Route::get('/top-categories/courses', 'CourseController@topCategoryCourses');
 });
 
-// Route::middleware(['auth:api'])
-//     ->prefix('v1')
-//     ->namespace('App\Http\Controllers\Api\V1')
-//     ->group(function () {
-//         Route::get('/courses/{id}', 'CourseController@show');
-//     });
+Route::middleware(['auth:api'])
+    ->prefix('v1')
+    ->namespace('App\Http\Controllers\Api\V1')
+    ->group(function () {
+        Route::get('/test-auth-api', function () {
+            return response()->json(['message' => 'Test auth api working']);
+        });
+    });

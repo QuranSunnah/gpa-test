@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Services\Interfaces\LoginServiceInterface;
 use App\Services\Interfaces\RegisterServiceInterface;
+use App\Services\LoginService;
 use App\Services\RegisterService;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public $bindings = [
         RegisterServiceInterface::class => RegisterService::class,
+        LoginServiceInterface::class => LoginService::class,
     ];
 
     /**

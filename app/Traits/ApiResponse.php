@@ -26,4 +26,12 @@ trait ApiResponse
             'data' => $data,
         ], $status);
     }
+
+    public function msgResponse(string $message = 'Data found', $status = Response::HTTP_OK): JsonResponse
+    {
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+        ], $status);
+    }
 }
