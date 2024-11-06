@@ -15,9 +15,7 @@ class LoginController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private LoginServiceInterface $service)
-    {
-    }
+    public function __construct(private LoginServiceInterface $service) {}
 
     public function __invoke(LoginRequest $request): JsonResponse
     {
@@ -27,7 +25,6 @@ class LoginController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request->user()->token()->delete();
-
         return $this->msgResponse('Logout successful');
     }
 }
