@@ -24,15 +24,32 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         if ($this->isMethod('POST')) {
-            return [
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'phone' => 'required|string|min:11|max:50',
-                'gender' => 'required|integer|min:1|max:3',
-                'designation' => 'required|integer',
-                'email' => 'required|email:rfc,dns|unique:users',
-                'password' => 'required|confirmed|min:6|max:60',
-            ];
+            if ($this->provider === 'google') {
+                return $this->googleRegistrationRules();
+            } else {
+                return $this->manualRegistrationRules();
+            }
         }
+    }
+
+    public function manualRegistrationRules()
+    {
+        return [
+            'provider' => 'required|string|in:manual,google',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|min:11|max:50',
+            'gender' => 'required|integer|min:1|max:3',
+            'designation' => 'required|integer',
+            'email' => 'required|email:rfc,dns|unique:users',
+            'password' => 'required|confirmed|min:6|max:60',
+        ];
+    }
+
+    public function googleRegistrationRules()
+    {
+        return [
+            'provider' => 'required|string|in:manual,google',
+        ];
     }
 }

@@ -23,8 +23,12 @@ class RegisterController extends Controller
     {
         return $this->response(
             $this->service->register($request),
-            'Registration successfull',
+            'An OTP has been sent to your email or phone. Please verify it to complete registration.',
             Response::HTTP_CREATED
         );
+    }
+
+    public function complete($request)
+    {
     }
 }

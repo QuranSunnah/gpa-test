@@ -25,8 +25,8 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'password',
         'phone',
+        'password',
         'gender',
         'fathers_name',
         'mothers_name',
@@ -48,9 +48,10 @@ class User extends Authenticatable
         'last_login',
         'settings',
         'last_otp',
-        'otp_verification_status',
+        'otp_created_at',
+        'is_verified',
+        'verified_by',
         'status',
-        'email_verified_at',
     ];
 
     /**

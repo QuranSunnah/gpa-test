@@ -14,13 +14,13 @@ return [
         'no' => 0,
         'yes' => 1,
     ],
-    'courseType' => [
+    'course_type' => [
         'free' => 1,
         'paid' => 2,
         'premium' => 3,
         'request' => 4,
     ],
-    'courseLevel' => [
+    'course-level' => [
         'beginner' => 1,
         'intermediate' => 2,
         'advanced' => 3,
@@ -34,5 +34,9 @@ return [
         'service_holder' => 2,
         'self_employed' => 3,
         'others' => 4,
+    ],
+    'provider' => [
+        'manual' => 1,
+        'google' => 2,
     ],
 ];
