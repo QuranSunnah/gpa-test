@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->integer('duration')->default(0);
             $table->json('media_info')->nullable();
             $table->integer('order')->default(0);
-            $table->text('summery')->nullable();
+            $table->text('summary')->nullable();
             $table->timestamps();
         });
     }
