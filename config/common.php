@@ -39,4 +39,10 @@ return [
         'manual' => 1,
         'google' => 2,
     ],
+    'verified_by' => [
+        'email' => 1,
+        'phone' => 2,
+        'google' => 3,
+    ],
+    'otp_expired_duration_at_min' => 5,
 ];

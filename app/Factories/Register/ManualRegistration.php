@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Factories\Register;
 
+use App\Events\RegistrationProcessed;
 use App\Factories\Register\Interfaces\RegisterFactoryInterface;
+use App\Helpers\OtpHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use Carbon\Carbon;
 
 class ManualRegistration implements RegisterFactoryInterface
 {
     public function execute(RegisterRequest $request): array
     {
         $user = new User();
+        $otp = OtpHelper::generateOtp();
         $user->fill($request->only(
             'first_name',
             'last_name',
@@ -22,10 +25,12 @@ class ManualRegistration implements RegisterFactoryInterface
             'phone',
             'gender',
             'designation',
-        ))->save();
+        ));
+        $user->last_otp = $otp;
+        $user->otp_created_at = Carbon::now();
+        $user->save();
 
-        return $user->toArray();
-        // event(new Registered($user));
+        event(new RegistrationProcessed($request->post('email'), $request->post('phone'), $otp));
 
         return [
             'firstName' => $user->first_name,
@@ -34,7 +39,6 @@ class ManualRegistration implements RegisterFactoryInterface
             'phone' => $user->phone,
             'gender' => $user->gender,
             'designation' => $user->designation,
-            // 'token' => $user->createToken('api_auth_token')->accessToken,
         ];
     }
 }

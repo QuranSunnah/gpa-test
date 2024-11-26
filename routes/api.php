@@ -13,6 +13,10 @@ Route::group(['prefix' => 'v1/auth'], function () {
 });
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::post('/otp/send', [Api\V1\OtpController::class, 'send']);
+});
+
+Route::group(['prefix' => 'v1'], function () {
     Route::get('/sliders/{id}', [Api\V1\SliderController::class, 'show']);
     Route::get('/partners', [Api\V1\PartnerController::class, 'index']);
     Route::get('/mentors', [Api\V1\MentorController::class, 'index']);

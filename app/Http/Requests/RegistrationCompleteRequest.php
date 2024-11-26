@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,24 +26,77 @@ class RegistrationCompleteRequest extends FormRequest
      */
     public function rules(): array
     {
+        $yes = config('common.confirmation.yes');
+        $active = config('common.status.active');
+
         return [
-            'identityType' => 'required|string|in:email,phone',
-            'email' => [
-                'prohibited_unless:identityType,email',
-                'required_unless:phone,null',
-                'string',
-                'email:rfc,dns',
-                'max:255',
-                Rule::exists('users', 'email')->where('is_verified', 0)->whereNull('deleted_at'),
+            'identity_type' => 'required|string|in:email,phone',
+            'identity' => [
+                'required',
+                Rule::when(
+                    $this->post('identity_type') === 'email',
+                    [
+                        'email:rfc,dns',
+                        'max:255',
+                        function ($attribute, $value, $fail) use ($yes, $active) {
+                            $user = User::where('email', $value)->whereNull('deleted_at')->first();
+                            if ($user) {
+                                if ($user->is_verified == $yes) {
+                                    return $fail('This email is already registered, please login');
+                                } elseif ($user->status != $active) {
+                                    return $fail('You are inactive user, please contact with system admin');
+                                }
+                            } else {
+                                return $fail('This email is not exists.');
+                            }
+                        },
+                    ]
+                ),
+
+                Rule::when(
+                    $this->post('identity_type') === 'phone',
+                    [
+                        'string',
+                        'regex:/^(?:\+8801|01)\d{9}$/',
+                        function ($attribute, $value, $fail) use ($yes, $active) {
+                            $user = User::where('phone', $value)->whereNull('deleted_at')->first();
+                            if ($user) {
+                                if ($user->is_verified == $yes) {
+                                    return $fail('This phone number is already registered, please login');
+                                } elseif ($user->status != $active) {
+                                    return $fail('You are inactive user, please contact with system admin');
+                                }
+                            } else {
+                                return $fail('This phone is not exists.');
+                            }
+                        },
+                    ]
+                ),
             ],
-            'phone' => [
-                'prohibited_unless:identityType,phone',
-                'required_unless:email,null',
-                'string',
-                'regex:/^(?:\+8801|01)\d{9}$/',
-                Rule::exists('users', 'phone')->where('verified', 0)->whereNull('deleted_at'),
+            'otp' => [
+                'required',
+                'digits:4',
+                function ($attribute, $value, $fail) {
+                    $user = User::where($this->identity_type, $this->identity)
+                        ->where('is_verified', 0)
+                        ->whereNull('deleted_at')
+                        ->active()
+                        ->first();
+
+                    if ($user) {
+                        if ($user->last_otp != $value) {
+                            return $fail('Invalid OTP provided.');
+                        }
+
+                        if (
+                            Carbon::parse($user->otp_created_at)->lt(Carbon::now()
+                                ->subMinutes(config('common.otp_expired_duration_at_min')))
+                        ) {
+                            return $fail('OTP has expired. Please resend OTP');
+                        }
+                    }
+                },
             ],
-            'otp' => 'length:4',
         ];
     }
 }

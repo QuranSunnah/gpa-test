@@ -17,6 +17,7 @@ class GP implements Sendable
 
     public function send(string $phoneNumber, string $msg): array
     {
+        return [];
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'accept' => 'application/json',

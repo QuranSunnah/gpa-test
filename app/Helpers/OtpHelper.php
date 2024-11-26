@@ -18,21 +18,15 @@ class OtpHelper
             ->implode('');
     }
 
-    // public static function sendOtp(string $identity, string $otp)
-    // {
-    //     if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
-    //         self::sendMailOtp($identity, $otp);
-    //     } else {
-    //         self::sendSmsOtp(new GP(), $identity, $otp);
-    //     }
-    // }
+    public static function sendOtp(string $email, string $phone, string $otp)
+    {
+        self::sendMailOtp($email, $otp);
+        self::sendSmsOtp(new GP(), $phone, $otp);
+    }
 
     public static function sendMailOtp(string $email, string $otp)
     {
-        MailerService::send($email, new OtpMail([
-            'email' => $email,
-            'email_otp' => $otp,
-        ]));
+        MailerService::send($email, new OtpMail(['otp' => $otp]));
     }
 
     public static function sendSmsOtp(Sendable $smsGateway, string $phoneNumber, string $otp)

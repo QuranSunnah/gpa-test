@@ -13,7 +13,6 @@ class MailerService implements MailerServiceInterface
 {
     public static function send(string $to, MailableContract $mailerClass)
     {
-        // TODO: Need to implement RabbitMQ
         try {
             Mail::to($to)->send($mailerClass);
         } catch (\Exception $e) {

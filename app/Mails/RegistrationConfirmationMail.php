@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-class OtpMail extends Mailable
+class RegistrationConfirmationMail extends Mailable
 {
     /**
      * Create a new message instance.
@@ -23,7 +23,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->emailData['otp'] . ' is your Grameenphone Academy OTP',
+            subject: 'Welcome to Grameenphone Academy',
         );
     }
 
@@ -33,7 +33,7 @@ class OtpMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.otp',
+            view: 'emails.registration-confirmation',
         );
     }
 
