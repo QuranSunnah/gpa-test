@@ -10,6 +10,11 @@ return [
         'active' => 1,
         'inactive' => 0,
     ],
+    'user_status' => [
+        'inactive' => 0,
+        'active' => 1,
+        'profile_pending' => 2,
+    ],
     'confirmation' => [
         'no' => 0,
         'yes' => 1,
