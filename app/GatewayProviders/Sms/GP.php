@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\GatewayProviders\Sms;
 
 use App\GatewayProviders\Interfaces\Sendable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 class GP implements Sendable
 {
@@ -15,7 +15,7 @@ class GP implements Sendable
     {
         $apiResponse = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->getAuthToken()
+            'Authorization' => 'Bearer ' . $this->getAuthToken(),
         ])->post(env('SMS_TOKEN_URL'), [
             'transactionId' => time() . rand(1000, 9999),
             'subject' => env('SMS_API_SUBJECT'),
@@ -25,11 +25,11 @@ class GP implements Sendable
             'chargeCode' => env('SMS_API_CHARGE_CODE'),
             'receiver' => [
                 'appUserId' => '',
-                'phoneNumber' => '88' . $phoneNumber
+                'phoneNumber' => '88' . $phoneNumber,
             ],
             'sender' => [
-                'id' => 'GP-Academy'
-            ]
+                'id' => 'GP-Academy',
+            ],
         ]);
 
         $response = $apiResponse->json();
@@ -51,6 +51,7 @@ class GP implements Sendable
                 return $tokenInfo['accessToken'];
             });
         }
+
         return '';
     }
 

@@ -14,7 +14,7 @@ class OtpHelper
     public static function generateOtp(): string
     {
         return collect(range(1, 4))
-            ->map(fn() => collect(str_split('0123456789'))->random())
+            ->map(fn () => collect(str_split('0123456789'))->random())
             ->implode('');
     }
 
