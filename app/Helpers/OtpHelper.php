@@ -14,7 +14,7 @@ class OtpHelper
     public static function generateOtp(): string
     {
         return collect(range(1, 4))
-            ->map(fn () => collect(str_split('0123456789'))->random())
+            ->map(fn() => collect(str_split('0123456789'))->random())
             ->implode('');
     }
 
@@ -31,8 +31,6 @@ class OtpHelper
 
     public static function sendSmsOtp(Sendable $smsGateway, string $phoneNumber, string $otp)
     {
-        $msg = "{$otp} is your GP Academy OTP";
-
-        return $smsGateway->send($phoneNumber, $msg);
+        return $smsGateway->send($phoneNumber, $otp);
     }
 }

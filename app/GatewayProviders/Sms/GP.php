@@ -7,36 +7,61 @@ namespace App\GatewayProviders\Sms;
 use App\GatewayProviders\Interfaces\Sendable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class GP implements Sendable
 {
-    private const GATEWAY_URL = '';
-    private const API_TOKEN = '';
-    private const SID = '';
-
-    public function send(string $phoneNumber, string $msg): array
+    public function send(string $phoneNumber, string $otp): array
     {
-        return [];
-        $response = Http::withHeaders([
+        $apiResponse = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'accept' => 'application/json',
-        ])->post(self::GATEWAY_URL, [
-            'api_token' => self::API_TOKEN,
-            'sid' => self::SID,
-            'msisdn' => $phoneNumber,
-            'sms' => $msg,
-            'csms_id' => Str::random(20),
+            'Authorization' => 'Bearer ' . $this->getAuthToken()
+        ])->post(env('SMS_TOKEN_URL'), [
+            'transactionId' => time() . rand(1000, 9999),
+            'subject' => env('SMS_API_SUBJECT'),
+            'type' => env('SMS_API_TYPE'),
+            'contentEn' => "Your GP Academy account verification code is: $otp",
+            'contentBn' => "আপনার জিপি একাডেমি অ্যাকাউন্ট ভেরিফিকেশনের কোডটি হচ্ছে: $otp",
+            'chargeCode' => env('SMS_API_CHARGE_CODE'),
+            'receiver' => [
+                'appUserId' => '',
+                'phoneNumber' => '88' . $phoneNumber
+            ],
+            'sender' => [
+                'id' => 'GP-Academy'
+            ]
         ]);
 
-        $response = $response->json();
-        if ($response['status'] !== 'SUCCESS') {
+        $response = $apiResponse->json();
+        if ($apiResponse->failed()) {
             Log::error('SMS send failed', [
-                'number' => $phoneNumber,
-                'message' => $response['error_message'],
+                'phoneNumber' => $phoneNumber,
+                ...$response,
             ]);
         }
 
         return $response;
+    }
+
+    private function getAuthToken(): string
+    {
+        $tokenInfo = $this->fetchTokenInfo();
+        if (isset($tokenInfo['accessToken']) && isset($tokenInfo['expiresIn'])) {
+            return Cache::remember('sms_access_token', $tokenInfo['expiresIn'], function () use ($tokenInfo) {
+                return $tokenInfo['accessToken'];
+            });
+        }
+        return '';
+    }
+
+    private function fetchTokenInfo(): array
+    {
+        $response = Http::asForm()->post(env('SMS_AUTH_TOKEN_URL'), [
+            'client_id' => env('SMS_CLIENT_ID'),
+            'client_secret' => env('SMS_CLIENT_SECRET'),
+            'grant_type' => env('SMS_CLIENT_GRANT_TYPE'),
+        ]);
+
+        return $response->failed() ? [] : $response->json();
     }
 }
