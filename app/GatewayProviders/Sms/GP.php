@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\GatewayProviders\Sms;
 
 use App\GatewayProviders\Interfaces\Sendable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class GP implements Sendable
 {
@@ -45,11 +45,17 @@ class GP implements Sendable
 
     private function getAuthToken(): string
     {
+        $redisKey = 'sms_access_token';
+        $accessToken = Redis::get($redisKey);
+        if ($accessToken) {
+            return $accessToken;
+        }
+
         $tokenInfo = $this->fetchTokenInfo();
         if (isset($tokenInfo['accessToken']) && isset($tokenInfo['expiresIn'])) {
-            return Cache::remember('sms_access_token', $tokenInfo['expiresIn'], function () use ($tokenInfo) {
-                return $tokenInfo['accessToken'];
-            });
+            Redis::set($redisKey, $tokenInfo['accessToken'], 'EX', $tokenInfo['expiresIn']);
+
+            return $tokenInfo['accessToken'];
         }
 
         return '';

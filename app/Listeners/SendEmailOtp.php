@@ -8,7 +8,7 @@ use App\Events\RegistrationProcessed;
 use App\Helpers\OtpHelper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendOtpNotification implements ShouldQueue
+class SendEmailOtp implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -22,6 +22,6 @@ class SendOtpNotification implements ShouldQueue
      */
     public function handle(RegistrationProcessed $event): void
     {
-        OtpHelper::sendOtp($event->email, $event->phone, $event->otp);
+        OtpHelper::sendMailOtp($event->email, $event->otp);
     }
 }

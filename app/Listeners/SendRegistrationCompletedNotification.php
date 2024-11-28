@@ -9,7 +9,7 @@ use App\Mails\RegistrationConfirmationMail;
 use App\Services\Mailer\MailerService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendRegistrationNotification implements ShouldQueue
+class SendRegistrationCompletedNotification implements ShouldQueue
 {
     /**
      * Create the event listener.

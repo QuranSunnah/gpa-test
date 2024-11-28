@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use App\GatewayProviders\Interfaces\Sendable;
-use App\GatewayProviders\Sms\GP;
 use App\Mails\OtpMail;
 use App\Services\Mailer\MailerService;
 
@@ -16,12 +15,6 @@ class OtpHelper
         return collect(range(1, 4))
             ->map(fn () => collect(str_split('0123456789'))->random())
             ->implode('');
-    }
-
-    public static function sendOtp(string $email, string $phone, string $otp)
-    {
-        self::sendMailOtp($email, $otp);
-        self::sendSmsOtp(new GP(), $phone, $otp);
     }
 
     public static function sendMailOtp(string $email, string $otp)
