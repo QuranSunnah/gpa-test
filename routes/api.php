@@ -7,8 +7,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1/auth'], function () {
     Route::post('/register', Api\V1\Auth\RegisterController::class);
+    Route::post('/register/complete', [Api\V1\Auth\RegisterController::class, 'complete']);
     Route::post('/login', Api\V1\Auth\LoginController::class);
     Route::post('/logout', [Api\V1\Auth\LoginController::class, 'logout'])->middleware(['auth:api']);
+});
+
+Route::group(['prefix' => 'v1'], function () {
+    Route::post('/otp/send', [Api\V1\OtpController::class, 'send']);
 });
 
 Route::group(['prefix' => 'v1'], function () {

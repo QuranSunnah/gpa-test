@@ -27,7 +27,6 @@ class LoginRequest extends FormRequest
             return [
                 'email' => 'required|email:rfc,dns',
                 'password' => 'required|min:6|max:60',
-                'remember_me' => 'sometimes|boolean',
             ];
         }
     }
