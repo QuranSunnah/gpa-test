@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->char('last_name', 255)->nullable();
             $table->char('email', 150)->unique();
             $table->char('phone', 50)->nullable()->unique();
-            $table->char('password', 60);
+            $table->char('password', 60)->nullable();
             $table->tinyInteger('gender')->nullable()->comment('1= Male, 2=Female, 3=Others');
             $table->char('fathers_name', 255)->nullable();
             $table->char('mothers_name', 255)->nullable();
@@ -45,7 +45,7 @@ return new class extends Migration {
             $table->char('last_otp', 60)->nullable();
             $table->timestamp('otp_created_at')->nullable();
             $table->tinyInteger('is_verified')->default(0)->comment('0=No,1=Yes');
-            $table->tinyInteger('verified_by')->nullable()->comment('1=email,2=phone,2=google');
+            $table->tinyInteger('verified_by')->nullable()->comment('1=email,2=phone,3=google');
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active,2=Profile pending');
             $table->timestamps();
             $table->softDeletes();

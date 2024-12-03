@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Mailer;
 
-use App\Services\Mailer\Interfaces\MailerServiceInterface;
-use Illuminate\Contracts\Mail\Mailable as MailableContract;
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class MailerService implements MailerServiceInterface
+class MailerService
 {
-    public static function send(string $to, MailableContract $mailerClass)
+    public static function send(string $to, Mailable $mailerClass)
     {
         try {
             Mail::to($to)->send($mailerClass);

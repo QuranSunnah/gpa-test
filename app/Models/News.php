@@ -8,11 +8,13 @@ use App\Traits\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class News extends Model
 {
     use HasFactory;
     use Filter;
+    use SoftDeletes;
 
     protected $filterAbleFields = [
         'is_highlighted',

@@ -5,19 +5,42 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Events\RegistrationCompleted;
-use App\Factories\RegisterFactory;
+use App\Events\RegistrationProcessed;
+use App\Helpers\OtpHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\RegistrationCompleteRequest;
 use App\Models\User;
-use App\Services\Interfaces\RegisterServiceInterface;
+use Carbon\Carbon;
 
-class RegisterService implements RegisterServiceInterface
+class RegisterService
 {
     public function register(RegisterRequest $request): array
     {
-        $instance = RegisterFactory::create($request->post('provider'));
+        $user = new User();
+        $otp = OtpHelper::generateOtp();
+        $user->fill($request->only(
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'phone',
+            'gender',
+            'designation',
+        ));
+        $user->last_otp = $otp;
+        $user->otp_created_at = Carbon::now();
+        $user->save();
 
-        return $instance->execute($request);
+        event(new RegistrationProcessed($request->post('email'), $request->post('phone'), $otp));
+
+        return [
+            'firstName' => $user->first_name,
+            'lastName' => $user->last_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'gender' => $user->gender,
+            'designation' => $user->designation,
+        ];
     }
 
     public function complete(RegistrationCompleteRequest $request): array

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Events;
+use App\Models\Event;
 
 class EventsRepository implements Repository
 {
     public function paginate(array $filters = [])
     {
-        return Events::search($filters)
+        return Event::search($filters)
             ->filter($filters)
             ->sort($filters)
             ->active()
