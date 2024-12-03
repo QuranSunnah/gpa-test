@@ -34,7 +34,6 @@ class OtpRequest extends FormRequest
                     $user = User::where('email', $value)
                         ->where('is_verified', config('common.confirmation.no'))
                         ->active()
-                        ->whereNull('deleted_at')
                         ->first();
 
                     if (!$user) {

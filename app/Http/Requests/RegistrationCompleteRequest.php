@@ -27,7 +27,7 @@ class RegistrationCompleteRequest extends FormRequest
     public function rules(): array
     {
         $yes = config('common.confirmation.yes');
-        $active = config('common.status.active');
+        $active = config('common.user_status.active');
 
         return [
             'identity_type' => 'required|string|in:email,phone',
@@ -39,7 +39,7 @@ class RegistrationCompleteRequest extends FormRequest
                         'email:rfc,dns',
                         'max:255',
                         function ($attribute, $value, $fail) use ($yes, $active) {
-                            $user = User::where('email', $value)->whereNull('deleted_at')->first();
+                            $user = User::where('email', $value)->first();
                             if ($user) {
                                 if ($user->is_verified == $yes) {
                                     return $fail('This email is already registered, please login');
@@ -59,7 +59,7 @@ class RegistrationCompleteRequest extends FormRequest
                         'string',
                         'regex:/^(?:\+8801|01)\d{9}$/',
                         function ($attribute, $value, $fail) use ($yes, $active) {
-                            $user = User::where('phone', $value)->whereNull('deleted_at')->first();
+                            $user = User::where('phone', $value)->first();
                             if ($user) {
                                 if ($user->is_verified == $yes) {
                                     return $fail('This phone number is already registered, please login');
@@ -79,7 +79,6 @@ class RegistrationCompleteRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $user = User::where($this->identity_type, $this->identity)
                         ->where('is_verified', 0)
-                        ->whereNull('deleted_at')
                         ->active()
                         ->first();
 

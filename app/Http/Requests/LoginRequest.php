@@ -23,11 +23,27 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->isMethod('POST')) {
-            return [
-                'email' => 'required|email:rfc,dns',
-                'password' => 'required|min:6|max:60',
-            ];
+        switch ($this->post('provider') ?? 'general') {
+            case 'google':
+                return $this->validateOauth();
+            default:
+                return $this->validateGeneralAuth();
         }
+    }
+
+    private function validateGeneralAuth()
+    {
+        return [
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required|min:6|max:60',
+        ];
+    }
+
+    private function validateOauth()
+    {
+        return [
+            'provider' => 'required|string|in:google',
+            'platform' => 'string|in:web,ios,android|nullable',
+        ];
     }
 }

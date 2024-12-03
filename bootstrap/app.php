@@ -25,27 +25,39 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Throwable $exception, Request $request) {
             if ($request->is('api/*')) {
                 if ($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
-                    return response()->json(['message' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-                } else if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
+                    $statusCode = Response::HTTP_UNAUTHORIZED;
                     return response()->json(
                         [
+                            'status' => $statusCode,
+                            'message' => $exception->getMessage()
+                        ],
+                        $statusCode
+                    );
+                } else if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
+                    $statusCode = $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_NOT_FOUND;
+                    return response()->json(
+                        [
+                            'status' => $statusCode,
                             'message' => config('app.debug') === true ? $exception->getMessage() : 'Data not found',
                         ],
-                        $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_NOT_FOUND
+                        $statusCode
                     );
                 } elseif ($exception instanceof ValidationException) {
+                    $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
                     return response()->json([
+                        'status' => $statusCode,
                         'message' => $exception->getMessage(),
                         'errors' => $exception->errors() ?? [],
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    ], $statusCode);
                 } else {
-                    $errorCode = $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+                    $statusCode = $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
 
                     return response()->json(
                         [
-                            'message' => config('app.debug') === true || $errorCode === Response::HTTP_UNAUTHORIZED ? $exception->getMessage() : 'Your request can not process at this moment, please try again!',
+                            'status' => $statusCode,
+                            'message' => config('app.debug') === true || $statusCode === Response::HTTP_UNAUTHORIZED ? $exception->getMessage() : 'Your request can not process at this moment, please try again!',
                         ],
-                        $errorCode
+                        $statusCode
                     );
                 }
             }

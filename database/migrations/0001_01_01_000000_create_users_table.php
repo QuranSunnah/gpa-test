@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->char('last_name', 255)->nullable();
             $table->char('email', 150)->unique();
             $table->char('phone', 50)->nullable()->unique();
-            $table->char('password', 60);
+            $table->char('password', 60)->nullable();
             $table->tinyInteger('gender')->nullable()->comment('1= Male, 2=Female, 3=Others');
             $table->char('fathers_name', 255)->nullable();
             $table->char('mothers_name', 255)->nullable();
