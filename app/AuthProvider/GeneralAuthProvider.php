@@ -27,5 +27,6 @@ class GeneralAuthProvider implements Authenticable
             }
             throw new UnauthorizedException('Invalid login credentials');
         }
+        throw new UnauthorizedException('Invalid login credentials');
     }
 }

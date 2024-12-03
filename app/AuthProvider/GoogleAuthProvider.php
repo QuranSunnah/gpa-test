@@ -25,9 +25,7 @@ class GoogleAuthProvider implements Authenticable, OauthInterface
             explode(' ', $request->header('Authorization'))[1],
             $request->post('platform') ?? 'web'
         );
-        if (empty($oauthInfo['email'])) {
-            throw new UnauthorizedException("We can't access your email address.", Res::HTTP_UNAUTHORIZED);
-        }
+
         $user = User::where('email', $oauthInfo['email'])->first();
         if (empty($user)) {
             $user = User::create([
@@ -48,10 +46,9 @@ class GoogleAuthProvider implements Authenticable, OauthInterface
     {
         $client = new GoogleClient(['client_id' => config('auth.google_client_id.' . $platform)]);
         $oauthInfo = $client->verifyIdToken($token);
-        if (empty($oauthInfo)) {
-            throw new UnauthorizedException('Google unauthorized request.', Res::HTTP_UNAUTHORIZED);
+        if (!empty($oauthInfo['email'])) {
+            return $oauthInfo;
         }
-
-        return $oauthInfo;
+        throw new UnauthorizedException('Google unauthorized request.', Res::HTTP_UNAUTHORIZED);
     }
 }
