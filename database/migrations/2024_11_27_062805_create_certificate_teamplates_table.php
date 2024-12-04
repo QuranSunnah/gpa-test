@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('course_id');
             $table->integer('certificate_layout_id');
-            $table->json('course_title');
-            $table->json('student_name');
-            $table->json('date');
+            $table->json('settings');
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');
             $table->softDeletes();
             $table->timestamps();

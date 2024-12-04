@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CertificateTeamplate extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 }
