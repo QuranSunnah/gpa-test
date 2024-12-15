@@ -28,13 +28,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
+    Route::get('/get_certificate/{certificate}', [Api\V1\CertificateController::class, 'generateCertificate']);
 });
 
 Route::middleware(['auth:api'])
     ->prefix('v1')
-    ->namespace('App\Http\Controllers\Api\V1')
     ->group(function () {
-        Route::get('/test-auth-api', function () {
-            return response()->json(['message' => 'Test auth api working']);
-        });
+        // Route::post('/get_certificate/{certificte}', [Api\V1\CertificateController::class, 'generateCertificate']);
     });

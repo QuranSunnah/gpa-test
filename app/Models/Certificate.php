@@ -5,8 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CertificateTeamplate extends Model
+class Certificate extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'status',
+    ];
 }
