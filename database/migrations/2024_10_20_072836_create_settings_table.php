@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->json('website_settings')->nullable();
             $table->json('system_settings')->nullable();
             $table->json('media')->nullable();
-            $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
         });
     }

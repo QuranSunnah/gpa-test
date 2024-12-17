@@ -26,9 +26,8 @@ class Setting extends Model
         return $this->decodeJson($value);
     }
 
-    private function decodeJson(?string $value): ?array
+    private function decodeJson($value): ?array
     {
-        \Log::info("hwo");
-        return ($decoded = json_decode($value, true)) && json_last_error() === JSON_ERROR_NONE ? $decoded : null;
+        return $value ? json_decode($value, true) : null;
     }
 }
