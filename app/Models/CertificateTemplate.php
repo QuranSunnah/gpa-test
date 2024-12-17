@@ -12,6 +12,11 @@ class CertificateTemplate extends Model
     use HasFactory;
     use SoftDeletes;
 
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
+
     public function layout(): BelongsTo
     {
         return $this->belongsTo(CertificateLayout::class, 'certificate_layout_id');
@@ -21,5 +26,4 @@ class CertificateTemplate extends Model
     {
         return $value ? json_decode($value, true) : [];
     }
-
 }
