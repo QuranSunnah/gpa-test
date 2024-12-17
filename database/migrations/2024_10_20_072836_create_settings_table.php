@@ -14,11 +14,9 @@ return new class extends Migration {
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->json('social_platform_info')->nullable();
-            $table->json('contact_info')->nullable();
-            $table->json('about_us')->nullable();
+            $table->json('website_settings')->nullable();
             $table->json('system_settings')->nullable();
-            $table->text('guideline')->nullable();
+            $table->json('media')->nullable();
             $table->tinyInteger('status')->default(1)->comment('1=Active,0=Inactive');
             $table->timestamps();
             $table->softDeletes();
