@@ -28,6 +28,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
+
+    Route::get('/settings', [Api\V1\SettingController::class, 'index']);
 });
 
 Route::middleware(['auth:api'])
