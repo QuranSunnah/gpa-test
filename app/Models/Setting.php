@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Helpers\CommonHelper;
+use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-
     public function getWebsiteSettingsAttribute($value): array
     {
         return CommonHelper::decodeJson($value);
