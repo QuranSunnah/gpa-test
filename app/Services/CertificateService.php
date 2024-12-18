@@ -23,7 +23,7 @@ class CertificateService
 
     public function getCertificateFile($certId)
     {
-        $certificate = Certificate::with(['template.course', 'template.layout'])->findOrFail($certId);
+        $certificate = Certificate::with(['template.course', 'template.layout'])->find($certId);
 
         if (!$certificate) {
             throw new \Exception("Certificate not found.");
@@ -81,10 +81,10 @@ class CertificateService
         $pdf = Pdf::loadView('templates.certificate', [
             'template' => $pdfData->template,
             'layout' => $pdfData->layout,
-            'course' => $pdfData->course,
+            'courseTitle' => $pdfData?->course?->title ?? __("No Course Found"),
             'base64Image' => $pdfData->base64Image,
-            'date' => $pdfData->certificate->created_at,
-            'student' => $studentName,
+            'date' => $pdfData->certificate->created_at->format("Y-m-d"),
+            'studentName' => $studentName,
         ])
             ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape')
             ->setOption([

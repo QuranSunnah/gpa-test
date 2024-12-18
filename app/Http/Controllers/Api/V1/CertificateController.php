@@ -6,9 +6,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CertificateResouce;
-use App\Models\Certificate;
-use App\Models\CertificateTemplate;
-use App\Services\CertificateGenerateService;
 use App\Services\CertificateService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Response;
@@ -36,6 +33,7 @@ class CertificateController extends Controller
     {
         $filePath = $this->certificateService->getCertificateFile($certId);
 
-        return response()->download($filePath);
+        return $filePath;
+        // return response()->download($filePath);
     }
 }

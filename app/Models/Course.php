@@ -53,6 +53,6 @@ class Course extends Model
 
     public function getMediaAttribute($value): array
     {
-        return json_decode($value, true);
+        return $value ? json_decode($value, true) : (object) [];
     }
 }
