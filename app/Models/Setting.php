@@ -11,17 +11,17 @@ class Setting extends Model
 {
     use HasFactory;
 
-    public function getWebsiteSettings($value): ?array
+    public function getWebsiteSettingsAttribute($value): ?array
     {
         return $this->decodeJson($value);
     }
 
-    public function getSystemSettings($value): ?array
+    public function getSystemSettingsAttribute($value): ?array
     {
         return $this->decodeJson($value);
     }
 
-    public function getMediaSettings($value): ?array
+    public function getMediaSettingsAttribute($value): ?array
     {
         return $this->decodeJson($value);
     }

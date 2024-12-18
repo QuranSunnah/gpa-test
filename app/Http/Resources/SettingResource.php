@@ -15,9 +15,9 @@ class SettingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "website_settings" => $this?->website_settings,
-            "system_settings" => $this?->system_settings,
-            "media" => $this?->media
+            "website_settings" => $this?->website_settings ?? (object) [],
+            "system_settings" => $this?->system_settings ?? (object) [],
+            "media" => $this?->media ?? (object) []
         ];
     }
 }
