@@ -28,6 +28,6 @@ class Setting extends Model
 
     private function decodeJson($value): ?array
     {
-        return $value ? json_decode($value, true) : null;
+        return $value ? json_decode($value, true) : (object) [];
     }
 }

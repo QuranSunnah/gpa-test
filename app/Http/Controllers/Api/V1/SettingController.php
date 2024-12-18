@@ -14,8 +14,9 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::where('status', config('common.status.active'))
+            ->select(['website_settings', 'system_settings', 'media'])
             ->first();
 
-        return $this->response(new SettingResource($settings));
+        return $this->response($settings);
     }
 }
