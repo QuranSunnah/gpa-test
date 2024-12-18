@@ -7,8 +7,8 @@ namespace App\Helpers;
 
 class CommonHelper
 {
-    public static function decodeJson($value): ?array
+    public static function decodeJson($value): array
     {
-        return $value ? json_decode($value, true) : null;
+        return $value ? json_decode($value, true) : [];
     }
 }

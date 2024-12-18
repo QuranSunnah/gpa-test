@@ -10,17 +10,17 @@ use App\Helpers\CommonHelper;
 class Setting extends Model
 {
 
-    public function getWebsiteSettingsAttribute($value): ?array
+    public function getWebsiteSettingsAttribute($value): array
     {
         return CommonHelper::decodeJson($value);
     }
 
-    public function getSystemSettingsAttribute($value): ?array
+    public function getSystemSettingsAttribute($value): array
     {
         return CommonHelper::decodeJson($value);
     }
 
-    public function getMediaSettingsAttribute($value): ?array
+    public function getMediaAttribute($value): array
     {
         return CommonHelper::decodeJson($value);
     }
