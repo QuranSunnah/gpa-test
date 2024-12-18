@@ -31,9 +31,9 @@ class CertificateController extends Controller
 
     public function downloadCertificate($certId)
     {
-        $filePath = $this->certificateService->getCertificateFile($certId);
+        $fileContent = $this->certificateService->getCertificateFile($certId);
 
-        return $filePath;
-        // return response()->download($filePath);
+        return $fileContent;
+        // return response()->download($fileContent);
     }
 }
