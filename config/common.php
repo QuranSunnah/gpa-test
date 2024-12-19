@@ -10,17 +10,22 @@ return [
         'active' => 1,
         'inactive' => 0,
     ],
+    'user_status' => [
+        'inactive' => 0,
+        'active' => 1,
+        'profile_pending' => 2,
+    ],
     'confirmation' => [
         'no' => 0,
         'yes' => 1,
     ],
-    'courseType' => [
+    'course_type' => [
         'free' => 1,
         'paid' => 2,
         'premium' => 3,
         'request' => 4,
     ],
-    'courseLevel' => [
+    'course-level' => [
         'beginner' => 1,
         'intermediate' => 2,
         'advanced' => 3,
@@ -41,4 +46,14 @@ return [
         'final_exam' => 'App\Models\Examination',
         'resource' => 'App\Models\Resource',
     ],
+    'provider' => [
+        'manual' => 1,
+        'google' => 2,
+    ],
+    'verified_by' => [
+        'email' => 1,
+        'phone' => 2,
+        'google' => 3,
+    ],
+    'otp_expired_duration_at_min' => 5,
 ];

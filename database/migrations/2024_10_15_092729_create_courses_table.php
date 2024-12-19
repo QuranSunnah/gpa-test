@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->integer('instructor_id');
             $table->integer('category_id');
             $table->char('title', 255);
-            $table->char('slug', 255)->unique(); // auto generated, unique and customizable by user
-            $table->tinyInteger('type')->default(1)->comment('1=Free,2=Paid,3=Premium,4=Request');
+            $table->char('slug', 255)->unique();
+            $table->tinyInteger('type')->default(1)->comment('1=regular,2=masterclass');
             $table->text('short_description')->nullable();
             $table->text('full_description')->nullable();
             $table->integer('duration')->default(0)->comment('in seconds');

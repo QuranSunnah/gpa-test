@@ -13,8 +13,8 @@ class SliderController extends Controller
 {
     use ApiResponse;
 
-    public function show(int $id): JsonResponse
+    public function show(string $slug): JsonResponse
     {
-        return $this->response(Slider::findOrFail($id), 'Slider details found');
+        return $this->response(Slider::where('slug', $slug)->firstOrFail(), 'Slider details found');
     }
 }

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Traits\Filter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -15,6 +18,8 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
     use HasApiTokens;
+    use SoftDeletes;
+    use Filter;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +30,8 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'password',
         'phone',
+        'password',
         'gender',
         'fathers_name',
         'mothers_name',
@@ -48,9 +53,10 @@ class User extends Authenticatable
         'last_login',
         'settings',
         'last_otp',
-        'otp_verification_status',
+        'otp_created_at',
+        'is_verified',
+        'verified_by',
         'status',
-        'email_verified_at',
     ];
 
     /**
@@ -73,5 +79,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected $appends = ['full_name'];
+
+    public function getFullNameAttribute()
+    {
+        return trim("{$this->first_name} {$this->last_name}");
     }
 }

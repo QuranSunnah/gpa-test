@@ -6,7 +6,8 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
-use App\Services\Interfaces\RegisterServiceInterface;
+use App\Http\Requests\RegistrationCompleteRequest;
+use App\Services\RegisterService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -15,7 +16,7 @@ class RegisterController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private RegisterServiceInterface $service)
+    public function __construct(private RegisterService $service)
     {
     }
 
@@ -23,7 +24,16 @@ class RegisterController extends Controller
     {
         return $this->response(
             $this->service->register($request),
-            'Registration successfull',
+            'An OTP has been sent to your email or phone. Please verify to complete registration.',
+            Response::HTTP_CREATED
+        );
+    }
+
+    public function complete(RegistrationCompleteRequest $request): JsonResponse
+    {
+        return $this->response(
+            $this->service->complete($request),
+            'Registration successfull.',
             Response::HTTP_CREATED
         );
     }
