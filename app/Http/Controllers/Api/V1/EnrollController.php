@@ -15,13 +15,13 @@ class EnrollController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private EnrollRepository $repository)
-    {
-    }
+    public function __construct(private EnrollRepository $repository) {}
 
-    public function enroll(Request $request): JsonResponse
+    public function enroll(Course $course)
     {
-        $this->repository->enrollStudent($request->course_id);
+        $userId = auth()->id();
+
+        $this->repository->enrollStudent($course->id, $userId);
         return $this->response([], __("Enrolled Succefully"));
     }
 }

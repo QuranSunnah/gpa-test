@@ -27,7 +27,8 @@ Route::group(['prefix' => 'v1'], function () {
 
 Route::middleware(['auth:api'])
     ->prefix('v1')
-    ->namespace('App\Http\Controllers\Api\V1')
     ->group(function () {
-        Route::post('/enroll', [Api\V1\EnrollController::class, 'enroll']);
+        Route::group(['prefix' => 'courses'], function () {
+            Route::post('{course}/enroll', [Api\V1\EnrollController::class, 'enroll']);
+        });
     });
