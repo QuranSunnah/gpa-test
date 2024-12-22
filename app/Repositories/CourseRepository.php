@@ -30,7 +30,7 @@ class CourseRepository implements Repository
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 
-    public function getTopCategoryCourses(string|int $limit)
+    public function getTopCategoryCourses(?string $limit)
     {
         return Category::with(['courses' => function ($query) {
             $query->select(
