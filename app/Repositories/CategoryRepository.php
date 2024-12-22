@@ -17,6 +17,7 @@ class CategoryRepository
         if ($limit) {
             $query->limit($limit);
         }
+
         return $query->get();
     }
 
@@ -35,6 +36,7 @@ class CategoryRepository
         if ($limit) {
             $query->limit($limit);
         }
+
         return $query->get();
     }
 }

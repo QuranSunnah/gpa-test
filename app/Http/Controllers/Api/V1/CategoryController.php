@@ -14,7 +14,9 @@ class CategoryController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CategoryRepository $repository) {}
+    public function __construct(private CategoryRepository $repository)
+    {
+    }
 
     public function topList(Request $request): JsonResponse
     {
