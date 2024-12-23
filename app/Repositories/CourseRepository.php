@@ -15,6 +15,8 @@ class CourseRepository implements Repository
             'courses.id',
             'courses.title',
             'slug',
+            'price',
+            'instructor_id',
             'category_id',
             'short_description',
             'courses.media_info',
@@ -22,7 +24,7 @@ class CourseRepository implements Repository
             'courses.duration',
             'total_lessons',
             'total_enrollments'
-        )
+        )->with(['instructor:id,name,photo', 'category:id,name'])
             ->search($filters)
             ->filter($filters)
             ->sort($filters)
