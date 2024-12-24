@@ -25,6 +25,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/events', [Api\V1\EventsController::class, 'index']);
     Route::get('/courses', [Api\V1\CourseController::class, 'index']);
     Route::get('/courses/{id}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/category/list', [Api\V1\CategoryController::class, 'list']);
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);

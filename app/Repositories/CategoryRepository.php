@@ -8,6 +8,14 @@ use App\Models\Category;
 
 class CategoryRepository
 {
+    public function getList()
+    {
+        return Category::select('id', 'slug', 'name', 'image')
+            ->active()
+            ->orderBy('name', 'ASC')
+            ->get();
+    }
+
     public function getTopCategotyList(?string $limit)
     {
         $query = Category::select('id', 'slug', 'name')

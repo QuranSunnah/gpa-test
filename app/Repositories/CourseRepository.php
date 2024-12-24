@@ -23,7 +23,8 @@ class CourseRepository implements Repository
             'is_top',
             'courses.duration',
             'total_lessons',
-            'total_enrollments'
+            'total_enrollments',
+            'courses.created_at'
         )->with(['instructor:id,name,photo', 'category:id,name'])
             ->search($filters)
             ->filter($filters)

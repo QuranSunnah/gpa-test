@@ -18,6 +18,11 @@ class CategoryController extends Controller
     {
     }
 
+    public function list(): JsonResponse
+    {
+        return $this->response($this->repository->getList());
+    }
+
     public function topList(Request $request): JsonResponse
     {
         return $this->response($this->repository->getTopCategotyList($request->query('limit')));
