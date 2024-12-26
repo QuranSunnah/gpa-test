@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\CategoryRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -17,13 +18,18 @@ class CategoryController extends Controller
     {
     }
 
-    public function topList(): JsonResponse
+    public function list(): JsonResponse
     {
-        return $this->response($this->repository->getTopList());
+        return $this->response($this->repository->getList());
     }
 
-    public function report(): JsonResponse
+    public function topList(Request $request): JsonResponse
     {
-        return $this->response($this->repository->getReport());
+        return $this->response($this->repository->getTopCategotyList($request->query('limit')));
+    }
+
+    public function report(Request $request): JsonResponse
+    {
+        return $this->response($this->repository->getTopCategoryReport($request->query('limit')));
     }
 }

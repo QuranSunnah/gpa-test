@@ -15,14 +15,17 @@ class CourseRepository implements Repository
             'courses.id',
             'courses.title',
             'slug',
+            'price',
+            'instructor_id',
             'category_id',
             'short_description',
             'courses.media_info',
             'is_top',
             'courses.duration',
             'total_lessons',
-            'total_enrollments'
-        )
+            'total_enrollments',
+            'courses.created_at'
+        )->with(['instructor:id,name,photo', 'category:id,name'])
             ->search($filters)
             ->filter($filters)
             ->sort($filters)
@@ -30,7 +33,7 @@ class CourseRepository implements Repository
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 
-    public function getTopCategoryCourses(string|int $limit)
+    public function getTopCategoryCourses(?string $limit)
     {
         return Category::with(['courses' => function ($query) {
             $query->select(
