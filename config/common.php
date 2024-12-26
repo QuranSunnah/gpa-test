@@ -40,6 +40,12 @@ return [
         'self_employed' => 3,
         'others' => 4,
     ],
+    'contentable_type' => [
+        'lesson' => 'App\Models\Lesson',
+        'quiz' => 'App\Models\Quiz',
+        'final_exam' => 'App\Models\Examination',
+        'resource' => 'App\Models\Resource',
+    ],
     'provider' => [
         'manual' => 1,
         'google' => 2,
