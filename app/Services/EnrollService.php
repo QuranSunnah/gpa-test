@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Services;
 
 use App\Models\Enroll;
 use App\Models\Lesson;
@@ -11,7 +11,7 @@ use App\Models\Section;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class EnrollRepository
+class EnrollService
 {
     public function enrollStudent(int $courseId, int $userId): Enroll
     {
@@ -47,10 +47,6 @@ class EnrollRepository
         try {
             $lesson = $this->getFirstLesson($courseId);
 
-            if (!$lesson) {
-                throw new Exception("No lessons found for course ID: $courseId");
-            }
-
             $this->createLessonProgress($userId, $courseId, $lesson);
 
             $enroll->fill([
@@ -59,51 +55,52 @@ class EnrollRepository
                 'start_at' => now(),
                 'end_at' => now(),
                 'status' => config('common.status.active'),
-            ]);
-            $enroll->save();
+            ])->save();
 
             DB::commit();
 
             return $enroll;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Enrollment failed: ' . $e->getMessage(), 0, $e);
+            throw new Exception('Enrollment failed: ' . $e->getMessage());
         }
     }
 
-    private function getFirstLesson(int $courseId): ?Lesson
+    private function getFirstLesson(int $courseId): Lesson
     {
-        return Lesson::where('course_id', $courseId)
-            ->where('section_id', function ($query) use ($courseId) {
-                $query->select('id')
-                    ->from('sections')
-                    ->where('course_id', $courseId)
-                    ->orderBy('order', 'ASC')
-                    ->limit(1);
-            })
-            ->orderBy('order', 'ASC')
+        $lesson = Lesson::select('lessons.*')
+            ->join('sections', 'lessons.section_id', '=', 'sections.id')
+            ->where('sections.course_id', $courseId)
+            ->where('lessons.course_id', $courseId)
+            ->orderBy('sections.order', 'ASC')
+            ->orderBy('lessons.order', 'ASC')
             ->first();
+
+        if (!$lesson) {
+            throw new Exception("No lessons found for course");
+        }
+
+        return $lesson;
     }
+
 
     private function createLessonProgress(int $userId, int $courseId, Lesson $lesson): void
     {
-        $lessons = [
-            [
-                'id' => $lesson->id,
-                'contentable_id' => $lesson->contentable_id,
-                'contentable_type' => $lesson->contentable_type,
-                'running_time' => 0,
-                'is_pass' => 0,
-                'start_time' => now(),
-                'end_time' => now(),
-                'created_at' => now(),
-            ],
-        ];
-
         LessonProgress::create([
             'user_id' => $userId,
             'course_id' => $courseId,
-            'lessons' => json_encode($lessons),
+            'lessons' => json_encode([
+                [
+                    'id' => $lesson->id,
+                    'contentable_id' => $lesson->contentable_id,
+                    'contentable_type' => $lesson->contentable_type,
+                    'running_time' => 0,
+                    'is_pass' => 0,
+                    'start_time' => now(),
+                    'end_time' => now(),
+                    'created_at' => now(),
+                ],
+            ]),
             'is_passed' => 0,
         ]);
     }
