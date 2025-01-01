@@ -24,7 +24,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/news', [Api\V1\NewsController::class, 'index']);
     Route::get('/events', [Api\V1\EventsController::class, 'index']);
     Route::get('/courses', [Api\V1\CourseController::class, 'index']);
-    Route::get('/courses/{id}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/courses/{slug}', [Api\V1\CourseController::class, 'show']);
     Route::get('/category/list', [Api\V1\CategoryController::class, 'list']);
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);

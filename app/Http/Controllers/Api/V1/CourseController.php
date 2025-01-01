@@ -14,9 +14,7 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CourseRepository $repository)
-    {
-    }
+    public function __construct(private CourseRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -30,8 +28,8 @@ class CourseController extends Controller
         );
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $slug): JsonResponse
     {
-        return $this->response($this->repository->findById($id), 'Course details found');
+        return $this->response($this->repository->findBySlug($slug), 'Course details found');
     }
 }
