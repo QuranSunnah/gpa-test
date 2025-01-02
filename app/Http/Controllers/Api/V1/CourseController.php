@@ -14,7 +14,9 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CourseRepository $repository) {}
+    public function __construct(private CourseRepository $repository)
+    {
+    }
 
     public function index(Request $request): JsonResponse
     {
