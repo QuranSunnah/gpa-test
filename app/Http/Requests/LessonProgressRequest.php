@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
+
 use App\Repositories\EnrollRepository;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\UnauthorizedException;
@@ -21,10 +21,7 @@ class LessonProgressRequest extends FormRequest
 
     public function authorize(): bool
     {
-        $studentId = Auth::id();
-        $courseId = $this->route('id');
-
-        if (!$this->enrollmentRepository->isEnrolled($studentId, $courseId)) {
+        if (!$this->enrollmentRepository->isStudentEnrolled($this->route('id'))) {
             throw new UnauthorizedException('Student not enrolled in this course.');
         }
 

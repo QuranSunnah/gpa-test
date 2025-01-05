@@ -14,14 +14,13 @@ class LessonProgressResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $lessons = json_decode($this->lessons, true, 512, JSON_THROW_ON_ERROR);
-
-        $lessons = array_map(function ($lesson) {
-            return [
-                'id' => $lesson['id'],
-                'is_pass' => $lesson['is_pass'],
-            ];
-        }, $lessons);
+        $lessons = collect(json_decode($this->lessons, true, 512, JSON_THROW_ON_ERROR))
+            ->map(function ($lesson) {
+                return [
+                    'id' => $lesson['id'],
+                    'is_pass' => $lesson['is_pass'],
+                ];
+            });
 
         return [
             'id'  => $this->id,
