@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Course;
 use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
@@ -11,23 +12,30 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EnrollService
 {
-    public function enrollStudent(int $courseId): Enroll
+    public function enrollStudent(string $slug): Enroll
     {
         $studentId = Auth::id();
 
+        $course = Course::select("id")->where("slug", $slug)->first();
+
+        if (!$course) {
+            throw new NotFoundHttpException(_("Invalid Request: course not found"));
+        }
+
         $enroll = Enroll::firstOrNew([
             'user_id' => $studentId,
-            'course_id' => $courseId,
+            'course_id' => $course->id,
         ]);
 
         if ($enroll->exists) {
             return $this->handleExistingEnrollment($enroll);;
         }
 
-        return $this->handleNewEnrollment($enroll, $studentId, $courseId);
+        return $this->handleNewEnrollment($enroll, $studentId, $course->id);
     }
 
     private function handleExistingEnrollment(Enroll $enroll): Enroll
@@ -88,20 +96,24 @@ class EnrollService
 
     private function createLessonProgress(int $studentId, int $courseId, Lesson $lesson): void
     {
-        LessonProgress::create([
-            'user_id' => $studentId,
-            'course_id' => $courseId,
-            'lessons' => json_encode([
-                [
-                    'id' => $lesson->id,
-                    'contentable_id' => $lesson->contentable_id,
-                    'contentable_type' => $lesson->contentable_type,
-                    'is_pass' => 0,
-                    'start_time' => Carbon::now()->timestamp,
-                    'end_time' => null,
-                ],
-            ]),
-            'is_passed' => 0,
-        ]);
+        LessonProgress::firstOrCreate(
+            [
+                'user_id' => $studentId,
+                'course_id' => $courseId
+            ],
+            [
+                'lessons' => json_encode([
+                    [
+                        'id' => $lesson->id,
+                        'contentable_id' => $lesson->contentable_id,
+                        'contentable_type' => $lesson->contentable_type,
+                        'is_pass' => 0,
+                        'start_time' => Carbon::now()->timestamp,
+                        'end_time' => null,
+                    ],
+                ]),
+                'is_passed' => 0,
+            ]
+        );
     }
 }

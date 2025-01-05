@@ -15,11 +15,15 @@ class LessonProgressController extends Controller
 {
     use ApiResponse;
 
-    public function show(LessonProgressRequest $request, int $id)
+    public function show(LessonProgressRequest $request, string $slug)
     {
         $studentId = Auth::id();
-        $lessonProgress =  LessonProgress::where("user_id", $studentId)
-            ->where("course_id", $id)
+
+        $lessonProgress = LessonProgress::query()
+            ->join('courses as C', 'lesson_progress.course_id', '=', 'C.id')
+            ->where('lesson_progress.user_id', $studentId)
+            ->where('C.slug', $slug)
+            ->select('lesson_progress.*')
             ->firstOrFail();
 
         return $this->response(new LessonProgressResource($lessonProgress), __("Lesson progress data"));

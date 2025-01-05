@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Traits\Filter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Enroll extends Model
@@ -20,4 +21,9 @@ class Enroll extends Model
         'end_at',
         'status',
     ];
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
 }
