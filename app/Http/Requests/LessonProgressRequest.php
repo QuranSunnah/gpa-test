@@ -1,32 +1,47 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Requests;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-class LessonProgressResource extends JsonResource
+use App\Repositories\EnrollRepository;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\UnauthorizedException;
+
+class LessonProgressRequest extends FormRequest
 {
     /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
+     * Determine if the user is authorized to make this request.
      */
-    public function toArray(Request $request): array
-    {
-        $lessons = collect(json_decode($this->lessons, true, 512, JSON_THROW_ON_ERROR))
-            ->map(function ($lesson) {
-                return [
-                    'id' => $lesson['id'],
-                    'is_pass' => $lesson['is_pass'],
-                ];
-            });
+    protected $enrollmentRepository;
 
-        return [
-            'id'  => $this->id,
-            'is_passed' => $this->is_passed,
-            'total_marks' => $this->total_marks,
-            'lessons' => $lessons,
-        ];
+    public function __construct(EnrollRepository $enrollmentRepository)
+    {
+        $this->enrollmentRepository = $enrollmentRepository;
+    }
+
+    public function authorize(): bool
+    {
+        if (!$this->enrollmentRepository->isStudentEnrolled($this->route('id'))) {
+            throw new UnauthorizedException('Student not enrolled in this course.');
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        if ($this->isMethod('patch')) {
+            return [
+                'lesson_id' => 'required|exists:lessons,id',
+                'quizzes' => 'nullable|array',
+            ];
+        }
+
+        return [];
     }
 }
