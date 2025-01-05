@@ -70,4 +70,18 @@ class CourseRepository implements Repository
         ])
             ->findOrFail($id);
     }
+
+    public function findBySlug(string $slug)
+    {
+        return Course::with([
+            'category:id,name',
+            'sections' => function ($query) {
+                $query->orderBy('order', 'asc');
+            },
+            'sections.lessons' => function ($query) {
+                $query->with('contentable')->orderBy('order', 'asc');
+            },
+        ])
+            ->where('slug', $slug)->firstOrFail();
+    }
 }
