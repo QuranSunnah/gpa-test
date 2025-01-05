@@ -21,9 +21,10 @@ class Quiz implements LessonProgressInterface
 
     public function process(LessonProgressResource $progressData): void
     {
-        if (!LessonHelper::validateQuizData($progressData)) {
+        if (!LessonHelper::getValidQuizData($progressData)) {
             throw new \Exception('Invalid lesson progress request.');
         }
+        $validQuizData = LessonHelper::getValidQuizData($progressData);
 
         $updatedProgressResource = $this->updateLessonProgressObj($progressData);
         $this->lessonUnlockService->UpdateAndunLockNextLesson($progressData, $updatedProgressResource);

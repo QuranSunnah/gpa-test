@@ -9,7 +9,7 @@ use App\Models\LessonProgress;
 
 class LessonProgressResource
 {
-    public string $startTime;
+    public int $startTime;
     public string $contentableType;
     public ?int $contentableId;
     public int $isPassed;
@@ -18,7 +18,7 @@ class LessonProgressResource
     public array $quizzes;
 
     public function __construct(
-        string $startTime,
+        int $startTime,
         string $contentableType,
         ?int $contentableId,
         int $isPassed,
