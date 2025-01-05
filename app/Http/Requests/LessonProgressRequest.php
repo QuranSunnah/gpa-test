@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 
 use App\Repositories\EnrollRepository;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LessonProgressRequest extends FormRequest
 {
@@ -22,7 +22,7 @@ class LessonProgressRequest extends FormRequest
     public function authorize(): bool
     {
         if (!$this->enrollmentRepository->isStudentEnrolled($this->route('slug'))) {
-            throw new UnauthorizedException('Student not enrolled in this course.');
+            throw new NotFoundHttpException('Student not enrolled in this course.');
         }
 
         return true;

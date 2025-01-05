@@ -15,9 +15,9 @@ class EnrollController extends Controller
 
     public function __construct(private EnrollService $enrollService) {}
 
-    public function enroll(Course $course)
+    public function enroll(string $slug)
     {
-        $this->enrollService->enrollStudent($course->id);
+        $this->enrollService->enrollStudent($slug);
         return $this->response([], __("Enrolled Succefully"));
     }
 }

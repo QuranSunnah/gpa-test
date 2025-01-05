@@ -16,7 +16,7 @@ class EnrollRepository
                         ->where('enrolls.user_id', Auth::id())
                         ->where('C.slug', $slug)
                         ->where('enrolls.status', config('common.status.active'))
-                        ->select('enrolls.id')
+                        ->select('enrolls.*')
                         ->first();
         }
 }

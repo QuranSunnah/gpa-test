@@ -37,8 +37,8 @@ Route::middleware(['auth:api'])
     ->prefix('v1')
     ->group(function () {
         Route::group(['prefix' => 'courses'], function () {
-            Route::post('{id}/enroll', [Api\V1\EnrollController::class, 'enroll']);
-            Route::get('{id}/lesson_progress', [Api\V1\LessonProgressController::class, 'show']);
+            Route::post('{slug}/enroll', [Api\V1\EnrollController::class, 'enroll']);
+            Route::get('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'show']);
             Route::patch('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'save']);
         });
     });
