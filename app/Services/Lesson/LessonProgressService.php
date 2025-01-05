@@ -7,19 +7,18 @@ namespace App\Services\Lesson;
 use App\DTO\LessonProgressResource;
 use App\Factories\LessonProgressFactory;
 use App\Http\Requests\LessonProgressRequest;
+use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-use function PHPUnit\Framework\returnValue;
-
 class LessonProgressService
 {
-    public function processLessonProgress(int $courseId, LessonProgressRequest $request): void
+    public function processLessonProgress(string $slug, LessonProgressRequest $request): void
     {
-        $progressData = $this->extractLessonProgress($courseId, $request);
+        $progressData = $this->extractLessonProgress($slug, $request);
 
         if (!$progressData->isPassed) {
             $instance = LessonProgressFactory::create($progressData->contentableType);
@@ -27,15 +26,17 @@ class LessonProgressService
         }
     }
 
-    private function extractLessonProgress(int $courseId, LessonProgressRequest $request): LessonProgressResource
+    private function extractLessonProgress(string $slug, LessonProgressRequest $request): LessonProgressResource
     {
         $studentId = Auth::id();
-        $currentLesson = Lesson::where('id', $request->lesson_id)
-            ->where('course_id', $courseId)
+        $course = Course::where("slug", $slug)->firstOrFail();
+
+        $lesson = Lesson::where('id', $request->lesson_id)
+            ->where('course_id', $course->id)
             ->firstOrFail();
 
         $lessonProgress = LessonProgress::where("user_id", $studentId)
-            ->where("course_id", $courseId)
+            ->where("course_id", $course->id)
             ->firstOrFail();
 
         $lessons = json_decode($lessonProgress->lessons, true, 512, JSON_THROW_ON_ERROR);
@@ -48,16 +49,17 @@ class LessonProgressService
                 $lessonData['contentable_type'],
                 $lessonData['contentable_id'],
                 $lessonData['is_pass'] ?? false,
-                $currentLesson,
+                $course,
+                $lesson,
                 $lessonProgress,
                 ...($request->quizzes ? [$request->quizzes] : [])
             );
         } catch (\Exception $e) {
-            Log::error("Lesson with ID {$currentLesson->id} not found in progress data.");
+            Log::error("Lesson with ID {$lesson->id} not found in progress data.");
         }
 
         throw ValidationException::withMessages([
-            'error' => "Lesson with ID {$currentLesson->id} not found in progress data."
+            'error' => "Lesson with ID {$lesson->id} not found in progress data."
         ]);
     }
 }

@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class EnrollRepository
 {
-        public function isStudentEnrolled(int $courseId): ?Enroll
+        public function isStudentEnrolled(string $slug): ?Enroll
         {
-                return Enroll::where('user_id', Auth::id())
-                        ->where('course_id', $courseId)
-                        ->active()
+                return Enroll::query()
+                        ->join('courses as C', 'enrolls.course_id', '=', 'C.id')
+                        ->where('enrolls.user_id', Auth::id())
+                        ->where('C.slug', $slug)
+                        ->where('enrolls.status', config('common.status.active'))
+                        ->select('enrolls.id')
                         ->first();
         }
 }

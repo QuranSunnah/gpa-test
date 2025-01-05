@@ -21,7 +21,7 @@ class LessonProgressRequest extends FormRequest
 
     public function authorize(): bool
     {
-        if (!$this->enrollmentRepository->isStudentEnrolled($this->route('id'))) {
+        if (!$this->enrollmentRepository->isStudentEnrolled($this->route('slug'))) {
             throw new UnauthorizedException('Student not enrolled in this course.');
         }
 

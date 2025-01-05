@@ -46,7 +46,7 @@ class LessonHelper
     {
         $quizzes = $progressData->quizzes;
         $quizId = $progressData->contentableId;
-        $courseId = $progressData->lesson->course_id;
+        $courseId = $progressData->course->id;
 
         $quiz = Quiz::where('id', $quizId)
             ->where('course_id', $courseId)
@@ -64,27 +64,22 @@ class LessonHelper
         $correctAnswers = 0;
 
         if (count($quizzes) !== count($questions)) {
-            throw new \Exception("Invalid Request");
+            throw new \Exception("Invalid Request: Quiz payload");
         }
 
         foreach ($quizzes as $submittedQuiz) {
             $questionId = $submittedQuiz['id'];
             $submittedAnswers = $submittedQuiz['answers'];
 
-            // Check if the question exists in the quiz
             if (!isset($questions[$questionId])) {
-                return [
-                    'valid' => false,
-                    'message' => "Invalid question ID: $questionId"
-                ];
+                throw new \Exception("Invalid Request: Quiz payload");
             }
 
             $question = $questions[$questionId];
             $correctAnswer = json_decode($question->answers, true, 512, JSON_THROW_ON_ERROR);
 
-            // Validate based on question type
+
             if ($question->type === 'text') {
-                // Text-based answer validation (case-insensitive)
                 if (is_string($submittedAnswers) && strtolower($submittedAnswers) === strtolower($correctAnswer)) {
                     $correctAnswers++;
                 }
