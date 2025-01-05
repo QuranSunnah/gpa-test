@@ -10,6 +10,7 @@ use App\Services\EnrollService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EnrollController extends Controller
 {
@@ -19,9 +20,9 @@ class EnrollController extends Controller
 
     public function enroll(Course $course)
     {
-        $userId = auth()->id();
+        $studentId = Auth::id();
 
-        $this->enrollService->enrollStudent($course->id, $userId);
+        $this->enrollService->enrollStudent($course->id, $studentId);
         return $this->response([], __("Enrolled Succefully"));
     }
 }

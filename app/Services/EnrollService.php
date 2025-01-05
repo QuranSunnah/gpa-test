@@ -8,6 +8,7 @@ use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\Section;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -94,11 +95,9 @@ class EnrollService
                     'id' => $lesson->id,
                     'contentable_id' => $lesson->contentable_id,
                     'contentable_type' => $lesson->contentable_type,
-                    'running_time' => 0,
                     'is_pass' => 0,
-                    'start_time' => now(),
-                    'end_time' => now(),
-                    'created_at' => now(),
+                    'start_time' => Carbon::now()->timestamp,
+                    'end_time' => null,
                 ],
             ]),
             'is_passed' => 0,
