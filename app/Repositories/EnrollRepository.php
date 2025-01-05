@@ -11,8 +11,7 @@ class EnrollRepository
 {
     public function isStudentEnrolled(int $courseId): ?Enroll
     {
-        $studentId = Auth::id();
-        return Enroll::where('user_id', $studentId)
+        return Enroll::where('user_id', Auth::id())
             ->where('course_id', $courseId)
             ->active()
             ->first();
