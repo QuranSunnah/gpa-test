@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
-use App\Models\Section;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;

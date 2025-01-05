@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Services\EnrollService;
 use App\Traits\ApiResponse;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EnrollController extends Controller
