@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Services\EnrollService;
 use App\Traits\ApiResponse;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class EnrollController extends Controller
 {
@@ -19,9 +17,7 @@ class EnrollController extends Controller
 
     public function enroll(Course $course)
     {
-        $userId = auth()->id();
-
-        $this->enrollService->enrollStudent($course->id, $userId);
+        $this->enrollService->enrollStudent($course->id);
         return $this->response([], __("Enrolled Succefully"));
     }
 }
