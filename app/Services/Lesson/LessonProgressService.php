@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Lesson;
 
 use App\DTO\LessonProgressResource;
+use App\Exceptions\InformativeException;
 use App\Factories\LessonProgressFactory;
 use App\Http\Requests\LessonProgressRequest;
 use App\Models\LessonProgress;
@@ -13,16 +14,15 @@ use Illuminate\Validation\ValidationException;
 
 class LessonProgressService
 {
-    public function processLessonProgress(string $slug, LessonProgressRequest $request): void
+    public function processLessonProgress(string $slug, LessonProgressRequest $request): array
     {
         $progressInfo = $this->getLessonProgressInfo($slug, $request->lesson_id, $request->quizzes);
 
         if (!$progressInfo->isLessonPassed) {
             $instance = LessonProgressFactory::create($progressInfo->contentableType);
-            $instance->process($progressInfo);
-        } else {
-            // exception
+            return $instance->process($progressInfo);
         }
+        throw new InformativeException(__('Already passed the lesson'));
     }
 
     public function getLessonProgressInfo(string $slug, int $lessonId, ?array $quizzes): LessonProgressResource

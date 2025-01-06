@@ -11,14 +11,9 @@ use Carbon\Carbon;
 
 class Lesson implements LessonProgressInterface
 {
-    private LessonUnlockService $lessonUnlockService;
+    public function __construct(private LessonUnlockService $lessonUnlockService) {}
 
-    public function __construct(LessonUnlockService $lessonUnlockService)
-    {
-        $this->lessonUnlockService = $lessonUnlockService;
-    }
-
-    public function process(LessonProgressResource $progressInfo): void
+    public function process(LessonProgressResource $progressInfo): array
     {
         $this->validateTimeDuration($progressInfo);
 
@@ -32,7 +27,9 @@ class Lesson implements LessonProgressInterface
             $progressInfo->lessonProgress
         );
 
-        $this->lessonUnlockService->updateAndunLockNextLesson($progressInfo, $updatedProgressResource);
+        $this->lessonUnlockService->updateAndUnlockNextLesson($progressInfo, $updatedProgressResource);
+
+        return collect($updatedProgressResource)->firstWhere('id', $progressInfo->lessonId);
     }
 
     private function validateTimeDuration(LessonProgressResource $progressInfo): bool
@@ -44,9 +41,9 @@ class Lesson implements LessonProgressInterface
 
         $ration = ($lessonDuration / 100) * 50;
 
-        if (($lessonDuration && $ration < $diffInSeconds) || !$lessonDuration) {
+        if (($lessonDuration && $ration <= $diffInSeconds) || !$lessonDuration) {
             return true;
         }
-        throw new \Exception('Invalid lesson progress request.');
+        throw new \Exception('Invalid Request: duration');
     }
 }

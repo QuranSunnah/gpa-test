@@ -39,8 +39,8 @@ class LessonProgressController extends Controller
 
     public function save(LessonProgressRequest $request, string $slug)
     {
-        $this->lessonProgressService->processLessonProgress($slug, $request);
+        $response = $this->lessonProgressService->processLessonProgress($slug, $request);
 
-        return $this->response([], __("Lesson progress updated"));
+        return $this->response($response, __("Lesson progress updated"));
     }
 }

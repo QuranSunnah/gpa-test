@@ -34,11 +34,10 @@ class LessonUnlockService
         DB::beginTransaction();
         try {
             LessonProgress::where('id', $progressInfo->progressId)->update($response);
-
-            if (!$progressInfo->isProgressPassed && $response['is_passed']) {
+            if ($response['is_passed']) {
                 Certificate::firstOrCreate([
                     "user_id" => Auth::id(),
-                    "coruse_id" => $progressInfo->courseId
+                    "course_id" => $progressInfo->courseId
                 ], [
                     'uuid' => Str::uuid()
                 ]);
@@ -49,7 +48,6 @@ class LessonUnlockService
             throw new \Exception("Progress save failed" . $e->getMessage());
         }
     }
-
 
     private function updateLessonProgress(Collection $lessons, ?Lesson $nextLesson, array $lessonProgress): array
     {

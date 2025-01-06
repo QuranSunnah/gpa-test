@@ -12,28 +12,31 @@ use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use App\Exceptions\InformativeException;
+
 
 class Quiz implements LessonProgressInterface
 {
     public function __construct(private LessonUnlockService $lessonUnlockService) {}
 
-    public function process(LessonProgressResource $progressInfo): void
+    public function process(LessonProgressResource $progressInfo): array
     {
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
-        if ($quizResultInfo['is_passed']) {
-            $updatedProgressResource = array_map(
-                fn($progress) => (int)$progress['id'] === $progressInfo->lessonId
-                    ? array_merge($progress, [
-                        'is_pass' => 1,
-                        'score' => $quizResultInfo['score'],
-                        'end_time' => Carbon::now()->timestamp
-                    ])
-                    : $progress,
-                $progressInfo->lessonProgress
-            );
-            $this->lessonUnlockService->updateAndunLockNextLesson($progressInfo, $updatedProgressResource);
-        }
+        $updatedProgressResource = array_map(
+            fn($progress) => (int)$progress['id'] === $progressInfo->lessonId
+                ? array_merge($progress, [
+                    'is_pass' => $quizResultInfo['is_passed'],
+                    'score' => $quizResultInfo['score'],
+                    'end_time' => Carbon::now()->timestamp
+                ])
+                : $progress,
+            $progressInfo->lessonProgress
+        );
+
+        $this->lessonUnlockService->updateAndUnlockNextLesson($progressInfo, $updatedProgressResource);
+
+        return collect($updatedProgressResource)->firstWhere('id', $progressInfo->lessonId);
     }
 
     private function getQuizResultInfo(LessonProgressResource $progressInfo): array
@@ -51,12 +54,22 @@ class Quiz implements LessonProgressInterface
 
         $totalQuestions = $questions->count();
 
+        $passMarks = $quiz->pass_marks_percentage;
         $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $questions);
         $score = (int) round(($totalCorrectAns / $totalQuestions) * 100);
 
+        $isPassed = ($score >= $passMarks) ? 1 : 0;
+
+        if (!$isPassed) {
+            throw new InformativeException(
+                __("Failed: Your score is blow: {$passMarks}"),
+                []
+            );
+        }
+
         return [
             'score' => $score,
-            'is_passed' => $score >= $quiz->pass_marks_percentage,
+            'is_passed' => $isPassed,
         ];
     }
 
