@@ -34,9 +34,4 @@ class LessonRepository
             ->orderBy("order", "ASC")
             ->get();
     }
-
-    public function updateLessonProgress(int $progressId, array $data): void
-    {
-        LessonProgress::where('id', $progressId)->update($data);
-    }
 }

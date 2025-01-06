@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
-use App\Factories\LessonProgress\Lesson;
-use App\Factories\LessonProgress\Quiz;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LessonProgressFactory
 {
     public static function create(string $contentableType)
     {
-        switch ($contentableType) {
-            case config('common.contentable_type.quiz'):
-                return app(Quiz::class);
-                break;
-            case config('common.contentable_type.final_exam'):
-                return app(Quiz::class);
-                break;
-            default:
-                return app(Lesson::class);
+        $class = "\\App\Factories\LessonProgress\\" . self::getLastPartOfString($contentableType);
+        if (class_exists($class)) {
+            return app($class);
+        } else {
+            throw new NotFoundResourceException("Invalid Request: Factory not found.");
         }
+    }
+
+    private static function getLastPartOfString(string $string): string
+    {
+        $parts = explode('\\', $string);
+        return end($parts);
     }
 }

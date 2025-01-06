@@ -5,70 +5,66 @@ declare(strict_types=1);
 namespace App\Services\Lesson;
 
 use App\DTO\LessonProgressResource;
-use App\Helpers\LessonHelper;
+use App\Models\Certificate;
 use App\Models\Lesson;
-use App\Repositories\CourseRepository;
+use App\Models\LessonProgress;
 use App\Repositories\LessonRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LessonUnlockService
 {
     private LessonRepository $lessonRepository;
-    private CourseRepository $courseRepository;
 
-    public function __construct(
-        LessonRepository $lessonRepository,
-        CourseRepository $courseRepository,
-    ) {
+    public function __construct(LessonRepository $lessonRepository)
+    {
         $this->lessonRepository = $lessonRepository;
-        $this->courseRepository = $courseRepository;
     }
 
-    public function updateAndUnlockNextLesson(LessonProgressResource $progressData, array $lessonProgress): void
+    public function updateAndUnlockNextLesson(LessonProgressResource $progressInfo, array $lessonProgress): void
     {
-        $courseId = $progressData->lesson->course_id;
-        $lessonData = $this->lessonRepository->getLessons($courseId);
+        $lessons = $this->lessonRepository->getLessons($progressInfo->courseId);
+        $nextLesson = $this->getNextLessonData($lessons, $lessonProgress);
 
-        if (LessonHelper::validateIncompleteLessons($lessonProgress) === 0) {
-            $nextLessonData = $this->getNextLessonData($lessonData, $lessonProgress);
+        $response = $this->updateLessonProgress($lessons,  $nextLesson, $lessonProgress);
 
-            if ($nextLessonData) {
-                $lessonProgress[] = $this->prepareNextLessonProgress($nextLessonData);
+        DB::beginTransaction();
+        try {
+            LessonProgress::where('id', $progressInfo->progressId)->update($response);
+
+            if (!$progressInfo->isProgressPassed && $response['is_passed']) {
+                Certificate::firstOrCreate([
+                    "user_id" => Auth::id(),
+                    "coruse_id" => $progressInfo->courseId
+                ], [
+                    'uuid' => Str::uuid()
+                ]);
             }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new \Exception("Progress save failed" . $e->getMessage());
         }
-
-        $response = $this->determinePassStatus($lessonData, $lessonProgress, $courseId);
-
-        $this->lessonRepository->updateLessonProgress($progressData->lessonProgress->id, [
-            'lessons' => $lessonProgress,
-            ...$response,
-        ]);
     }
 
 
-    public function getNextLessonData(Collection $lessonData, array $lessonProgress): ?Lesson
+    private function updateLessonProgress(Collection $lessons, ?Lesson $nextLesson, array $lessonProgress): array
     {
-        $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
+        $totalLessons = $lessons->count();
 
-        return $lessonData->first(fn($lesson) => !isset($keyMap[$lesson->id]));
-    }
-
-    private function prepareNextLessonProgress(Lesson $nextLessonData): array
-    {
-        return [
-            'id' => $nextLessonData->id,
-            'contentable_id' => $nextLessonData->contentable_id,
-            'contentable_type' => $nextLessonData->contentable_type,
-            'is_pass' => 0,
-            'start_time' => Carbon::now()->timestamp,
-            'end_time' => null,
-        ];
-    }
-
-    private function determinePassStatus(Collection $lessonData, array $lessonProgress, int $courseId): array
-    {
-        $totalLessons = $lessonData->count();
+        if ($nextLesson) {
+            $lessonProgress[] = [
+                'id' => $nextLesson->id,
+                'contentable_id' => $nextLesson->contentable_id,
+                'contentable_type' => $nextLesson->contentable_type,
+                'is_pass' => 0,
+                'start_time' => Carbon::now()->timestamp,
+                'end_time' => null,
+            ];
+        }
 
         $passedLessons = collect($lessonProgress)
             ->where('is_pass', true)
@@ -76,12 +72,39 @@ class LessonUnlockService
 
         $totalMarks = $totalLessons > 0 ? (int) round((100 / $totalLessons) * $passedLessons) : 0;
 
-        // $course = $this->courseRepository->findById($courseId);
-        $isPasseded = ($totalLessons === $passedLessons) ? 1 : 0;
+        $isPassed = ($totalLessons === $passedLessons) ? 1 : 0;
 
         return [
-            'is_passed' => $isPasseded,
+            'is_passed' => $isPassed,
             'total_marks' => $totalMarks,
+            'lessons' => $lessonProgress
         ];
+    }
+
+    public function getNextLessonData(Collection $lessons, array $lessonProgress): ?Lesson
+    {
+        if ($this->getIncompleteLessons($lessonProgress) === 0) {
+            $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
+
+            return $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+        }
+        return null;
+    }
+
+
+    public static function getIncompleteLessons(array $lessonProgress): int
+    {
+        $totalIncompleteLessons = array_reduce(
+            $lessonProgress,
+            function ($count, $progress) {
+                $isLesson = $progress['contentable_type'] === config('common.contentable_type.lesson');
+                $isNotPass = !$progress['is_pass'];
+
+                return $count + ($isNotPass && $isLesson ? 1 : 0);
+            },
+            0
+        );
+
+        return $totalIncompleteLessons;
     }
 }

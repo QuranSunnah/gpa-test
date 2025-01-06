@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Factories\LessonProgress;
 
 use App\DTO\LessonProgressResource;
-use App\Helpers\LessonHelper;
 use App\Factories\Interfaces\LessonProgressInterface;
 use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
@@ -19,26 +18,35 @@ class Lesson implements LessonProgressInterface
         $this->lessonUnlockService = $lessonUnlockService;
     }
 
-    public function process(LessonProgressResource $progressData): void
+    public function process(LessonProgressResource $progressInfo): void
     {
-        if (!LessonHelper::validateTimeDuration($progressData)) {
-            throw new \Exception('Invalid lesson progress request.');
-        }
+        $this->validateTimeDuration($progressInfo);
 
-        $updatedProgressResource = $this->updateLessonProgressObj($progressData);
-        $this->lessonUnlockService->UpdateAndunLockNextLesson($progressData, $updatedProgressResource);
-    }
-
-    private function updateLessonProgressObj(LessonProgressResource $progressData): array
-    {
-        return array_map(
-            fn($progress) => (int)$progress['id'] === $progressData->lesson->id
+        $updatedProgressResource = array_map(
+            fn($progress) => (int)$progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'is_pass' => 1,
                     'end_time' => Carbon::now()->timestamp
                 ])
                 : $progress,
-            json_decode($progressData->lessonProgress->lessons, true, 512, JSON_THROW_ON_ERROR)
+            $progressInfo->lessonProgress
         );
+
+        $this->lessonUnlockService->updateAndunLockNextLesson($progressInfo, $updatedProgressResource);
+    }
+
+    private function validateTimeDuration(LessonProgressResource $progressInfo): bool
+    {
+        $lessonDuration = $progressInfo->duration;
+        $previousTimeCarbon = Carbon::parse($progressInfo->startTime);
+        $currentTime = now();
+        $diffInSeconds = $previousTimeCarbon->diffInSeconds($currentTime);
+
+        $ration = ($lessonDuration / 100) * 50;
+
+        if (($lessonDuration && $ration < $diffInSeconds) || !$lessonDuration) {
+            return true;
+        }
+        throw new \Exception('Invalid lesson progress request.');
     }
 }
