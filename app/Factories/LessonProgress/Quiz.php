@@ -61,10 +61,7 @@ class Quiz implements LessonProgressInterface
         $isPassed = ($score >= $passMarks) ? 1 : 0;
 
         if (!$isPassed) {
-            throw new InformativeException(
-                __("Failed: Your score is blow: {$passMarks}"),
-                []
-            );
+            throw new InformativeException(__("Failed: Your score is blow: {$passMarks}"));
         }
 
         return [

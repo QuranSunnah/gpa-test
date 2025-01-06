@@ -9,9 +9,7 @@ use App\Exceptions\InformativeException;
 use App\Factories\LessonProgressFactory;
 use App\Http\Requests\LessonProgressRequest;
 use App\Models\Course;
-use App\Models\LessonProgress;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class LessonProgressService
 {

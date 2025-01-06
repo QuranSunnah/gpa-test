@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
 
 class LessonUnlockService
 {
-
     public function updateAndUnlockNextLesson(LessonProgressResource $progressInfo, array $lessonProgress): void
     {
         $response = $this->updateLessonProgress($progressInfo->courseId, $lessonProgress);
