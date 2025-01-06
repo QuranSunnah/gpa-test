@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EnrollService
 {
@@ -88,7 +89,7 @@ class EnrollService
             ->first();
 
         if (!$lesson) {
-            throw new Exception("No lessons found for this course");
+            throw new ModelNotFoundException("No lessons found for this course");
         }
 
         return $lesson;

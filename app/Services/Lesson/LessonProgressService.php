@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Services\Lesson;
 
 use App\DTO\LessonProgressResource;
-use App\Exceptions\InformativeException;
 use App\Factories\LessonProgressFactory;
 use App\Http\Requests\LessonProgressRequest;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class LessonProgressService
 {
@@ -21,7 +21,8 @@ class LessonProgressService
             $instance = LessonProgressFactory::create($progressInfo->contentableType);
             return $instance->process($progressInfo);
         }
-        throw new InformativeException(__('Already passed the lesson'));
+
+        throw new \Exception(__('Already passed the lesson'), Response::HTTP_OK);
     }
 
     public function getLessonProgressInfo(string $slug, int $lessonId, ?array $quizzes): LessonProgressResource

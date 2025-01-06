@@ -20,11 +20,9 @@ class LessonProgressController extends Controller
 
     public function show(LessonProgressRequest $request, string $slug)
     {
-        $studentId = Auth::id();
-
         $lessonProgress = LessonProgress::query()
             ->join('courses as C', 'lesson_progress.course_id', '=', 'C.id')
-            ->where('lesson_progress.user_id', $studentId)
+            ->where('lesson_progress.user_id', Auth::id())
             ->where('C.slug', $slug)
             ->select('lesson_progress.*')
             ->firstOrFail();

@@ -12,7 +12,7 @@ use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use App\Exceptions\InformativeException;
+use Illuminate\Http\Response;
 
 
 class Quiz implements LessonProgressInterface
@@ -61,7 +61,7 @@ class Quiz implements LessonProgressInterface
         $isPassed = ($score >= $passMarks) ? 1 : 0;
 
         if (!$isPassed) {
-            throw new InformativeException(__("Failed: Your score is blow: {$passMarks}"));
+            throw new \Exception(__("Failed: Your score is blow: {$passMarks}", Response::HTTP_OK));
         }
 
         return [
