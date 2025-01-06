@@ -11,6 +11,7 @@ use App\Models\Quiz as QuizModel;
 use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 
@@ -81,7 +82,7 @@ class Quiz implements LessonProgressInterface
             $questionId = $submittedQuiz['id'];
 
             if (!$questions->has($questionId)) {
-                throw new \Exception("Question ID not found in the quiz.");
+                throw new ModelNotFoundException("Question ID not found in the quiz.");
             }
 
             $question = $questions->get($questionId);
