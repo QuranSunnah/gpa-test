@@ -74,7 +74,7 @@ class Quiz implements LessonProgressInterface
     private function getTotalCorrectAns(array $quizzes, Collection $questions)
     {
         if (count($quizzes) !== $questions->count()) {
-            throw new \Exception("Mismatch between submitted quizzes and expected questions.");
+            throw new ModelNotFoundException("Mismatch between submitted quizzes and expected questions.");
         }
 
         $correctAnswers = 0;

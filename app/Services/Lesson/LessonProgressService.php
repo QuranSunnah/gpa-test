@@ -22,7 +22,7 @@ class LessonProgressService
             return $instance->process($progressInfo);
         }
 
-        throw new \Exception(__('Already passed the lesson'), Response::HTTP_OK);
+        throw new \Exception(__('Already passed the lesson'), Response::HTTP_EARLY_HINTS);
     }
 
     public function getLessonProgressInfo(string $slug, int $lessonId, ?array $quizzes): LessonProgressResource
