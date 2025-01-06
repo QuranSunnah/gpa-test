@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use App\DTO\LessonProgressResource;
-use App\Models\Question;
-use App\Models\Quiz;
 use Carbon\Carbon;
 
 class LessonHelper
@@ -40,70 +38,5 @@ class LessonHelper
         );
 
         return $totalIncompleteLessons;
-    }
-
-    public static function getValidQuizData(LessonProgressResource $progressData): array
-    {
-        $quizzes = $progressData->quizzes;
-        $quizId = $progressData->contentableId;
-        $courseId = $progressData->course->id;
-
-        $quiz = Quiz::where('id', $quizId)
-            ->where('course_id', $courseId)
-            ->active()
-            ->firstOrFail();
-
-        $questionIds = json_decode($quiz->question_ids, true, 512, JSON_THROW_ON_ERROR);
-
-        $questions = Question::whereIn('id', $questionIds)
-            ->active()
-            ->select('id', 'type', 'answers')
-            ->get()
-            ->keyBy('id');
-
-        $correctAnswers = 0;
-
-        if (count($quizzes) !== count($questions)) {
-            throw new \Exception("Invalid Request: Quiz payload");
-        }
-
-        foreach ($quizzes as $submittedQuiz) {
-            $questionId = $submittedQuiz['id'];
-            $submittedAnswers = $submittedQuiz['answers'];
-
-            if (!isset($questions[$questionId])) {
-                throw new \Exception("Invalid Request: Quiz payload");
-            }
-
-            $question = $questions[$questionId];
-            $correctAnswer = json_decode($question->answers, true, 512, JSON_THROW_ON_ERROR);
-
-
-            if ($question->type === 'text') {
-                if (is_string($submittedAnswers) && strtolower($submittedAnswers) === strtolower($correctAnswer)) {
-                    $correctAnswers++;
-                }
-            } elseif ($question->type === 'multiple-choice') {
-                // Multiple-choice answer validation (array comparison)
-                if (is_array($submittedAnswers) && empty(array_diff($submittedAnswers, $correctAnswer)) && empty(array_diff($correctAnswer, $submittedAnswers))) {
-                    $correctAnswers++;
-                }
-            } else {
-                return [
-                    'valid' => false,
-                    'message' => "Unknown question type for question ID: $questionId"
-                ];
-            }
-        }
-
-        // Calculate the score
-        $score = ($correctAnswers / $totalQuestions) * 100;
-
-        return [
-            'valid' => true,
-            'score' => $score,
-            'correct_answers' => $correctAnswers,
-            'total_questions' => $totalQuestions
-        ];
     }
 }

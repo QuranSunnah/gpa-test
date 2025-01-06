@@ -16,7 +16,7 @@ class LessonProgressFactory
                 return app(Quiz::class);
                 break;
             case config('common.contentable_type.final_exam'):
-                // Handle final exam progress
+                return app(Quiz::class);
                 break;
             default:
                 return app(Lesson::class);

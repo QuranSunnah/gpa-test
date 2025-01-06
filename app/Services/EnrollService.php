@@ -88,7 +88,7 @@ class EnrollService
             ->first();
 
         if (!$lesson) {
-            throw new Exception("No lessons found for course");
+            throw new Exception("No lessons found for this course");
         }
 
         return $lesson;
