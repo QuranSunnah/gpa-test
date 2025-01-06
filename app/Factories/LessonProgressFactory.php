@@ -10,17 +10,13 @@ class LessonProgressFactory
 {
     public static function create(string $contentableType)
     {
-        $class = "\\App\Factories\LessonProgress\\" . self::getLastPartOfString($contentableType);
+        $explodeInfo = explode('\\', $contentableType);
+
+        $class = "\\App\Factories\LessonProgress\\" . end($explodeInfo);
         if (class_exists($class)) {
             return app($class);
         } else {
             throw new NotFoundResourceException("Invalid Request: Factory not found.");
         }
-    }
-
-    private static function getLastPartOfString(string $string): string
-    {
-        $parts = explode('\\', $string);
-        return end($parts);
     }
 }

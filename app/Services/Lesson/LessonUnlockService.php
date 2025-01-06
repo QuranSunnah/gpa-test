@@ -8,7 +8,6 @@ use App\DTO\LessonProgressResource;
 use App\Models\Certificate;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
-use App\Repositories\LessonRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -17,19 +16,10 @@ use Illuminate\Support\Str;
 
 class LessonUnlockService
 {
-    private LessonRepository $lessonRepository;
-
-    public function __construct(LessonRepository $lessonRepository)
-    {
-        $this->lessonRepository = $lessonRepository;
-    }
 
     public function updateAndUnlockNextLesson(LessonProgressResource $progressInfo, array $lessonProgress): void
     {
-        $lessons = $this->lessonRepository->getLessons($progressInfo->courseId);
-        $nextLesson = $this->getNextLessonData($lessons, $lessonProgress);
-
-        $response = $this->updateLessonProgress($lessons,  $nextLesson, $lessonProgress);
+        $response = $this->updateLessonProgress($progressInfo->courseId, $lessonProgress);
 
         DB::beginTransaction();
         try {
@@ -49,9 +39,16 @@ class LessonUnlockService
         }
     }
 
-    private function updateLessonProgress(Collection $lessons, ?Lesson $nextLesson, array $lessonProgress): array
+    private function updateLessonProgress(int $courseId, array $lessonProgress): array
     {
+        $lessons = Lesson::select('id', 'contentable_type', 'contentable_id', 'duration')
+            ->where("course_id", $courseId)
+            ->whereNot('contentable_type', config('common.contentable_type.resource'))
+            ->orderBy("order", "ASC")
+            ->get();
+
         $totalLessons = $lessons->count();
+        $nextLesson = $this->getNextLesson($lessons, $lessonProgress);
 
         if ($nextLesson) {
             $lessonProgress[] = [
@@ -64,24 +61,17 @@ class LessonUnlockService
             ];
         }
 
-        $passedLessons = collect($lessonProgress)
-            ->where('is_pass', true)
-            ->count();
-
-        $totalMarks = $totalLessons > 0 ? (int) round((100 / $totalLessons) * $passedLessons) : 0;
-
-        $isPassed = ($totalLessons === $passedLessons) ? 1 : 0;
-
+        $passedLessons = collect($lessonProgress)->where('is_pass', true)->count();
         return [
-            'is_passed' => $isPassed,
-            'total_marks' => $totalMarks,
+            'is_passed' => ($totalLessons === $passedLessons) ? 1 : 0,
+            'total_marks' => $totalLessons > 0 ? (int) round((100 / $totalLessons) * $passedLessons) : 0,
             'lessons' => $lessonProgress
         ];
     }
 
-    public function getNextLessonData(Collection $lessons, array $lessonProgress): ?Lesson
+    public function getNextLesson(Collection $lessons, array $lessonProgress): ?Lesson
     {
-        if ($this->getIncompleteLessons($lessonProgress) === 0) {
+        if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
 
             return $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
@@ -89,8 +79,7 @@ class LessonUnlockService
         return null;
     }
 
-
-    public static function getIncompleteLessons(array $lessonProgress): int
+    public static function getIncompleteLessonsCount(array $lessonProgress): int
     {
         $totalIncompleteLessons = array_reduce(
             $lessonProgress,

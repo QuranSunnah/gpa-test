@@ -8,6 +8,7 @@ use App\DTO\LessonProgressResource;
 use App\Factories\Interfaces\LessonProgressInterface;
 use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class Lesson implements LessonProgressInterface
 {
@@ -35,15 +36,13 @@ class Lesson implements LessonProgressInterface
     private function validateTimeDuration(LessonProgressResource $progressInfo): bool
     {
         $lessonDuration = $progressInfo->duration;
-        $previousTimeCarbon = Carbon::parse($progressInfo->startTime);
-        $currentTime = now();
-        $diffInSeconds = $previousTimeCarbon->diffInSeconds($currentTime);
+        $startTimeDiffWithCurrent = Carbon::parse($progressInfo->startTime)->diffInSeconds(now());
 
-        $ration = ($lessonDuration / 100) * 50;
+        $lessonWatchRatio = ($lessonDuration / 100) * 50;
 
-        if (($lessonDuration && $ration <= $diffInSeconds) || !$lessonDuration) {
+        if (($lessonDuration && $lessonWatchRatio <= $startTimeDiffWithCurrent) || !$lessonDuration) {
             return true;
         }
-        throw new \Exception('Invalid Request: duration');
+        throw new ValidationException('Invalid Request: duration');
     }
 }

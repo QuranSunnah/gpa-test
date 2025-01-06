@@ -16,12 +16,7 @@ class LessonProgressController extends Controller
 {
     use ApiResponse;
 
-    private LessonProgressService $lessonProgressService;
-
-    public function __construct(LessonProgressService $lessonProgressService)
-    {
-        $this->lessonProgressService = $lessonProgressService;
-    }
+    public function __construct(private LessonProgressService $service) {}
 
     public function show(LessonProgressRequest $request, string $slug)
     {
@@ -39,7 +34,7 @@ class LessonProgressController extends Controller
 
     public function save(LessonProgressRequest $request, string $slug)
     {
-        $response = $this->lessonProgressService->processLessonProgress($slug, $request);
+        $response = $this->service->processLessonProgress($slug, $request);
 
         return $this->response($response, __("Lesson progress updated"));
     }
