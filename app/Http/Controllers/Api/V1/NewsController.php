@@ -14,12 +14,15 @@ class NewsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private NewsRepository $repository)
-    {
-    }
+    public function __construct(private NewsRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
         return $this->paginateResponse($this->repository->paginate($request->query->all()));
+    }
+
+    public function show(string $slug): JsonResponse
+    {
+        return $this->response($this->repository->findBySlug($slug), __('News not found'));
     }
 }

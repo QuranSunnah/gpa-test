@@ -16,4 +16,9 @@ class NewsRepository implements Repository
             ->active()
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
+
+    public function findBySlug(string $slug): News
+    {
+        return News::where('slug', $slug)->firstOrFail();
+    }
 }
