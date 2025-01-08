@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\NewsResouce;
 use App\Models\News;
 use App\Repositories\NewsRepository;
 use App\Traits\ApiResponse;
@@ -25,7 +24,6 @@ class NewsController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        $resposen = News::where('slug', $slug)->firstOrFail();;
-        return $this->response(new NewsResouce($resposen), __('News details'));
+        return $this->response(News::where('slug', $slug)->firstOrFail(), __('News details'));
     }
 }
