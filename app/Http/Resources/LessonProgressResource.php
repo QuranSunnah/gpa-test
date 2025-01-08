@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -23,7 +25,7 @@ class LessonProgressResource extends JsonResource
             });
 
         return [
-            'id'  => $this->id,
+            'id' => $this->id,
             'is_passed' => $this->is_passed,
             'total_marks' => $this->total_marks,
             'lessons' => $lessons,

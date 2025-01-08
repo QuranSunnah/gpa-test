@@ -12,17 +12,19 @@ use Illuminate\Validation\ValidationException;
 
 class Lesson implements LessonProgressInterface
 {
-    public function __construct(private LessonUnlockService $lessonUnlockService) {}
+    public function __construct(private LessonUnlockService $lessonUnlockService)
+    {
+    }
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $this->validateTimeDuration($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn($progress) => (int)$progress['id'] === $progressInfo->lessonId
+            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'is_pass' => 1,
-                    'end_time' => Carbon::now()->timestamp
+                    'end_time' => Carbon::now()->timestamp,
                 ])
                 : $progress,
             $progressInfo->lessonProgress

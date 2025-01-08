@@ -12,9 +12,8 @@ use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\Log;
 
 class Quiz implements LessonProgressInterface
 {
@@ -25,11 +24,11 @@ class Quiz implements LessonProgressInterface
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn($progress) => (int)$progress['id'] === $progressInfo->lessonId
+            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'is_pass' => $quizResultInfo['is_passed'],
                     'score' => $quizResultInfo['score'],
-                    'end_time' => Carbon::now()->timestamp
+                    'end_time' => Carbon::now()->timestamp,
                 ])
                 : $progress,
             $progressInfo->lessonProgress
@@ -74,7 +73,7 @@ class Quiz implements LessonProgressInterface
     private function getTotalCorrectAns(array $quizzes, Collection $questions)
     {
         if (count($quizzes) !== $questions->count()) {
-            throw new ModelNotFoundException("Mismatch between submitted quizzes and expected questions.");
+            throw new ModelNotFoundException('Mismatch between submitted quizzes and expected questions.');
         }
 
         $correctAnswers = 0;
@@ -82,12 +81,17 @@ class Quiz implements LessonProgressInterface
             $questionId = $submittedQuiz['id'];
 
             if (!$questions->has($questionId)) {
-                throw new ModelNotFoundException("Question ID not found in the quiz.");
+                throw new ModelNotFoundException('Question ID not found in the quiz.');
             }
 
             $question = $questions->get($questionId);
-            $correctAnswers += $this->isAnswerCorrect($question->type, $submittedQuiz['answers'], $question->answers) ? 1 : 0;
+            $correctAnswers += $this->isAnswerCorrect(
+                $question->type,
+                $submittedQuiz['answers'],
+                $question->answers
+            ) ? 1 : 0;
         }
+
         return $correctAnswers;
     }
 
@@ -102,7 +106,7 @@ class Quiz implements LessonProgressInterface
                 return is_array($submittedAnswers) && $submittedAnswers == $correctAnswer;
             }
         } catch (\Exception $e) {
-            Log::error("Invalid Quiz Data: " . $e->getMessage());
+            Log::error('Invalid Quiz Data: ' . $e->getMessage());
         }
 
         return false;

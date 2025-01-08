@@ -16,7 +16,7 @@ class LessonProgressFactory
         if (class_exists($class)) {
             return app($class);
         } else {
-            throw new NotFoundResourceException("Invalid Request: Factory not found.");
+            throw new NotFoundResourceException('Invalid Request: Factory not found.');
         }
     }
 }

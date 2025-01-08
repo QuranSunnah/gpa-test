@@ -9,11 +9,10 @@ use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EnrollService
 {
@@ -21,10 +20,10 @@ class EnrollService
     {
         $studentId = Auth::id();
 
-        $course = Course::select("id")->where("slug", $slug)->first();
+        $course = Course::select('id')->where('slug', $slug)->first();
 
         if (!$course) {
-            throw new NotFoundHttpException(_("Invalid Request: course not found"));
+            throw new NotFoundHttpException(_('Invalid Request: course not found'));
         }
 
         $enroll = Enroll::firstOrNew([
@@ -33,7 +32,7 @@ class EnrollService
         ]);
 
         if ($enroll->exists) {
-            return $this->handleExistingEnrollment($enroll);;
+            return $this->handleExistingEnrollment($enroll);
         }
 
         return $this->handleNewEnrollment($enroll, $studentId, $course->id);
@@ -72,9 +71,9 @@ class EnrollService
             DB::commit();
 
             return $enroll;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            throw new Exception('Enrollment failed: ' . $e->getMessage());
+            throw new \Exception('Enrollment failed: ' . $e->getMessage());
         }
     }
 
@@ -89,7 +88,7 @@ class EnrollService
             ->first();
 
         if (!$lesson) {
-            throw new ModelNotFoundException("No lessons found for this course");
+            throw new ModelNotFoundException('No lessons found for this course');
         }
 
         return $lesson;
@@ -100,7 +99,7 @@ class EnrollService
         LessonProgress::firstOrCreate(
             [
                 'user_id' => $studentId,
-                'course_id' => $courseId
+                'course_id' => $courseId,
             ],
             [
                 'lessons' => json_encode([

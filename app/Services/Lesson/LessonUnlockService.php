@@ -25,25 +25,25 @@ class LessonUnlockService
             LessonProgress::where('id', $progressInfo->progressId)->update($response);
             if ($response['is_passed']) {
                 Certificate::firstOrCreate([
-                    "user_id" => Auth::id(),
-                    "course_id" => $progressInfo->courseId
+                    'user_id' => Auth::id(),
+                    'course_id' => $progressInfo->courseId,
                 ], [
-                    'uuid' => Str::uuid()
+                    'uuid' => Str::uuid(),
                 ]);
             }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception("Progress save failed" . $e->getMessage());
+            throw new \Exception('Progress save failed' . $e->getMessage());
         }
     }
 
     private function updateLessonProgress(int $courseId, array $lessonProgress): array
     {
         $lessons = Lesson::select('id', 'contentable_type', 'contentable_id', 'duration')
-            ->where("course_id", $courseId)
+            ->where('course_id', $courseId)
             ->whereNot('contentable_type', config('common.contentable_type.resource'))
-            ->orderBy("order", "ASC")
+            ->orderBy('order', 'ASC')
             ->get();
 
         $totalLessons = $lessons->count();
@@ -61,10 +61,11 @@ class LessonUnlockService
         }
 
         $passedLessons = collect($lessonProgress)->where('is_pass', true)->count();
+
         return [
             'is_passed' => ($totalLessons === $passedLessons) ? 1 : 0,
             'total_marks' => $totalLessons > 0 ? (int) round((100 / $totalLessons) * $passedLessons) : 0,
-            'lessons' => $lessonProgress
+            'lessons' => $lessonProgress,
         ];
     }
 
@@ -73,8 +74,9 @@ class LessonUnlockService
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
 
-            return $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+            return $lessons->first(fn ($lesson) => !isset($keyMap[$lesson->id]));
         }
+
         return null;
     }
 

@@ -25,7 +25,7 @@ class LessonProgressResource
     public function __construct(
         int $lessonId,
         Course $courseInfo,
-        ?array $quizzes
+        ?array $quizzes,
     ) {
         $lessonProgress = json_decode($courseInfo->lesson_progress, true, 512, JSON_THROW_ON_ERROR);
         $lesson = collect($lessonProgress)->firstWhere('id', $lessonId);

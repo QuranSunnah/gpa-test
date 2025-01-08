@@ -75,6 +75,7 @@ class CourseRepository implements Repository
     {
         return Course::with([
             'category:id,name',
+            'instructor:id,name,biography,photo',
             'sections' => function ($query) {
                 $query->orderBy('order', 'asc');
             },

@@ -8,8 +8,8 @@ use App\DTO\LessonProgressResource;
 use App\Factories\LessonProgressFactory;
 use App\Http\Requests\LessonProgressRequest;
 use App\Models\Course;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class LessonProgressService
 {
@@ -19,6 +19,7 @@ class LessonProgressService
 
         if (!$progressInfo->isLessonPassed) {
             $instance = LessonProgressFactory::create($progressInfo->contentableType);
+
             return $instance->process($progressInfo);
         }
 
@@ -39,7 +40,7 @@ class LessonProgressService
             'lessons.id as lesson_id',
             'lessons.contentable_type',
             'lessons.contentable_id',
-            'lessons.duration'
+            'lessons.duration',
         ])
             ->join('lessons', function ($join) use ($lessonId) {
                 $join->on('lessons.course_id', '=', 'courses.id')

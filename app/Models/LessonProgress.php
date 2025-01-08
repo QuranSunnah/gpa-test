@@ -14,7 +14,7 @@ class LessonProgress extends Model
         'course_id',
         'lessons',
         'is_passed',
-        'total_marks'
+        'total_marks',
     ];
 
     public function course(): BelongsTo
