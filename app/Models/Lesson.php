@@ -15,6 +15,10 @@ class Lesson extends Model
     use HasFactory;
     use Filter;
 
+    protected $casts = [
+        'media_info' => 'array',
+    ];
+
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
