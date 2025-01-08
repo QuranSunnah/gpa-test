@@ -17,14 +17,16 @@ use Illuminate\Support\Facades\Log;
 
 class Quiz implements LessonProgressInterface
 {
-    public function __construct(private LessonUnlockService $lessonUnlockService) {}
+    public function __construct(private LessonUnlockService $lessonUnlockService)
+    {
+    }
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
+            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'is_pass' => $quizResultInfo['is_passed'],
                     'score' => $quizResultInfo['score'],
