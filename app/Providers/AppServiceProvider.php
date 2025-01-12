@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Relation::morphMap([
+            1 => 'App\Models\Lesson',
+            2 => 'App\Models\Quiz',
+            3 => 'App\Models\Resource',
+        ]);
     }
 }
