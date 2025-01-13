@@ -15,9 +15,4 @@ class Quiz extends Model
     use HasFactory;
     use SoftDeletes;
     use Filter;
-
-    public function questions()
-    {
-        return $this->hasMany(Question::class, 'id', 'question_ids');
-    }
 }
