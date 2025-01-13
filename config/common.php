@@ -41,10 +41,9 @@ return [
         'others' => 4,
     ],
     'contentable_type' => [
-        'lesson' => 'App\Models\Lesson',
-        'quiz' => 'App\Models\Quiz',
-        'final_exam' => 'App\Models\Examination',
-        'resource' => 'App\Models\Resource',
+        'lesson' => 1,
+        'quiz' => 2,
+        'resource' => 3,
     ],
     'provider' => [
         'manual' => 1,

@@ -8,11 +8,11 @@ use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class LessonProgressFactory
 {
-    public static function create(string $contentableType)
+    public static function create(int $contentableType)
     {
-        $explodeInfo = explode('\\', $contentableType);
+        $keyValue = array_flip(config('common.contentable_type'))[$contentableType] ?? '';
 
-        $class = "\\App\Factories\LessonProgress\\" . end($explodeInfo);
+        $class = "\\App\Factories\LessonProgress\\" . ucfirst($keyValue);
         if (class_exists($class)) {
             return app($class);
         } else {
