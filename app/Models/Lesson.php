@@ -39,4 +39,9 @@ class Lesson extends Model
     {
         return $this->morphTo(null, 'resolved_contentable_type', 'contentable_id');
     }
+
+    public function getMediaInfoAttribute($value): array
+    {
+        return $value ? json_decode($value, true) : [];
+    }
 }
