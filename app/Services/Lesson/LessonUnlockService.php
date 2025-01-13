@@ -21,7 +21,14 @@ class LessonUnlockService
         DB::beginTransaction();
         try {
             $response = $this->updateLessonProgress($progressInfo, $lessonProgress);
-            $this->generateCertficate($response, $progressInfo->courseId);
+            if ($response['is_passed']) {
+                Certificate::firstOrCreate([
+                    'user_id' => Auth::id(),
+                    'course_id' => $progressInfo->courseId,
+                ], [
+                    'uuid' => Str::uuid(),
+                ]);
+            }
 
             DB::commit();
             return $response;
@@ -68,18 +75,6 @@ class LessonUnlockService
             'total_marks' => $totalMraks,
             'next_lesson' => $nextLesson
         ];
-    }
-
-    private function generateCertficate(array $progress, int $coruseId): void
-    {
-        if ($progress['is_passed']) {
-            Certificate::firstOrCreate([
-                'user_id' => Auth::id(),
-                'course_id' => $coruseId,
-            ], [
-                'uuid' => Str::uuid(),
-            ]);
-        }
     }
 
     public function getNextLesson(Collection $lessons, array $lessonProgress): ?Lesson

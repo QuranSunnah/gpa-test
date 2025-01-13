@@ -21,8 +21,8 @@ class QuizController extends Controller
 
     public function show(int $lessonId)
     {
-        $questions = $this->service->getQuizzes($lessonId);
+        $quizInfo = $this->service->getQuizzes($lessonId);
 
-        return $this->response($questions, __('Lesson progress data'));
+        return $this->response($quizInfo, __('Quiz Info'));
     }
 }

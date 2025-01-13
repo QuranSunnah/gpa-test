@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Http\Resources\QuestionResource;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\LessonProgress;
 use Illuminate\Http\Response;
 use App\Models\Question;
 use App\Models\Quiz;
@@ -17,9 +18,9 @@ class QuizService
 {
     public function getQuizzes(int $lessonId): array
     {
-        $targetLesson = $this->findTargetLesson($lessonId);
+        $quizId = $this->getQuizId($lessonId);
 
-        $quiz = Quiz::findOrFail($targetLesson['contentable_id']);
+        $quiz = Quiz::findOrFail($quizId);
         $questions = Question::whereIn("id", json_decode($quiz->question_ids, true))->get();
 
         return [
@@ -31,32 +32,31 @@ class QuizService
         ];
     }
 
-    private function findTargetLesson(int $lessonId): array
+    private function getQuizId(int $lessonId)
     {
-        $lessonProgress = Course::join('enrolls', 'enrolls.course_id', '=', 'courses.id')
-            ->join('lesson_progress', 'lesson_progress.course_id', '=', 'courses.id')
-            ->join('lessons', 'lessons.course_id', '=', 'courses.id')
+        $lessonProgress = LessonProgress::join('enrolls', 'enrolls.course_id', '=', 'lesson_progress.course_id')
+            ->join('lessons', 'lessons.course_id', '=', 'enrolls.course_id')
             ->where([
                 ['lessons.id', '=', $lessonId],
                 ['enrolls.user_id', '=', Auth::id()],
-                ['lesson_progress.user_id', '=', Auth::id()],
-                ['enrolls.status', '=', config('common.status.active')]
+                ['enrolls.status', '=', config('common.status.active')],
+                ['lesson_progress.user_id', '=', Auth::id()]
             ])
-            ->select('lesson_progress.lessons', 'lessons.id as lesson_id', 'lessons.contentable_type')
+            ->select('lesson_progress.lessons')
             ->firstOrFail();
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
         $targetLesson = $lessons->first(
             fn($lesson) =>
-            $lesson['id'] == $lessonProgress->lesson_id &&
-                $lesson['contentable_type'] === config('common.contentable_type.quiz')
+            $lesson['id'] == $lessonId &&
+                $lesson['contentable_type'] == config('common.contentable_type.quiz')
         );
 
         if (!$targetLesson) {
             throw new \Exception(__('Invalid Request: Requested quiz not found'), Response::HTTP_BAD_REQUEST);
         }
 
-        return $targetLesson;
+        return $targetLesson['contentable_id'];
     }
 }
