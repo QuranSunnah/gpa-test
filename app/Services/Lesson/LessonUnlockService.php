@@ -40,7 +40,7 @@ class LessonUnlockService
 
     private function updateLessonProgress(LessonProgressResource $progressInfo, array $lessonProgress): array
     {
-        $lessons = Lesson::select('id', 'contentable_type', 'contentable_id', 'duration')
+        $lessons = Lesson::select('id', 'contentable_type', 'contentable_id', 'duration', 'media_info')
             ->where('course_id', $progressInfo->courseId)
             ->orderBy('order', 'ASC')
             ->get();
