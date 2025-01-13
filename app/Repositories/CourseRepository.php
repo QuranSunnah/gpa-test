@@ -58,19 +58,6 @@ class CourseRepository implements Repository
             ->get();
     }
 
-    public function findById(int $id)
-    {
-        return Course::with([
-            'sections' => function ($query) {
-                $query->orderBy('order', 'asc');
-            },
-            'sections.lessons' => function ($query) {
-                $query->with('contentable')->orderBy('order', 'asc');
-            },
-        ])
-            ->findOrFail($id);
-    }
-
     public function findBySlug(string $slug)
     {
         return Course::with([
@@ -80,7 +67,16 @@ class CourseRepository implements Repository
                 $query->orderBy('order', 'asc');
             },
             'sections.lessons' => function ($query) {
-                $query->with('contentable')->orderBy('order', 'asc');
+                $query->select(
+                    'id',
+                    'section_id',
+                    'title',
+                    'contentable_type',
+                    'contentable_id',
+                    'duration',
+                    'summary',
+                )
+                    ->with('contentable:id,title')->orderBy('order', 'asc');
             },
         ])
             ->where('slug', $slug)->firstOrFail();
