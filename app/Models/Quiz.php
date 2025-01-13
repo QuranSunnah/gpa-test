@@ -8,8 +8,7 @@ use App\Traits\Filter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quiz extends Model
 {
@@ -17,8 +16,8 @@ class Quiz extends Model
     use SoftDeletes;
     use Filter;
 
-    public function lessons(): MorphMany
+    public function questions()
     {
-        return $this->morphMany(Lesson::class, 'contentable');
+        return $this->hasMany(Question::class, 'id', 'question_ids');
     }
 }
