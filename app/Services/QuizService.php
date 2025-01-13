@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Http\Resources\QuestionResource;
-use App\Models\Course;
-use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Illuminate\Http\Response;
-use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuizService
 {
@@ -20,15 +17,24 @@ class QuizService
     {
         $quizId = $this->getQuizId($lessonId);
 
-        $quiz = Quiz::findOrFail($quizId);
-        $questions = Question::whereIn("id", json_decode($quiz->question_ids, true))->get();
+        $quizWithQuestions = Quiz::join('questions as qt', DB::raw('JSON_CONTAINS(quizzes.question_ids, JSON_ARRAY(qt.id))'), '=', DB::raw('1'))
+            ->where('quizzes.id', $quizId)
+            ->select([
+                'quizzes.id as quiz_id',
+                'quizzes.title as quiz_title',
+                'quizzes.pass_marks_percentage',
+                'qt.*',
+            ])
+            ->get();
+
+        $quiz = $quizWithQuestions->first();
 
         return [
-            'id' => $quiz->id,
-            'title' => $quiz->title,
-            'total_questions' => $questions->count(),
-            'pass_marks_percentage' => $quiz->pass_marks_percentage,
-            'questions' => QuestionResource::collection($questions),
+            'id' => $quiz->id ?? null,
+            'title' => $quiz->title ?? null,
+            'pass_marks_percentage' => $quiz->pass_marks_percentage ?? null,
+            'total_questions' => $quizWithQuestions->count(),
+            'questions' => QuestionResource::collection($quizWithQuestions),
         ];
     }
 
