@@ -10,7 +10,7 @@ class LessonProgressFactory
 {
     public static function create(int $contentableType)
     {
-        $keyValue = array_flip(config('common.contentable_type'))[$contentableType];
+        $keyValue = array_flip(config('common.contentable_type'))[$contentableType] ?? '';
 
         $class = "\\App\Factories\LessonProgress\\" . ucfirst($keyValue);
         if (class_exists($class)) {
