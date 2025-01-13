@@ -8,7 +8,6 @@ use App\Traits\Filter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Lesson extends Model
 {
@@ -17,6 +16,7 @@ class Lesson extends Model
 
     protected $casts = [
         'media_info' => 'array',
+        'contentable_type' => 'integer',
     ];
 
     public function section(): BelongsTo
@@ -30,24 +30,13 @@ class Lesson extends Model
         3 => Resource::class,
     ];
 
-    /**
-     * Get the actual class name for the contentable_type.
-     */
-    public function getContentableTypeAttribute($value)
+    public function getResolvedContentableTypeAttribute()
     {
-        return self::$contentableMap[$value] ?? null;
+        return self::$contentableMap[$this->attributes['contentable_type']] ?? null;
     }
 
-    /**
-     * Set the numeric value for the contentable_type.
-     */
-    public function setContentableTypeAttribute($value)
+    public function contentable()
     {
-        $this->attributes['contentable_type'] = array_search($value, self::$contentableMap, true);
-    }
-
-    public function contentable(): MorphTo
-    {
-        return $this->morphTo();
+        return $this->morphTo(null, 'resolved_contentable_type', 'contentable_id');
     }
 }
