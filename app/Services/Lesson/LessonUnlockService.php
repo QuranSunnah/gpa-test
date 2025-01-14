@@ -48,13 +48,13 @@ class LessonUnlockService
             ->get();
 
         $totalLessons = $lessons->count();
-        $nextLesson = $this->getNextLesson($lessons, $lessonProgress);
+        $result = $this->getNextLesson($lessons, $lessonProgress, $progressInfo->lessonId);
 
-        if ($nextLesson) {
+        if ($result['type'] === 'new') {
             $lessonProgress[] = [
-                'id' => $nextLesson->id,
-                'contentable_id' => $nextLesson->contentable_id,
-                'contentable_type' => $nextLesson->contentable_type,
+                'id' => $result['lesson']->id,
+                'contentable_id' => $result['lesson']->contentable_id,
+                'contentable_type' => $result['lesson']->contentable_type,
                 'is_pass' => 0,
                 'start_time' => Carbon::now()->timestamp,
                 'end_time' => null,
@@ -81,19 +81,36 @@ class LessonUnlockService
         return [
             'is_course_passed' => $isCoursePassed,
             'current_lesson' => $currentLesson,
-            'next_lesson' => $nextLesson
+            'next_lesson' => $result['lesson']
         ];
     }
 
-    public function getNextLesson(Collection $lessons, array $lessonProgress): ?Lesson
+    public function getNextLesson(Collection $lessons, array $lessonProgress, int $lessonId): array
     {
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
+            $nextLesson =  $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
 
-            return $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+            if ($nextLesson) {
+                return [
+                    'type' => 'new',
+                    'lesson' => $nextLesson
+                ];
+            }
         }
 
-        return null;
+        $currentIndex = collect($lessonProgress)->search(function ($item) use ($lessonId) {
+            return $item['id'] === $lessonId;
+        });
+
+        $nextLesson = $currentIndex !== false && isset($lessonProgress[$currentIndex + 1])
+            ? $lessonProgress[$currentIndex + 1]
+            : null;
+
+        return [
+            'type' => 'exist',
+            'lesson' => $nextLesson ? $lessons->firstWhere("id", $nextLesson['id']) : null
+        ];
     }
 
     public static function getIncompleteLessonsCount(array $lessonProgress): int

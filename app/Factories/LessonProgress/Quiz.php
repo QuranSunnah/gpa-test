@@ -43,11 +43,9 @@ class Quiz implements LessonProgressInterface
         $quizWithQuestions = $this->quizRepository->getQuizInfo($progressInfo->contentableId);
         $quiz = $quizWithQuestions->first();
 
-        $totalQuestions = $quizWithQuestions->count();
-
         $passMarksPercentage = $quiz->pass_marks_percentage ?? 100;
         $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $quizWithQuestions);
-        $scorePercentage = (int) round(($totalCorrectAns / $totalQuestions) * 100);
+        $scorePercentage = (int) round(($totalCorrectAns / $quizWithQuestions->count()) * 100);
 
         $isPassed = ($scorePercentage >= $passMarksPercentage) ? 1 : 0;
 
