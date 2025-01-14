@@ -21,7 +21,7 @@ class LessonUnlockService
         DB::beginTransaction();
         try {
             $response = $this->updateLessonProgress($progressInfo, $lessonProgress);
-            if ($response['is_passed']) {
+            if ($response['course_passed']) {
                 Certificate::firstOrCreate([
                     'user_id' => Auth::id(),
                     'course_id' => $progressInfo->courseId,
@@ -34,15 +34,17 @@ class LessonUnlockService
             return $response;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Progress save failed ' . $e->getMessage());
+            throw new \Exception('Progress save failed.');
         }
     }
 
     private function updateLessonProgress(LessonProgressResource $progressInfo, array $lessonProgress): array
     {
-        $lessons = Lesson::select('id', 'contentable_type', 'contentable_id', 'duration', 'media_info')
-            ->where('course_id', $progressInfo->courseId)
-            ->orderBy('order', 'ASC')
+        $lessons = Lesson::select('lessons.id', 'lessons.contentable_type', 'lessons.contentable_id', 'lessons.duration', 'lessons.media_info')
+            ->join('sections', 'sections.id', '=', 'lessons.section_id')
+            ->where('sections.course_id', $progressInfo->courseId)
+            ->orderBy('sections.order', 'ASC')
+            ->orderBy('lessons.order', 'ASC')
             ->get();
 
         $totalLessons = $lessons->count();
@@ -60,8 +62,8 @@ class LessonUnlockService
         }
 
         $passedLessons = collect($lessonProgress)->where('is_pass', true)->count();
+        $totalMraks = (int) round((100 / $totalLessons) * $passedLessons);
         $isPassed = ($totalLessons === $passedLessons) ? 1 : 0;
-        $totalMraks = $totalLessons > 0 ? (int) round((100 / $totalLessons) * $passedLessons) : 0;
 
         LessonProgress::where('id', $progressInfo->progressId)
             ->update([
@@ -70,9 +72,15 @@ class LessonUnlockService
                 'lessons' => $lessonProgress
             ]);
 
+        $currentLesson = collect($lessonProgress)->where("id", $progressInfo->lessonId)->first();
+
+        if ($currentLesson) {
+            unset($currentLesson['start_time'], $currentLesson['end_time']);
+        }
+
         return [
-            'is_passed' => $isPassed,
-            'total_marks' => $totalMraks,
+            'course_passed' => $isPassed,
+            'current_lesson' => $currentLesson,
             'next_lesson' => $nextLesson
         ];
     }

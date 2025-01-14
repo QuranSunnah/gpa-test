@@ -4,24 +4,16 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\LessonProgress;
+use App\Repositories\LessonRepository;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class LessonService
 {
+    public function __construct(private LessonRepository $service) {}
+
     public function getContent(int $lessonId): array
     {
-        $lessonProgress = LessonProgress::join('enrolls', 'enrolls.course_id', '=', 'lesson_progress.course_id')
-            ->join('lessons', 'lessons.course_id', '=', 'enrolls.course_id')
-            ->where([
-                ['lessons.id', '=', $lessonId],
-                ['enrolls.user_id', '=', Auth::id()],
-                ['enrolls.status', '=', config('common.status.active')],
-                ['lesson_progress.user_id', '=', Auth::id()]
-            ])
-            ->select('lessons.*', 'lesson_progress.lessons',)
-            ->firstOrFail();
+        $lessonProgress = $this->service->getLessonProgress($lessonId);
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 

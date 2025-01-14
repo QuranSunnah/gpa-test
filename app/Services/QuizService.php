@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Http\Resources\QuestionResource;
-use App\Models\LessonProgress;
 use Illuminate\Http\Response;
 use App\Models\Quiz;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\LessonRepository;
 use Illuminate\Support\Facades\DB;
 
 class QuizService
 {
+    public function __construct(private LessonRepository $service) {}
+
     public function getQuizzes(int $lessonId): array
     {
         $quizId = $this->getQuizId($lessonId);
@@ -38,18 +39,9 @@ class QuizService
         ];
     }
 
-    private function getQuizId(int $lessonId)
+    private function getQuizId(int $lessonId): int
     {
-        $lessonProgress = LessonProgress::join('enrolls', 'enrolls.course_id', '=', 'lesson_progress.course_id')
-            ->join('lessons', 'lessons.course_id', '=', 'enrolls.course_id')
-            ->where([
-                ['lessons.id', '=', $lessonId],
-                ['enrolls.user_id', '=', Auth::id()],
-                ['enrolls.status', '=', config('common.status.active')],
-                ['lesson_progress.user_id', '=', Auth::id()]
-            ])
-            ->select('lesson_progress.lessons')
-            ->firstOrFail();
+        $lessonProgress = $this->service->getLessonProgress($lessonId);
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
@@ -63,6 +55,6 @@ class QuizService
             throw new \Exception(__('Invalid Request: Requested quiz not found'), Response::HTTP_BAD_REQUEST);
         }
 
-        return $targetLesson['contentable_id'];
+        return $lessonProgress->contentable_id;
     }
 }

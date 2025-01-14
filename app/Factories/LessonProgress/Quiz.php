@@ -26,9 +26,8 @@ class Quiz implements LessonProgressInterface
         $updatedProgressResource = array_map(
             fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
-                    'is_pass' => $quizResultInfo['is_passed'],
-                    'score' => $quizResultInfo['score'],
                     'end_time' => Carbon::now()->timestamp,
+                    ...$quizResultInfo
                 ])
                 : $progress,
             $progressInfo->lessonProgress
@@ -63,8 +62,9 @@ class Quiz implements LessonProgressInterface
         }
 
         return [
-            'score' => $score,
-            'is_passed' => $isPassed,
+            'is_pass' => $isPassed,
+            'correct_ans' => $totalCorrectAns,
+            'score_percentage' => $score,
         ];
     }
 
