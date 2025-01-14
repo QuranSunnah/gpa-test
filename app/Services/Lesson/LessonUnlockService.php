@@ -79,7 +79,7 @@ class LessonUnlockService
         }
 
         return [
-            'is_course_passed' => $isCoursePassed && 1,
+            'is_course_passed' => (bool) $isCoursePassed,
             'current_lesson' => $currentLesson,
             'next_lesson' => $result['lesson']
         ];
