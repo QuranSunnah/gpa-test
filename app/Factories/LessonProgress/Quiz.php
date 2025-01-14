@@ -6,8 +6,7 @@ namespace App\Factories\LessonProgress;
 
 use App\DTO\LessonProgressResource;
 use App\Factories\Interfaces\LessonProgressInterface;
-use App\Models\Question;
-use App\Models\Quiz as QuizModel;
+use App\Repositories\QuizRepository;
 use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,7 +16,10 @@ use Illuminate\Support\Facades\Log;
 
 class Quiz implements LessonProgressInterface
 {
-    public function __construct(private LessonUnlockService $lessonUnlockService) {}
+    public function __construct(
+        private QuizRepository $quizRepository,
+        private LessonUnlockService $lessonUnlockService
+    ) {}
 
     public function process(LessonProgressResource $progressInfo): array
     {
@@ -26,9 +28,8 @@ class Quiz implements LessonProgressInterface
         $updatedProgressResource = array_map(
             fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
-                    'is_pass' => $quizResultInfo['is_passed'],
-                    'score' => $quizResultInfo['score'],
                     'end_time' => Carbon::now()->timestamp,
+                    ...$quizResultInfo
                 ])
                 : $progress,
             $progressInfo->lessonProgress
@@ -39,37 +40,30 @@ class Quiz implements LessonProgressInterface
 
     private function getQuizResultInfo(LessonProgressResource $progressInfo): array
     {
-        $quiz = QuizModel::where('id', $progressInfo->contentableId)
-            ->where('course_id', $progressInfo->courseId)
-            ->active()
-            ->firstOrFail();
+        $quizWithQuestions = $this->quizRepository->getQuizInfo($progressInfo->contentableId);
+        $quiz = $quizWithQuestions->first();
 
-        $questions = Question::whereIn('id', json_decode($quiz->question_ids, true, 512, JSON_THROW_ON_ERROR))
-            ->active()
-            ->select(['id', 'type', 'answers'])
-            ->get()
-            ->keyBy('id');
+        $passMarksPercentage = $quiz->pass_marks_percentage ?? 100;
+        $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $quizWithQuestions);
+        $scorePercentage = (int) round(($totalCorrectAns / $quizWithQuestions->count()) * 100);
 
-        $totalQuestions = $questions->count();
-
-        $passMarks = $quiz->pass_marks_percentage;
-        $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $questions);
-        $score = (int) round(($totalCorrectAns / $totalQuestions) * 100);
-
-        $isPassed = ($score >= $passMarks) ? 1 : 0;
+        $isPassed = ($scorePercentage >= $passMarksPercentage) ? 1 : 0;
 
         if (!$isPassed) {
-            throw new \Exception(__("Failed: Your score is blow: {$passMarks}", Response::HTTP_EARLY_HINTS));
+            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}", Response::HTTP_EARLY_HINTS));
         }
 
         return [
-            'score' => $score,
-            'is_passed' => $isPassed,
+            'is_pass' => $isPassed,
+            'total_correct_ans' => $totalCorrectAns,
+            'score_percentage' => $scorePercentage,
         ];
     }
 
-    private function getTotalCorrectAns(array $quizzes, Collection $questions)
+    private function getTotalCorrectAns(array $quizzes, Collection $quizWithQuestions)
     {
+        $questions = $quizWithQuestions->keyBy('id');
+
         if (count($quizzes) !== $questions->count()) {
             throw new ModelNotFoundException('Mismatch between submitted quizzes and expected questions.');
         }
@@ -77,7 +71,6 @@ class Quiz implements LessonProgressInterface
         $correctAnswers = 0;
         foreach ($quizzes as $submittedQuiz) {
             $questionId = $submittedQuiz['id'];
-
             if (!$questions->has($questionId)) {
                 throw new ModelNotFoundException('Question ID not found in the quiz.');
             }
