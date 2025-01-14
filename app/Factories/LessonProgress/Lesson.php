@@ -21,7 +21,7 @@ class Lesson implements LessonProgressInterface
         $updatedProgressResource = array_map(
             fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
-                    'is_pass' => 1,
+                    'is_passed' => true,
                     'end_time' => Carbon::now()->timestamp,
                 ])
                 : $progress,

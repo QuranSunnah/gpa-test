@@ -107,7 +107,7 @@ class EnrollService
                         'id' => $lesson->id,
                         'contentable_id' => $lesson->contentable_id,
                         'contentable_type' => $lesson->contentable_type,
-                        'is_pass' => 0,
+                        'is_passed' => false,
                         'start_time' => Carbon::now()->timestamp,
                         'end_time' => null,
                     ],

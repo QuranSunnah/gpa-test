@@ -11,7 +11,7 @@ class LessonProgressResource
 {
     public int $lessonId;
     public int $startTime;
-    public int $isLessonPassed;
+    public bool $isLessonPassed;
     public ?int $contentableId;
     public int $contentableType;
     public int $progressId;
@@ -37,7 +37,7 @@ class LessonProgressResource
 
         $this->lessonId = $lessonId;
         $this->startTime = $lesson['start_time'];
-        $this->isLessonPassed = $lesson['is_pass'];
+        $this->isLessonPassed = $lesson['is_passed'];
         $this->contentableId = $lesson['contentable_id'];
         $this->contentableType = (int) $lesson['contentable_type'];
         $this->progressId = $courseInfo->lesson_progress_id;
