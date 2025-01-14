@@ -9,11 +9,11 @@ use Illuminate\Http\Response;
 
 class LessonService
 {
-    public function __construct(private LessonRepository $service) {}
+    public function __construct(private LessonRepository $repository) {}
 
     public function getContent(int $lessonId): array
     {
-        $lessonProgress = $this->service->getLessonProgress($lessonId);
+        $lessonProgress = $this->repository->getLessonProgress($lessonId);
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 

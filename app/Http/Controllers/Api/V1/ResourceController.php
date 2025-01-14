@@ -17,8 +17,8 @@ class ResourceController extends Controller
 
     public function show(int $lessonId)
     {
-        $quizInfo = $this->service->getResource($lessonId);
+        $resourceInfo = $this->service->getResource($lessonId);
 
-        return $this->response($quizInfo, __('Resource Info'));
+        return $this->response($resourceInfo, __('Resource Info'));
     }
 }

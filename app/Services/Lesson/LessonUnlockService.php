@@ -21,7 +21,7 @@ class LessonUnlockService
         DB::beginTransaction();
         try {
             $response = $this->updateLessonProgress($progressInfo, $lessonProgress);
-            if ($response['course_passed']) {
+            if ($response['is_course_passed']) {
                 Certificate::firstOrCreate([
                     'user_id' => Auth::id(),
                     'course_id' => $progressInfo->courseId,
@@ -63,11 +63,11 @@ class LessonUnlockService
 
         $passedLessons = collect($lessonProgress)->where('is_pass', true)->count();
         $totalMraks = (int) round((100 / $totalLessons) * $passedLessons);
-        $isPassed = ($totalLessons === $passedLessons) ? 1 : 0;
+        $isCoursePassed = ($totalLessons === $passedLessons) ? 1 : 0;
 
         LessonProgress::where('id', $progressInfo->progressId)
             ->update([
-                'is_passed' => $isPassed,
+                'is_passed' => $isCoursePassed,
                 'total_marks' => $totalMraks,
                 'lessons' => $lessonProgress
             ]);
@@ -79,7 +79,7 @@ class LessonUnlockService
         }
 
         return [
-            'course_passed' => $isPassed,
+            'is_course_passed' => $isCoursePassed,
             'current_lesson' => $currentLesson,
             'next_lesson' => $nextLesson
         ];

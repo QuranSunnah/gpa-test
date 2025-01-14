@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class ResourceService
 {
-    public function __construct(private LessonRepository $service) {}
+    public function __construct(private LessonRepository $repository) {}
 
     public function getResource(int $lessonId): array
     {
@@ -20,13 +20,14 @@ class ResourceService
         return [
             'id' => $resouceInfo->id,
             'title' => $resouceInfo->title,
-            'file' => $resouceInfo->file_path
+            'file' => $resouceInfo->file_path,
+            'instructions' => $resouceInfo->instructions
         ];
     }
 
     private function getResourceId(int $lessonId): int
     {
-        $lessonProgress = $this->service->getLessonProgress($lessonId);
+        $lessonProgress = $this->repository->getLessonProgress($lessonId);
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
