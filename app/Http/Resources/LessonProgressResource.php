@@ -20,7 +20,7 @@ class LessonProgressResource extends JsonResource
             ->map(function ($lesson) {
                 return [
                     'id' => $lesson['id'],
-                    'is_pass' => $lesson['is_pass'],
+                    'is_passed' => $lesson['is_passed'],
                 ];
             });
 

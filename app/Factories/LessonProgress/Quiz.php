@@ -47,14 +47,14 @@ class Quiz implements LessonProgressInterface
         $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $quizWithQuestions);
         $scorePercentage = (int) round(($totalCorrectAns / $quizWithQuestions->count()) * 100);
 
-        $isPassed = ($scorePercentage >= $passMarksPercentage) ? 1 : 0;
+        $isPassed = ($scorePercentage >= $passMarksPercentage) ? true : false;
 
         if (!$isPassed) {
             throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}", Response::HTTP_EARLY_HINTS));
         }
 
         return [
-            'is_pass' => $isPassed,
+            'is_passed' => $isPassed,
             'total_correct_ans' => $totalCorrectAns,
             'score_percentage' => $scorePercentage,
         ];

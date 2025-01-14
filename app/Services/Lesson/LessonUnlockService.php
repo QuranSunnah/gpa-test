@@ -55,13 +55,13 @@ class LessonUnlockService
                 'id' => $result['lesson']->id,
                 'contentable_id' => $result['lesson']->contentable_id,
                 'contentable_type' => $result['lesson']->contentable_type,
-                'is_pass' => 0,
+                'is_passed' => false,
                 'start_time' => Carbon::now()->timestamp,
                 'end_time' => null,
             ];
         }
 
-        $passedLessons = collect($lessonProgress)->where('is_pass', true)->count();
+        $passedLessons = collect($lessonProgress)->where('is_passed', true)->count();
         $totalMraks = (int) round((100 / $totalLessons) * $passedLessons);
         $isCoursePassed = ($totalLessons === $passedLessons) ? 1 : 0;
 
@@ -79,7 +79,7 @@ class LessonUnlockService
         }
 
         return [
-            'is_course_passed' => $isCoursePassed,
+            'is_course_passed' => $isCoursePassed && 1,
             'current_lesson' => $currentLesson,
             'next_lesson' => $result['lesson']
         ];
@@ -119,7 +119,7 @@ class LessonUnlockService
             $lessonProgress,
             function ($count, $progress) {
                 $isLesson = $progress['contentable_type'] === config('common.contentable_type.lesson');
-                $isNotPass = !$progress['is_pass'];
+                $isNotPass = !$progress['is_passed'];
 
                 return $count + ($isNotPass && $isLesson ? 1 : 0);
             },
