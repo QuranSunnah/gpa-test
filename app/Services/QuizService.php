@@ -6,27 +6,20 @@ namespace App\Services;
 
 use App\Http\Resources\QuestionResource;
 use Illuminate\Http\Response;
-use App\Models\Quiz;
 use App\Repositories\LessonRepository;
-use Illuminate\Support\Facades\DB;
+use App\Repositories\QuizRepository;
 
 class QuizService
 {
-    public function __construct(private LessonRepository $repository) {}
+    public function __construct(
+        private QuizRepository $quizRepository,
+        private LessonRepository $lessonRepository
+    ) {}
 
     public function getQuizzes(int $lessonId): array
     {
         $quizId = $this->getQuizId($lessonId);
-
-        $quizWithQuestions = Quiz::join('questions as qt', DB::raw('JSON_CONTAINS(quizzes.question_ids, JSON_ARRAY(qt.id))'), '=', DB::raw('1'))
-            ->where('quizzes.id', $quizId)
-            ->select([
-                'quizzes.id as quiz_id',
-                'quizzes.title as quiz_title',
-                'quizzes.pass_marks_percentage',
-                'qt.*',
-            ])
-            ->get();
+        $quizWithQuestions = $this->quizRepository->getQuizInfo($quizId);
 
         $quiz = $quizWithQuestions->first();
 
@@ -41,7 +34,7 @@ class QuizService
 
     private function getQuizId(int $lessonId): int
     {
-        $lessonProgress = $this->repository->getLessonProgress($lessonId);
+        $lessonProgress = $this->lessonRepository->getLessonProgress($lessonId);
 
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
