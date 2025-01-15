@@ -31,6 +31,7 @@ class LessonUnlockService
             }
 
             DB::commit();
+
             return $response;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -40,7 +41,13 @@ class LessonUnlockService
 
     private function updateLessonProgress(LessonProgressResource $progressInfo, array $lessonProgress): array
     {
-        $lessons = Lesson::select('lessons.id', 'lessons.contentable_type', 'lessons.contentable_id', 'lessons.duration', 'lessons.media_info')
+        $lessons = Lesson::select(
+            'lessons.id',
+            'lessons.contentable_type',
+            'lessons.contentable_id',
+            'lessons.duration',
+            'lessons.media_info'
+        )
             ->join('sections', 'sections.id', '=', 'lessons.section_id')
             ->where('sections.course_id', $progressInfo->courseId)
             ->orderBy('sections.order', 'ASC')
@@ -69,10 +76,10 @@ class LessonUnlockService
             ->update([
                 'is_passed' => $isCoursePassed,
                 'total_marks' => $totalMraks,
-                'lessons' => $lessonProgress
+                'lessons' => $lessonProgress,
             ]);
 
-        $currentLesson = collect($lessonProgress)->where("id", $progressInfo->lessonId)->first();
+        $currentLesson = collect($lessonProgress)->where('id', $progressInfo->lessonId)->first();
 
         if ($currentLesson) {
             unset($currentLesson['start_time'], $currentLesson['end_time']);
@@ -82,7 +89,7 @@ class LessonUnlockService
             'is_course_passed' => (bool) $isCoursePassed,
             'total_marks' => $totalMraks,
             'current_lesson' => $currentLesson,
-            'next_lesson' => $result['lesson']
+            'next_lesson' => $result['lesson'],
         ];
     }
 
@@ -90,12 +97,12 @@ class LessonUnlockService
     {
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
-            $nextLesson =  $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+            $nextLesson = $lessons->first(fn ($lesson) => !isset($keyMap[$lesson->id]));
 
             if ($nextLesson) {
                 return [
                     'type' => 'new',
-                    'lesson' => $nextLesson
+                    'lesson' => $nextLesson,
                 ];
             }
         }
@@ -110,7 +117,7 @@ class LessonUnlockService
 
         return [
             'type' => 'exist',
-            'lesson' => $nextLesson ? $lessons->firstWhere("id", $nextLesson['id']) : null
+            'lesson' => $nextLesson ? $lessons->firstWhere('id', $nextLesson['id']) : null,
         ];
     }
 

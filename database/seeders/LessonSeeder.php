@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Lesson;
@@ -16,9 +18,10 @@ class LessonSeeder extends Seeder
         $sections = Section::all();
 
         foreach ($sections as $section) {
-            for ($i = 1; $i <= rand(3, 7); $i++) {
+            for ($i = 1; $i <= rand(3, 7); ++$i) {
                 $isQuiz = rand(0, 1);
-                $contentableType = $isQuiz ? config('common.contentable_type.quiz') : config('common.contentable_type.lesson');
+                $contentableType = $isQuiz
+                    ? config('common.contentable_type.quiz') : config('common.contentable_type.lesson');
                 $contentableId = $isQuiz ? rand(1, 3) : null;
 
                 $lessons[] = [
@@ -28,7 +31,10 @@ class LessonSeeder extends Seeder
                     'contentable_type' => $contentableType,
                     'contentable_id' => $contentableId,
                     'duration' => rand(300, 900),
-                    'media_info' => json_encode(['type' => 'video', 'url' => 'https://www.youtube.com/watch?v=PYFXrbOXSV4']),
+                    'media_info' => json_encode([
+                        'type' => 'video',
+                        'url' => 'https://www.youtube.com/watch?v=PYFXrbOXSV4',
+                    ]),
                     'order' => $i,
                     'summary' => "Summary for Lesson $i in Section $section->id",
                     'created_at' => now(),

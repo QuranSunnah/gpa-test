@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Category;
@@ -18,7 +20,7 @@ class QuestionSeeder extends Seeder
         $quizIds = Quiz::pluck('id');
 
         foreach ($quizIds as $quizId) {
-            for ($i = 1; $i <= rand(5, 10); $i++) {
+            for ($i = 1; $i <= rand(5, 10); ++$i) {
                 $options = [
                     'Option A',
                     'Option B',

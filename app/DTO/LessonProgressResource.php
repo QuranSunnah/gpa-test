@@ -32,7 +32,7 @@ class LessonProgressResource
         $lesson = collect($lessonProgress)->firstWhere('id', $lessonId);
 
         if (!$lesson) {
-            throw new \Exception(__("Invalid Request: Lesson not found"), Response::HTTP_BAD_REQUEST);
+            throw new \Exception(__('Invalid Request: Lesson not found'), Response::HTTP_BAD_REQUEST);
         }
 
         $this->lessonId = $lessonId;

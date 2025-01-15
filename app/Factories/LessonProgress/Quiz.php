@@ -18,18 +18,19 @@ class Quiz implements LessonProgressInterface
 {
     public function __construct(
         private QuizRepository $quizRepository,
-        private LessonUnlockService $lessonUnlockService
-    ) {}
+        private LessonUnlockService $lessonUnlockService,
+    ) {
+    }
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
+            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'end_time' => Carbon::now()->timestamp,
-                    ...$quizResultInfo
+                    ...$quizResultInfo,
                 ])
                 : $progress,
             $progressInfo->lessonProgress

@@ -12,7 +12,9 @@ class QuizRepository
 {
     public function getQuizInfo(int $quizId): Collection
     {
-        return Quiz::join('questions as qt', DB::raw('JSON_CONTAINS(quizzes.question_ids, JSON_ARRAY(qt.id))'), '=', DB::raw('1'))
+        return Quiz::join('questions as qt', DB::raw(
+            'JSON_CONTAINS(quizzes.question_ids, JSON_ARRAY(qt.id))'
+        ), '=', DB::raw('1'))
             ->where('quizzes.id', $quizId)
             ->select([
                 'quizzes.id as quiz_id',

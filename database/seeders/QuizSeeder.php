@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Quiz;
@@ -16,7 +18,7 @@ class QuizSeeder extends Seeder
         $courseIds = DB::table('courses')->pluck('id');
 
         foreach ($courseIds as $courseId) {
-            for ($i = 1; $i <= rand(1, 3); $i++) {
+            for ($i = 1; $i <= rand(1, 3); ++$i) {
                 $quizzes[] = [
                     'title' => "Quiz $i for Course $courseId",
                     'course_id' => $courseId,

@@ -17,9 +17,9 @@ class LessonRepository
                 ['lessons.id', '=', $lessonId],
                 ['enrolls.user_id', '=', Auth::id()],
                 ['enrolls.status', '=', config('common.status.active')],
-                ['lesson_progress.user_id', '=', Auth::id()]
+                ['lesson_progress.user_id', '=', Auth::id()],
             ])
-            ->select('lessons.*', 'lesson_progress.lessons',)
+            ->select('lessons.*', 'lesson_progress.lessons')
             ->firstOrFail();
     }
 }

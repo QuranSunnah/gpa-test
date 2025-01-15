@@ -43,9 +43,8 @@ Route::middleware(['auth:api'])
             Route::patch('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'save']);
         });
 
-
         Route::group(['prefix' => 'lessons'], function () {
-            Route::get('{lessonId}/quiz', [Api\V1\QuizController::class, 'show']);
+            Route::get('{lessonId}/quizzes', [Api\V1\QuizController::class, 'show']);
             Route::get('{lessonId}/content', [Api\V1\LessonController::class, 'show']);
             Route::get('{lessonId}/resource', [Api\V1\ResourceController::class, 'show']);
         });

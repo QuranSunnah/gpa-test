@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             SectionSeeder::class,
             LessonSeeder::class,
             QuestionSeeder::class,
-            QuizSeeder::class
+            QuizSeeder::class,
         ]);
     }
 }

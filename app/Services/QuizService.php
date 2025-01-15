@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Http\Resources\QuestionResource;
-use Illuminate\Http\Response;
 use App\Repositories\LessonRepository;
 use App\Repositories\QuizRepository;
+use Illuminate\Http\Response;
 
 class QuizService
 {
     public function __construct(
         private QuizRepository $quizRepository,
-        private LessonRepository $lessonRepository
-    ) {}
+        private LessonRepository $lessonRepository,
+    ) {
+    }
 
     public function getQuizzes(int $lessonId): array
     {
@@ -39,9 +40,8 @@ class QuizService
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
         $targetLesson = $lessons->first(
-            fn($lesson) =>
-            $lesson['id'] == $lessonId &&
-                $lesson['contentable_type'] == config('common.contentable_type.quiz')
+            fn ($lesson) => $lesson['id'] == $lessonId
+                && $lesson['contentable_type'] == config('common.contentable_type.quiz')
         );
 
         if (!$targetLesson) {

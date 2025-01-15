@@ -8,12 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Services\LessonService;
 use App\Traits\ApiResponse;
 
-
 class LessonController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private LessonService $service) {}
+    public function __construct(private LessonService $service)
+    {
+    }
 
     public function show(int $lessonId)
     {
