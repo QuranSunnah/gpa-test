@@ -80,6 +80,7 @@ class LessonUnlockService
 
         return [
             'is_course_passed' => (bool) $isCoursePassed,
+            'total_marks' => $totalMraks,
             'current_lesson' => $currentLesson,
             'next_lesson' => $result['lesson']
         ];
