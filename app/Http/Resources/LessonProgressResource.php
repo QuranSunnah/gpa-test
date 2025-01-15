@@ -27,7 +27,7 @@ class LessonProgressResource extends JsonResource
         return [
             'id' => $this->id,
             'is_passed' => $this->is_passed,
-            'total_marks' => $this->total_marks,
+            'total_marks' => (int) $this->total_marks,
             'lessons' => $lessons,
         ];
     }
