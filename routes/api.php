@@ -44,7 +44,7 @@ Route::middleware(['auth:api'])
         });
 
         Route::group(['prefix' => 'lessons'], function () {
-            Route::get('{lessonId}/quizzes', [Api\V1\QuizController::class, 'show']);
+            Route::get('{lessonId}/quiz', [Api\V1\QuizController::class, 'show']);
             Route::get('{lessonId}/content', [Api\V1\LessonController::class, 'show']);
             Route::get('{lessonId}/resource', [Api\V1\ResourceController::class, 'show']);
         });
