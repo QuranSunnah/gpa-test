@@ -18,10 +18,10 @@ class WebPageController extends Controller
     public function index(WebPageRequest $request, string $slug): JsonResponse
     {
         try {
-            $langMapping = array(
+            $langMapping = [
                 'en' => config('common.language.english'),
-                'bn' => config('common.language.bangla')
-            );
+                'bn' => config('common.language.bangla'),
+            ];
 
             $webPageInfo = WebPage::where('slug', $slug)
                 ->select('settings', 'lang')
