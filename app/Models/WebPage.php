@@ -11,7 +11,7 @@ class WebPage extends Model
 {
     use SoftDeletes;
 
-    public function getSettingsAttribute($value): array
+    public function getComponentsAttribute($value): array
     {
         return $value ? json_decode($value, true) : [];
     }
