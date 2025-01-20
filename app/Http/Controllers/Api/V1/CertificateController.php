@@ -32,7 +32,7 @@ class CertificateController extends Controller
 
         return $this->response(
             CertificateResouce::collection($certificates),
-            __("List of certificates")
+            __('List of certificates')
         );
     }
 

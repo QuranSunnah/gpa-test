@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -15,10 +17,10 @@ class CertificateResouce extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'    => $this->id,
+            'id' => $this->id,
             'course' => $this->course?->title,
             'date' => $this->created_at,
-            'media' => $this->course?->media_info ?? null
+            'media' => $this->course?->media_info ?? null,
         ];
     }
 }

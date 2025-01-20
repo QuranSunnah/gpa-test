@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
-use App\Models\CertificateTemplate;
 use App\Models\Certificate;
-use App\Models\Course;
 use App\Models\CertificateLayout;
+use App\Models\CertificateTemplate;
+use App\Models\Course;
 
 class CertificatePdfData
 {
@@ -24,7 +26,7 @@ class CertificatePdfData
         CertificateLayout $layout,
         int $width,
         int $height,
-        string $base64Image
+        string $base64Image,
     ) {
         $this->template = $template;
         $this->certificate = $certificate;

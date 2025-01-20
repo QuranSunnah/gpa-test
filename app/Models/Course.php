@@ -40,7 +40,6 @@ class Course extends Model
             : $query;
     }
 
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

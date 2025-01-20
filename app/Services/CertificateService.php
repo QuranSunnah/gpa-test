@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\CertificatePdfData;
-use App\Models\Certificate;
 use App\Helpers\FileHelper;
+use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +17,7 @@ class CertificateService
         $certificate = Certificate::with(['template.course', 'template.layout'])->find($certId);
 
         if (!$certificate) {
-            throw new \Exception("Certificate not found.");
+            throw new \Exception('Certificate not found.');
         }
 
         $template = $certificate->template;
@@ -25,7 +25,7 @@ class CertificateService
         $layout = $template?->layout ?? null;
 
         if (!$template || !$course || !$layout) {
-            throw new \Exception("Missing required data for certificate.");
+            throw new \Exception('Missing required data for certificate.');
         }
 
         [$width, $height] = [$layout->width, $layout->height];
@@ -54,9 +54,9 @@ class CertificateService
         $pdf = Pdf::loadView('templates.certificate', [
             'template' => $pdfData->template,
             'layout' => $pdfData->layout,
-            'courseTitle' => $pdfData?->course?->title ?? __("No Course Found"),
+            'courseTitle' => $pdfData?->course?->title ?? __('No Course Found'),
             'base64Image' => $pdfData->base64Image,
-            'date' => $pdfData->certificate->created_at->format("Y-m-d"),
+            'date' => $pdfData->certificate->created_at->format('Y-m-d'),
             'studentName' => $studentName,
         ])
             ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape')
