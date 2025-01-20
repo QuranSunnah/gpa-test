@@ -9,6 +9,7 @@ use App\Helpers\FileHelper;
 use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class CertificateService
 {
@@ -17,7 +18,7 @@ class CertificateService
         $certificate = Certificate::with(['template.course', 'template.layout'])->find($certId);
 
         if (!$certificate) {
-            throw new \Exception('Certificate not found.');
+            throw new \Exception('Certificate not found.', Response::HTTP_NOT_FOUND);
         }
 
         $template = $certificate->template;
@@ -25,7 +26,7 @@ class CertificateService
         $layout = $template?->layout ?? null;
 
         if (!$template || !$course || !$layout) {
-            throw new \Exception('Missing required data for certificate.');
+            throw new \Exception('Missing required data for certificate.', Response::HTTP_NOT_FOUND);
         }
 
         [$width, $height] = [$layout->width, $layout->height];
@@ -45,7 +46,7 @@ class CertificateService
         return $this->createCertificatePdf($pdfData);
     }
 
-    protected function createCertificatePdf(CertificatePdfData $pdfData)
+    protected function createCertificatePdf(CertificatePdfData $pdfData): Response
     {
         $studentName = Auth::check()
             ? Auth::user()->first_name . ' ' . Auth::user()->last_name

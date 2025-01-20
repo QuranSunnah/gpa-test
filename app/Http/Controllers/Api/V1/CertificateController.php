@@ -36,11 +36,8 @@ class CertificateController extends Controller
         );
     }
 
-    public function downloadCertificate($certId)
+    public function downloadCertificate($certId): Response
     {
-        $fileContent = $this->certificateService->getCertificateFile($certId);
-
-        return $fileContent;
-        // return response()->download($fileContent);
+        return $this->certificateService->getCertificateFile($certId);
     }
 }
