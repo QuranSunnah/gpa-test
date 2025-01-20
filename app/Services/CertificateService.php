@@ -16,7 +16,7 @@ class CertificateService
     public function getCertificateFile($certId)
     {
         $certificate = Certificate::with(['template.course', 'template.layout'])
-            ->where(['id' => $certId, "user_id" => Auth::id()])
+            ->where(['id' => $certId, 'user_id' => Auth::id()])
             ->first();
 
         if (!$certificate) {
