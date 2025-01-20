@@ -15,10 +15,12 @@ class CertificateService
 {
     public function getCertificateFile($certId)
     {
-        $certificate = Certificate::with(['template.course', 'template.layout'])->find($certId);
+        $certificate = Certificate::with(['template.course', 'template.layout'])
+            ->where(['id' => $certId, "user_id" => Auth::id()])
+            ->first();
 
         if (!$certificate) {
-            throw new \Exception('Certificate not found.', Response::HTTP_NOT_FOUND);
+            throw new \Exception(__('Certificate Not Found.'), Response::HTTP_NOT_FOUND);
         }
 
         $template = $certificate->template;
@@ -26,7 +28,7 @@ class CertificateService
         $layout = $template?->layout ?? null;
 
         if (!$template || !$course || !$layout) {
-            throw new \Exception('Missing required data for certificate.', Response::HTTP_NOT_FOUND);
+            throw new \Exception(__('Missing required data for certificate.'), Response::HTTP_NOT_FOUND);
         }
 
         [$width, $height] = [$layout->width, $layout->height];
@@ -66,6 +68,6 @@ class CertificateService
                 'fontCache' => public_path('/fonts'),
             ]);
 
-        return $pdf->stream('preview.pdf');
+        return $pdf->download('certificate.pdf');
     }
 }
