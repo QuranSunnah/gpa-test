@@ -6,21 +6,12 @@ namespace App\Services;
 
 use App\DTO\CertificatePdfData;
 use App\Models\Certificate;
-use App\Models\CertificateTemplate;
 use App\Helpers\FileHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class CertificateService
 {
-    public function getAllCertificates()
-    {
-        $userId = auth()->user->id;
-
-        return Certificate::where(['id' => $userId])
-            ->with('course')
-            ->get();
-    }
-
     public function getCertificateFile($certId)
     {
         $certificate = Certificate::with(['template.course', 'template.layout'])->find($certId);
@@ -31,8 +22,7 @@ class CertificateService
 
         $template = $certificate->template;
         $course = $certificate->course;
-        $layout = $template?->layout;
-
+        $layout = $template?->layout ?? null;
 
         if (!$template || !$course || !$layout) {
             throw new \Exception("Missing required data for certificate.");
@@ -55,27 +45,10 @@ class CertificateService
         return $this->createCertificatePdf($pdfData);
     }
 
-    protected function getCertificateTemplate($courseId): CertificateTemplate
-    {
-        $templateWithLayoutInfo = CertificateTemplate::where("course_id", $courseId)
-            ->with('layout')
-            ->first();
-
-        return $templateWithLayoutInfo;
-    }
-
-    protected function getLayoutDimensions(CertificateTemplate $template): array
-    {
-        $width = $template?->layout?->width ?? 0;
-        $height = $template?->layout?->height ?? 0;
-
-        return [$width, $height];
-    }
-
     protected function createCertificatePdf(CertificatePdfData $pdfData)
     {
-        $studentName = auth()->check()
-            ? auth()->user()->first_name . ' ' . auth()->user()->last_name
+        $studentName = Auth::check()
+            ? Auth::user()->first_name . ' ' . Auth::user()->last_name
             : 'Guest User';
 
         $pdf = Pdf::loadView('templates.certificate', [

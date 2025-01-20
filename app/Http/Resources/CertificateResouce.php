@@ -18,7 +18,7 @@ class CertificateResouce extends JsonResource
             'id'    => $this->id,
             'course' => $this->course?->title,
             'date' => $this->created_at,
-            'thumbnail' => $this->course->media
+            'media' => $this->course?->media_info ?? null
         ];
     }
 }

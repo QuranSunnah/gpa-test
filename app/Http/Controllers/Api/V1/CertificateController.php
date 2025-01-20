@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CertificateResouce;
+use App\Models\Certificate;
 use App\Services\CertificateService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class CertificateController extends Controller
@@ -24,9 +26,14 @@ class CertificateController extends Controller
 
     public function getCertificateList(Request $request)
     {
-        $certificates = $this->certificateService->getAllCertificates();
+        $certificates = Certificate::where('user_id', Auth::id())
+            ->with('course')
+            ->get();
 
-        return $this->response(CertificateResouce::collection($certificates));
+        return $this->response(
+            CertificateResouce::collection($certificates),
+            __("List of certificates")
+        );
     }
 
     public function downloadCertificate($certId)

@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('instructor_id');
             $table->integer('category_id');
             $table->char('title', 255);
-            $table->char('slug', 255)->unique(); 
+            $table->char('slug', 255)->unique();
             $table->tinyInteger('type')->default(1)->comment('1=regular,2=masterclass');
             $table->text('short_description')->nullable();
             $table->text('full_description')->nullable();

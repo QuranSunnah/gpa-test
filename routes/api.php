@@ -22,16 +22,33 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/mentors', [Api\V1\MentorController::class, 'index']);
     Route::get('/testimonials', [Api\V1\TestimonialController::class, 'index']);
     Route::get('/news', [Api\V1\NewsController::class, 'index']);
+    Route::get('/news/{slug}', [Api\V1\NewsController::class, 'show']);
     Route::get('/events', [Api\V1\EventsController::class, 'index']);
     Route::get('/courses', [Api\V1\CourseController::class, 'index']);
-    Route::get('/courses/{id}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/courses/{slug}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/category/list', [Api\V1\CategoryController::class, 'list']);
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
+
+    Route::get('/settings', [Api\V1\SettingController::class, 'index']);
 });
 
 Route::middleware(['auth:api'])
     ->prefix('v1')
     ->group(function () {
-        Route::get('/certificate/{certificate}', [Api\V1\CertificateController::class, 'downloadCertificate']);
+        Route::get('/certificates', [Api\V1\CertificateController::class, 'getCertificateList']);
+        Route::get('/certificates/{id}', [Api\V1\CertificateController::class, 'downloadCertificate']);
+
+        Route::group(['prefix' => 'courses'], function () {
+            Route::post('{slug}/enroll', [Api\V1\EnrollController::class, 'enroll']);
+            Route::get('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'show']);
+            Route::patch('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'save']);
+        });
+
+        Route::group(['prefix' => 'lessons'], function () {
+            Route::get('{lessonId}/quiz', [Api\V1\QuizController::class, 'show']);
+            Route::get('{lessonId}/content', [Api\V1\LessonController::class, 'show']);
+            Route::get('{lessonId}/resource', [Api\V1\ResourceController::class, 'show']);
+        });
     });

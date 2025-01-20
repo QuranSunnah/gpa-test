@@ -15,14 +15,17 @@ class CourseRepository implements Repository
             'courses.id',
             'courses.title',
             'slug',
+            'price',
+            'instructor_id',
             'category_id',
             'short_description',
             'courses.media_info',
             'is_top',
             'courses.duration',
             'total_lessons',
-            'total_enrollments'
-        )
+            'total_enrollments',
+            'courses.created_at'
+        )->with(['instructor:id,name,photo', 'category:id,name'])
             ->search($filters)
             ->filter($filters)
             ->sort($filters)
@@ -30,7 +33,7 @@ class CourseRepository implements Repository
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 
-    public function getTopCategoryCourses(string|int $limit)
+    public function getTopCategoryCourses(?string $limit)
     {
         return Category::with(['courses' => function ($query) {
             $query->select(
@@ -55,16 +58,27 @@ class CourseRepository implements Repository
             ->get();
     }
 
-    public function findById(int $id)
+    public function findBySlug(string $slug)
     {
         return Course::with([
+            'category:id,name',
+            'instructor:id,name,biography,photo',
             'sections' => function ($query) {
                 $query->orderBy('order', 'asc');
             },
             'sections.lessons' => function ($query) {
-                $query->with('contentable')->orderBy('order', 'asc');
+                $query->select(
+                    'id',
+                    'section_id',
+                    'title',
+                    'contentable_type',
+                    'contentable_id',
+                    'duration',
+                    'summary',
+                )
+                    ->with('contentable:id,title')->orderBy('order', 'asc');
             },
         ])
-            ->findOrFail($id);
+            ->where('slug', $slug)->firstOrFail();
     }
 }

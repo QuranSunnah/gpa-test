@@ -40,6 +40,11 @@ return [
         'self_employed' => 3,
         'others' => 4,
     ],
+    'contentable_type' => [
+        'lesson' => 1,
+        'quiz' => 2,
+        'resource' => 3,
+    ],
     'provider' => [
         'manual' => 1,
         'google' => 2,
