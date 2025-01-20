@@ -16,7 +16,9 @@ class LessonProgressController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private LessonProgressService $service) {}
+    public function __construct(private LessonProgressService $service)
+    {
+    }
 
     public function show(LessonProgressRequest $request, string $slug)
     {
