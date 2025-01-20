@@ -14,8 +14,7 @@ class QuizService
     public function __construct(
         private QuizRepository $quizRepository,
         private LessonRepository $lessonRepository,
-    ) {
-    }
+    ) {}
 
     public function getQuizzes(int $lessonId): array
     {
@@ -25,9 +24,10 @@ class QuizService
         $quiz = $quizWithQuestions->first();
 
         return [
-            'id' => $quiz->id ?? null,
-            'title' => $quiz->title ?? null,
+            'id' => $quiz->quiz_id ?? null,
+            'title' => $quiz->quiz_title ?? null,
             'pass_marks_percentage' => $quiz->pass_marks_percentage ?? null,
+            'each_ques_mark' => $quiz->each_qmark,
             'total_questions' => $quizWithQuestions->count(),
             'questions' => QuestionResource::collection($quizWithQuestions),
         ];
@@ -40,7 +40,7 @@ class QuizService
         $lessons = collect(json_decode($lessonProgress->lessons, true));
 
         $targetLesson = $lessons->first(
-            fn ($lesson) => $lesson['id'] == $lessonId
+            fn($lesson) => $lesson['id'] == $lessonId
                 && $lesson['contentable_type'] == config('common.contentable_type.quiz')
         );
 

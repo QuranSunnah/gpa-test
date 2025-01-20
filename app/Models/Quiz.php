@@ -14,4 +14,8 @@ class Quiz extends Model
     use HasFactory;
     use SoftDeletes;
     use Filter;
+
+    protected $casts = [
+        'each_qmark' => 'float',
+    ];
 }

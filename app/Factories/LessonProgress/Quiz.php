@@ -19,15 +19,14 @@ class Quiz implements LessonProgressInterface
     public function __construct(
         private QuizRepository $quizRepository,
         private LessonUnlockService $lessonUnlockService,
-    ) {
-    }
+    ) {}
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
+            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'end_time' => Carbon::now()->timestamp,
                     ...$quizResultInfo,
@@ -51,7 +50,7 @@ class Quiz implements LessonProgressInterface
         $isPassed = ($scorePercentage >= $passMarksPercentage) ? true : false;
 
         if (!$isPassed) {
-            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}", Response::HTTP_EARLY_HINTS));
+            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}"), Response::HTTP_FORBIDDEN);
         }
 
         return [
