@@ -8,8 +8,8 @@ use App\DTO\CertificatePdfData;
 use App\Helpers\FileHelper;
 use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CertificateService
 {
