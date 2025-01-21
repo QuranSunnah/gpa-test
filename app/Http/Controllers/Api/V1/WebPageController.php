@@ -17,23 +17,21 @@ class WebPageController extends Controller
 
     public function index(WebPageRequest $request, string $slug): JsonResponse
     {
-        try {
-            $lang = $request->lang === 'bn'
-                ? config('common.language.bangla')
-                : config('common.language.english');
+        
+        $lang = $request->lang === 'bn'
+            ? config('common.language.bangla')
+            : config('common.language.english');
 
-            $webPageInfo = WebPage::where([
-                ['slug', $slug],
-                ['status', config('common.status.active')],
-                ['lang', $lang],
-            ])
-                ->select('components', 'lang')
-                ->firstOrFail()
-                ->components;
+        $webPageInfo = WebPage::where([
+            ['slug', $slug],
+            ['status', config('common.status.active')],
+            ['lang', $lang],
+        ])
+            ->select('components', 'lang')
+            ->firstOrFail()
+            ->components;
 
-            return $this->response($webPageInfo, __('Web page info'));
-        } catch (\Exception $e) {
-            throw new \Exception(__('Web page not found'), Response::HTTP_NOT_FOUND);
-        }
+        return $this->response($webPageInfo, __('Web page info'));
+        
     }
 }
