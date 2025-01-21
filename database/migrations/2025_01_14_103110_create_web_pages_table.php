@@ -18,9 +18,11 @@ return new class extends Migration {
             $table->char('slug', 255);
             $table->integer('status')->default(1)->comment('1=active,0=inactive');
             $table->integer('lang')->default(1)->comment('1=en,2=bn');
-            $table->json('settings')->nullable();
+            $table->json('components')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['slug', 'lang'], 'slug_lang_unique');
         });
     }
 
