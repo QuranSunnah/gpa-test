@@ -18,7 +18,6 @@ class CertificateService
             ->where(['id' => $id, 'user_id' => Auth::id()])
             ->firstOrFail();
 
-
         $pdfData = new CertificatePdfData($certificate);
 
         return $this->createCertificatePdf($pdfData);
@@ -43,7 +42,7 @@ class CertificateService
 
             return $pdf->download('certificate.pdf');
         } catch (\Exception $e) {
-            throw new \Exception(__("Something went wrong."));
+            throw new \Exception(__('Something went wrong.'));
         }
     }
 }
