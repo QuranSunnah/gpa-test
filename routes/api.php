@@ -44,7 +44,7 @@ Route::middleware(['auth:api'])
             Route::post('{slug}/enroll', [Api\V1\EnrollController::class, 'enroll']);
             Route::get('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'show']);
             Route::patch('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'save']);
-            Route::get('/{id}/certificate', [Api\V1\CertificateController::class, 'downloadCertificate']);
+            Route::get('/{slug}/certificate', [Api\V1\CertificateController::class, 'downloadCertificate']);
         });
 
         Route::group(['prefix' => 'lessons'], function () {

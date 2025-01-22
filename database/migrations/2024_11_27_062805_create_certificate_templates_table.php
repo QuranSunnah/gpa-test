@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('certificate_teamplates', function (Blueprint $table) {
+        Schema::create('certificate_templates', function (Blueprint $table) {
             $table->id();
             $table->integer('course_id');
             $table->integer('certificate_layout_id');
@@ -28,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('certificate_teamplates');
+        Schema::dropIfExists('certificate_templates');
     }
 };
