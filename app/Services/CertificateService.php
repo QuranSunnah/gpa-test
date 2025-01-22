@@ -12,13 +12,22 @@ use Illuminate\Support\Facades\Auth;
 
 class CertificateService
 {
-    public function getCertificateFile(string $slug)
+    public function getCertificateFile($courseSlug)
     {
-        $certificate = Certificate::with(['template.course', 'template.layout'])
-            ->whereHas('template.course', function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            })
-            ->where('user_id', Auth::id())
+        $certificate = Certificate::join('courses', 'certificates.course_id', '=', 'courses.id')
+            ->join('certificate_templates', 'courses.id', '=', 'certificate_templates.course_id')
+            ->join('certificate_layouts', 'certificate_templates.certificate_layout_id', '=', 'certificate_layouts.id')
+            ->where('certificates.user_id', Auth::id())
+            ->where('courses.slug', $courseSlug)
+            ->where('certificate_templates.status', config('common.status.active'))
+            ->select(
+                'certificates.created_at',
+                'courses.title',
+                'certificate_templates.settings',
+                'certificate_layouts.height',
+                'certificate_layouts.width',
+                'certificate_layouts.path'
+            )
             ->firstOrFail();
 
         return $this->createCertificatePdf(new CertificatePdfData($certificate));

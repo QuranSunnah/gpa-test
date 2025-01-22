@@ -1,7 +1,3 @@
-@php
-$template = $pdfData->template;
-$layout = $pdfData->layout;
-@endphp
 <html>
 
 <head>
@@ -47,39 +43,39 @@ $layout = $pdfData->layout;
 <body class="bg">
     <div
         class="placeholder"
-        style="color: {{ $template->settings['course_title']['color'] }}; 
-                font-size: {{ $template->settings['course_title']['font_size'] }}px; 
+        style="color: {{ $pdfData->settings['course_title']['color'] }}; 
+                font-size: {{ $pdfData->settings['course_title']['font_size'] }}px; 
                 font-family: {{
-                    match((int)$template->settings['course_title']['font_weight']) {
+                    match((int)$pdfData->settings['course_title']['font_weight']) {
                         400 => 'TelenorNormal',
                         500 => 'TelenorMedium',
                         default => 'TelenorBold'
                     }
                 }};
-                top: {{ $template->settings['course_title']['y'] }}px;
-                @isset($template->settings['course_title']['x'])
-                    left: {{ $template->settings['course_title']['x'] }}px;
+                top: {{ $pdfData->settings['course_title']['y'] }}px;
+                @isset($pdfData->settings['course_title']['x'])
+                    left: {{ $pdfData->settings['course_title']['x'] }}px;
                 @else
                     width: 100%;
                     text-align: center;
                 @endisset">
-        {{$pdfData?->course?->title ?? __('No Course Found')}}
+        {{$pdfData?->certificate?->title ?? __('No Course Found')}}
     </div>
 
     <div
         class="placeholder"
-        style="color: {{ $template->settings['student_name']['color'] }}; 
-                font-size: {{ $template->settings['student_name']['font_size'] }}px; 
+        style="color: {{ $pdfData->settings['student_name']['color'] }}; 
+                font-size: {{ $pdfData->settings['student_name']['font_size'] }}px; 
                 font-family: {{
-                    match((int)$template->settings['student_name']['font_weight']) {
+                    match((int)$pdfData->settings['student_name']['font_weight']) {
                         400 => 'TelenorNormal',
                         500 => 'TelenorMedium',
                         default => 'TelenorBold'
                     }
                 }};
-                top: {{ $template->settings['student_name']['y'] }}px;
-                @isset($template->settings['student_name']['x'])
-                    left: {{ $template->settings['student_name']['x'] }}px;
+                top: {{ $pdfData->settings['student_name']['y'] }}px;
+                @isset($pdfData->settings['student_name']['x'])
+                    left: {{ $pdfData->settings['student_name']['x'] }}px;
                 @else
                     width: 100%;
                     text-align: center;
@@ -89,18 +85,18 @@ $layout = $pdfData->layout;
 
     <div
         class="placeholder"
-        style="color: {{ $template->settings['date']['color'] }}; 
-                font-size: {{ $template->settings['date']['font_size'] }}px; 
+        style="color: {{ $pdfData->settings['date']['color'] }}; 
+                font-size: {{ $pdfData->settings['date']['font_size'] }}px; 
                 font-family: {{
-                    match((int)$template->settings['date']['font_weight']) {
+                    match((int)$pdfData->settings['date']['font_weight']) {
                         400 => 'TelenorNormal',
                         500 => 'TelenorMedium',
                         default => 'TelenorBold'
                     }
                 }};
-                top: {{ $template->settings['date']['y'] }}px;
-                @isset($template->settings['date']['x'])
-                    left: {{ $template->settings['date']['x'] }}px;
+                top: {{ $pdfData->settings['date']['y'] }}px;
+                @isset($pdfData->settings['date']['x'])
+                    left: {{ $pdfData->settings['date']['x'] }}px;
                 @else
                     width: 100%;
                     text-align: center;
