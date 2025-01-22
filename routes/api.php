@@ -20,6 +20,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/sliders/{id}', [Api\V1\SliderController::class, 'show']);
     Route::get('/partners', [Api\V1\PartnerController::class, 'index']);
     Route::get('/mentors', [Api\V1\MentorController::class, 'index']);
+    Route::get('/members', [Api\V1\MemberController::class, 'index']);
     Route::get('/testimonials', [Api\V1\TestimonialController::class, 'index']);
     Route::get('/news', [Api\V1\NewsController::class, 'index']);
     Route::get('/news/{slug}', [Api\V1\NewsController::class, 'show']);
@@ -30,7 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
-
+    Route::get('/web-pages/{slug}', [Api\V1\WebPageController::class, 'index']);
     Route::get('/settings', [Api\V1\SettingController::class, 'index']);
 });
 

@@ -31,8 +31,8 @@ return [
         'advanced' => 3,
     ],
     'language' => [
-        'english' => 1,
-        'bangla' => 2,
+        'bangla' => 1,
+        'english' => 2,
     ],
     'designation' => [
         'student' => 1,

@@ -25,9 +25,10 @@ class QuizService
         $quiz = $quizWithQuestions->first();
 
         return [
-            'id' => $quiz->id ?? null,
-            'title' => $quiz->title ?? null,
+            'id' => $quiz->quiz_id ?? null,
+            'title' => $quiz->quiz_title ?? null,
             'pass_marks_percentage' => $quiz->pass_marks_percentage ?? null,
+            'each_ques_mark' => $quiz->each_qmark,
             'total_questions' => $quizWithQuestions->count(),
             'questions' => QuestionResource::collection($quizWithQuestions),
         ];

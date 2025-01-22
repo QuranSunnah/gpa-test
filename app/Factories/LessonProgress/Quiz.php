@@ -51,7 +51,7 @@ class Quiz implements LessonProgressInterface
         $isPassed = ($scorePercentage >= $passMarksPercentage) ? true : false;
 
         if (!$isPassed) {
-            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}", Response::HTTP_EARLY_HINTS));
+            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}"), Response::HTTP_FORBIDDEN);
         }
 
         return [
