@@ -23,24 +23,20 @@ class CertificateService
 
     protected function createCertificatePdf(CertificatePdfData $pdfData): Response
     {
-        try {
-            $studentName = Auth::check()
-                ? Auth::user()->first_name . ' ' . Auth::user()->last_name
-                : 'Guest User';
+        $studentName = Auth::check()
+            ? Auth::user()->first_name . ' ' . Auth::user()->last_name
+            : 'Guest User';
 
-            $pdf = Pdf::loadView('templates.certificate', [
-                'pdfData' => $pdfData,
-                'studentName' => $studentName,
-            ])
-                ->setPaper([0, 0, $pdfData->layout->height, $pdfData->layout->width], 'landscape')
-                ->setOption([
-                    'fontDir' => public_path('/fonts'),
-                    'fontCache' => public_path('/fonts'),
-                ]);
+        $pdf = Pdf::loadView('templates.certificate', [
+            'pdfData' => $pdfData,
+            'studentName' => $studentName,
+        ])
+            ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape')
+            ->setOption([
+                'fontDir' => public_path('/fonts'),
+                'fontCache' => public_path('/fonts'),
+            ]);
 
-            return $pdf->download('certificate.pdf');
-        } catch (\Exception $e) {
-            throw new \Exception(__('Something went wrong.'));
-        }
+        return $pdf->download('certificate.pdf');
     }
 }

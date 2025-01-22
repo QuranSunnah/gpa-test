@@ -18,6 +18,8 @@ class CertificatePdfData
     public ?Course $course;
     public ?CertificateLayout $layout;
     public string $base64Image;
+    public int $height;
+    public int $width;
 
     public function __construct(Certificate $certificate)
     {
@@ -29,7 +31,8 @@ class CertificatePdfData
         if (!$this->template || !$this->course || !$this->layout) {
             throw new \Exception(__('Missing required data for certificate.'), Response::HTTP_NOT_FOUND);
         }
-
-        $this->base64Image = FileHelper::fetchBase64Image($this->layout->path ?? '');
+        $this->height = $this->layout?->height ?? 0;
+        $this->width = $this->layout?->width ?? 0;
+        $this->$this->base64Image = FileHelper::fetchBase64Image($this->layout->path ?? '');
     }
 }
