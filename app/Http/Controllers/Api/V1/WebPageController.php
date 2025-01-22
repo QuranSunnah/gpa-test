@@ -9,7 +9,6 @@ use App\Http\Requests\WebPageRequest;
 use App\Models\WebPage;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 
 class WebPageController extends Controller
 {
@@ -17,7 +16,6 @@ class WebPageController extends Controller
 
     public function index(WebPageRequest $request, string $slug): JsonResponse
     {
-        
         $lang = $request->lang === 'bn'
             ? config('common.language.bangla')
             : config('common.language.english');
@@ -32,6 +30,5 @@ class WebPageController extends Controller
             ->components;
 
         return $this->response($webPageInfo, __('Web page info'));
-        
     }
 }

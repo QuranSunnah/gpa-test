@@ -35,11 +35,9 @@ class Course extends Model
 
     public function buildSearchQuery(Builder $query, string $searchStr): Builder
     {
-        if (!empty($searchStr)) {
-            $query->where('courses.title', 'like', '%' . $searchStr . '%');
-        }
-
-        return $query;
+        return !empty($searchStr)
+            ? $query->where('courses.title', 'like', "%{$searchStr}%")
+            : $query;
     }
 
     public function category(): BelongsTo
@@ -55,5 +53,10 @@ class Course extends Model
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
+    }
+
+    public function getMediaInfoAttribute($value): array
+    {
+        return $value ? json_decode($value, true) : [];
     }
 }
