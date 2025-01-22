@@ -18,7 +18,8 @@ class CertificateResouce extends JsonResource
     {
         return [
             'id' => $this->id,
-            'course' => $this->course?->title,
+            'course_id' => $this->course_id,
+            'course_title' => $this->course?->title,
             'date' => $this->created_at,
             'media' => $this->course?->media_info ?? null,
         ];

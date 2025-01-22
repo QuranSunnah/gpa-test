@@ -39,12 +39,12 @@ Route::middleware(['auth:api'])
     ->prefix('v1')
     ->group(function () {
         Route::get('/certificates/list', [Api\V1\CertificateController::class, 'getCertificateList']);
-        Route::get('/certificates/{id}', [Api\V1\CertificateController::class, 'downloadCertificate']);
 
         Route::group(['prefix' => 'courses'], function () {
             Route::post('{slug}/enroll', [Api\V1\EnrollController::class, 'enroll']);
             Route::get('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'show']);
             Route::patch('{slug}/lesson_progress', [Api\V1\LessonProgressController::class, 'save']);
+            Route::get('/{id}/certificate', [Api\V1\CertificateController::class, 'downloadCertificate']);
         });
 
         Route::group(['prefix' => 'lessons'], function () {

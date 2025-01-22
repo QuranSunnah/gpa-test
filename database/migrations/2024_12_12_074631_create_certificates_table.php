@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->integer('course_id');
             $table->bigInteger('user_id');
             $table->timestamps();
+
+            $table->unique(['course_id', 'user_id']);
         });
     }
 

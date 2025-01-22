@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CertificateService
 {
-    public function getCertificateFile($id)
+    public function getCertificateFile($courseId)
     {
         $certificate = Certificate::with(['template.course', 'template.layout'])
-            ->where(['id' => $id, 'user_id' => Auth::id()])
+            ->where(['course_id' => $courseId, 'user_id' => Auth::id()])
             ->firstOrFail();
 
         return $this->createCertificatePdf(new CertificatePdfData($certificate));
