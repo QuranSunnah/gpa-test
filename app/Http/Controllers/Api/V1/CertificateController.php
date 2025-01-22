@@ -9,7 +9,6 @@ use App\Http\Resources\CertificateResouce;
 use App\Models\Certificate;
 use App\Services\CertificateService;
 use App\Traits\ApiResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
@@ -17,7 +16,9 @@ class CertificateController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CertificateService $service) {}
+    public function __construct(private CertificateService $service)
+    {
+    }
 
     public function getCertificateList(Request $request)
     {
