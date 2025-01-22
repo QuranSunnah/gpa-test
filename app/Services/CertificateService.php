@@ -18,9 +18,7 @@ class CertificateService
             ->where(['id' => $id, 'user_id' => Auth::id()])
             ->firstOrFail();
 
-        $pdfData = new CertificatePdfData($certificate);
-
-        return $this->createCertificatePdf($pdfData);
+        return $this->createCertificatePdf(new CertificatePdfData($certificate));
     }
 
     protected function createCertificatePdf(CertificatePdfData $pdfData): Response
