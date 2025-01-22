@@ -24,16 +24,12 @@ class CertificatePdfData
         Certificate $certificate,
         Course $course,
         CertificateLayout $layout,
-        int $width,
-        int $height,
         string $base64Image,
     ) {
         $this->template = $template;
         $this->certificate = $certificate;
         $this->course = $course;
         $this->layout = $layout;
-        $this->width = $width;
-        $this->height = $height;
         $this->base64Image = $base64Image;
     }
 }

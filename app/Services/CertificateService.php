@@ -17,21 +17,15 @@ class CertificateService
     {
         $certificate = Certificate::with(['template.course', 'template.layout'])
             ->where(['id' => $certId, 'user_id' => Auth::id()])
-            ->first();
+            ->firstOrFail();
 
-        if (!$certificate) {
-            throw new \Exception(__('Certificate Not Found.'), Response::HTTP_NOT_FOUND);
-        }
-
-        $template = $certificate->template;
-        $course = $certificate->course;
-        $layout = $template?->layout ?? null;
+        $template = $certificate?->template;
+        $course = $certificate?->course;
+        $layout = $template?->layout;
 
         if (!$template || !$course || !$layout) {
-            throw new \Exception(__('Missing required data for certificate.'), Response::HTTP_NOT_FOUND);
+            throw new \Exception(__('Missing required data for certificate.'));
         }
-
-        [$width, $height] = [$layout->width, $layout->height];
 
         $base64Image = FileHelper::fetchBase64Image($layout->path ?? '');
 
@@ -40,8 +34,6 @@ class CertificateService
             $certificate,
             $course,
             $layout,
-            $width,
-            $height,
             $base64Image
         );
 
@@ -62,7 +54,7 @@ class CertificateService
             'date' => $pdfData->certificate->created_at->format('Y-m-d'),
             'studentName' => $studentName,
         ])
-            ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape')
+            ->setPaper([0, 0, $pdfData->layout->height, $pdfData->layout->width], 'landscape')
             ->setOption([
                 'fontDir' => public_path('/fonts'),
                 'fontCache' => public_path('/fonts'),

@@ -38,7 +38,7 @@ Route::group(['prefix' => 'v1'], function () {
 Route::middleware(['auth:api'])
     ->prefix('v1')
     ->group(function () {
-        Route::get('/certificates', [Api\V1\CertificateController::class, 'getCertificateList']);
+        Route::get('/certificates/list', [Api\V1\CertificateController::class, 'getCertificateList']);
         Route::get('/certificates/{id}', [Api\V1\CertificateController::class, 'downloadCertificate']);
 
         Route::group(['prefix' => 'courses'], function () {

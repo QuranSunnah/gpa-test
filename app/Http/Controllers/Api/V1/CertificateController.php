@@ -17,12 +17,7 @@ class CertificateController extends Controller
 {
     use ApiResponse;
 
-    protected $certificateService;
-
-    public function __construct(CertificateService $certificateService)
-    {
-        $this->certificateService = $certificateService;
-    }
+    public function __construct(private CertificateService $service) {}
 
     public function getCertificateList(Request $request)
     {
@@ -36,8 +31,8 @@ class CertificateController extends Controller
         );
     }
 
-    public function downloadCertificate($certId): Response
+    public function downloadCertificate($id): Response
     {
-        return $this->certificateService->getCertificateFile($certId);
+        return $this->service->getCertificateFile($id);
     }
 }
