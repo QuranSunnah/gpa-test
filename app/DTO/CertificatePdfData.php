@@ -33,6 +33,6 @@ class CertificatePdfData
         }
         $this->height = $this->layout?->height ?? 0;
         $this->width = $this->layout?->width ?? 0;
-        $this->$this->base64Image = FileHelper::fetchBase64Image($this->layout->path ?? '');
+        $this->base64Image = FileHelper::fetchBase64Image($this->layout->path ?? '');
     }
 }
