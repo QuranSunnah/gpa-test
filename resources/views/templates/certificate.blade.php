@@ -1,3 +1,7 @@
+@php
+$template = $pdfData->template;
+$layout = $pdfData->layout;
+@endphp
 <html>
 
 <head>
@@ -31,7 +35,7 @@
 
         .bg {
             position: relative;
-            background: url('data:image/png;base64, {{ $base64Image }}') no-repeat center center/cover;
+            background: url('data:image/png;base64, {{ $pdfData->base64Image }}') no-repeat center center/cover;
         }
 
         .placeholder {
@@ -59,7 +63,7 @@
                     width: 100%;
                     text-align: center;
                 @endisset">
-        {{$courseTitle}}
+        {{$pdfData?->course?->title ?? __('No Course Found')}}
     </div>
 
     <div
@@ -101,7 +105,7 @@
                     width: 100%;
                     text-align: center;
                 @endisset">
-        Date: {{ $date }}
+        Date: {{ $pdfData->certificate->created_at->format('Y-m-d') }}
     </div>
 </body>
 

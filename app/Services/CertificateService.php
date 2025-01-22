@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\CertificatePdfData;
-use App\Helpers\FileHelper;
 use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
@@ -13,53 +12,38 @@ use Illuminate\Support\Facades\Auth;
 
 class CertificateService
 {
-    public function getCertificateFile($certId)
+    public function getCertificateFile($id)
     {
         $certificate = Certificate::with(['template.course', 'template.layout'])
-            ->where(['id' => $certId, 'user_id' => Auth::id()])
+            ->where(['id' => $id, 'user_id' => Auth::id()])
             ->firstOrFail();
 
-        $template = $certificate?->template;
-        $course = $certificate?->course;
-        $layout = $template?->layout;
 
-        if (!$template || !$course || !$layout) {
-            throw new \Exception(__('Missing required data for certificate.'));
-        }
-
-        $base64Image = FileHelper::fetchBase64Image($layout->path ?? '');
-
-        $pdfData = new CertificatePdfData(
-            $template,
-            $certificate,
-            $course,
-            $layout,
-            $base64Image
-        );
+        $pdfData = new CertificatePdfData($certificate);
 
         return $this->createCertificatePdf($pdfData);
     }
 
     protected function createCertificatePdf(CertificatePdfData $pdfData): Response
     {
-        $studentName = Auth::check()
-            ? Auth::user()->first_name . ' ' . Auth::user()->last_name
-            : 'Guest User';
+        try {
+            $studentName = Auth::check()
+                ? Auth::user()->first_name . ' ' . Auth::user()->last_name
+                : 'Guest User';
 
-        $pdf = Pdf::loadView('templates.certificate', [
-            'template' => $pdfData->template,
-            'layout' => $pdfData->layout,
-            'courseTitle' => $pdfData?->course?->title ?? __('No Course Found'),
-            'base64Image' => $pdfData->base64Image,
-            'date' => $pdfData->certificate->created_at->format('Y-m-d'),
-            'studentName' => $studentName,
-        ])
-            ->setPaper([0, 0, $pdfData->layout->height, $pdfData->layout->width], 'landscape')
-            ->setOption([
-                'fontDir' => public_path('/fonts'),
-                'fontCache' => public_path('/fonts'),
-            ]);
+            $pdf = Pdf::loadView('templates.certificate', [
+                'pdfData' => $pdfData,
+                'studentName' => $studentName,
+            ])
+                ->setPaper([0, 0, $pdfData->layout->height, $pdfData->layout->width], 'landscape')
+                ->setOption([
+                    'fontDir' => public_path('/fonts'),
+                    'fontCache' => public_path('/fonts'),
+                ]);
 
-        return $pdf->download('certificate.pdf');
+            return $pdf->download('certificate.pdf');
+        } catch (\Exception $e) {
+            throw new \Exception(__("Something went wrong."));
+        }
     }
 }
