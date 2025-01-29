@@ -32,13 +32,19 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
     Route::get('/web-pages/{slug}', [Api\V1\WebPageController::class, 'index']);
+    Route::get('/institutes', [Api\V1\InstituteController::class, 'index']);
     Route::get('/settings', [Api\V1\SettingController::class, 'index']);
 });
 
 Route::middleware(['auth:api'])
     ->prefix('v1')
     ->group(function () {
-        Route::get('/certificates/list', [Api\V1\CertificateController::class, 'getCertificateList']);
+        Route::get('/students/me', [Api\V1\StudentController::class, 'getProfileInfo']);
+        Route::patch('/students/me', [Api\V1\StudentController::class, 'update']);
+        Route::post('/students/me/change-photo', [Api\V1\StudentController::class, 'changePhoto']);
+        Route::patch('/students/me/change-password', [Api\V1\Auth\PasswordChangeController::class, 'changePassword']);
+        Route::get('/students/me/courses', [Api\V1\CourseController::class, 'myCourses']);
+        Route::get('/students/me/certificates', [Api\V1\CertificateController::class, 'myCertificates']);
 
         Route::group(['prefix' => 'courses'], function () {
             Route::post('{slug}/enroll', [Api\V1\EnrollController::class, 'enroll']);

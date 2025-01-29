@@ -81,10 +81,27 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'gpid'];
 
     public function getFullNameAttribute()
     {
         return trim("{$this->first_name} {$this->last_name}");
+    }
+
+    public function getGpidAttribute(): string
+    {
+        $prefix = 'GP';
+
+        return $prefix . str_pad((string) $this->id, 8 - strlen($prefix), '0', STR_PAD_LEFT);
+    }
+
+    public function getSocialLinksAttribute($value): array
+    {
+        return $value ? json_decode($value, true) : [];
+    }
+
+    public function getImagesAttribute($value): array
+    {
+        return $value ? json_decode($value, true) : [];
     }
 }
