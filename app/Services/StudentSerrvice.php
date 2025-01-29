@@ -23,7 +23,7 @@ class StudentSerrvice
         }
         if (isset($validatedData['social_links'])) {
             $validatedData['social_links'] = json_encode([
-                'linkedin' => filter_var($validatedData['social_links'], FILTER_SANITIZE_URL)
+                'linkedin' => filter_var($validatedData['social_links'], FILTER_SANITIZE_URL),
             ]);
         }
         $student->update($validatedData);
@@ -34,7 +34,7 @@ class StudentSerrvice
         $user = User::findOrfail(Auth::id());
         $storageDisk = env('FILESYSTEM_DISK', 'public');
         $extension = $request->file('profile_image')->getClientOriginalExtension();
-        $hashedFilename = md5((string)$user->id) . '.' . $extension;
+        $hashedFilename = md5((string) $user->id) . '.' . $extension;
 
         if ($user->images && isset($user->images['profile'])) {
             if (Storage::exists($user->images['profile'])) {
@@ -44,7 +44,6 @@ class StudentSerrvice
 
         $filePath = "profile_images/{$hashedFilename}";
         $request->file('profile_image')->storeAs('profile_images', $hashedFilename, $storageDisk);
-
 
         $imageData = [
             ...$user->images,
