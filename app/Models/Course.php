@@ -22,6 +22,7 @@ class Course extends Model
         'title',
         'category_id',
         'is_top',
+        'type',
     ];
 
     protected $casts = [
