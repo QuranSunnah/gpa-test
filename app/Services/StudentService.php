@@ -26,7 +26,7 @@ class StudentService
                 ? json_encode([
                     'linkedin' => filter_var($validatedData['social_links'], FILTER_SANITIZE_URL),
                 ])
-                : null
+                : null,
         ]);
     }
 

@@ -58,7 +58,7 @@ return [
     'gender' => [
         'male' => 1,
         'female' => 2,
-        'others' => 3
+        'others' => 3,
     ],
     'blood_group' => [
         'A+' => 1,

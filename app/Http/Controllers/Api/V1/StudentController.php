@@ -18,7 +18,9 @@ class StudentController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private StudentService $service) {}
+    public function __construct(private StudentService $service)
+    {
+    }
 
     public function getProfileInfo(Request $request): JsonResponse
     {
@@ -48,6 +50,7 @@ class StudentController extends Controller
     public function update(StudentUpdateRequest $request): JsonResponse
     {
         $this->service->update($request);
+
         return $this->response([], __('Student profile updated successfully'));
     }
 
