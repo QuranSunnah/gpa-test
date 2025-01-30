@@ -34,4 +34,9 @@ class CourseController extends Controller
     {
         return $this->response($this->repository->findBySlug($slug), 'Course details found');
     }
+
+    public function myCourses(Request $request): JsonResponse
+    {
+        return $this->paginateResponse($this->repository->mycourses($request->query->all()));
+    }
 }
