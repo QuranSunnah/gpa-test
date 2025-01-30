@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentUpdateRequest;
 use App\Http\Requests\UpdateProfileImageRequest;
 use App\Models\User;
-use App\Services\StudentSerrvice;
+use App\Services\StudentService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,9 +18,7 @@ class StudentController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private StudentSerrvice $service)
-    {
-    }
+    public function __construct(private StudentService $service) {}
 
     public function getProfileInfo(Request $request): JsonResponse
     {
@@ -50,7 +48,6 @@ class StudentController extends Controller
     public function update(StudentUpdateRequest $request): JsonResponse
     {
         $this->service->update($request);
-
         return $this->response([], __('Student profile updated successfully'));
     }
 

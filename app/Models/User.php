@@ -81,14 +81,14 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['full_name', 'gpid'];
+    protected $appends = ['full_name', 'gp_id'];
 
     public function getFullNameAttribute()
     {
         return trim("{$this->first_name} {$this->last_name}");
     }
 
-    public function getGpidAttribute(): string
+    public function getGpIdAttribute(): string
     {
         $prefix = 'GP';
 

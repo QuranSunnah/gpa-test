@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StudentUpdateRequest extends FormRequest
 {
@@ -24,13 +25,13 @@ class StudentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gender' => 'nullable|integer|in:1,2,3',
-            'dob' => 'nullable|date',
-            'blood_group' => 'nullable|integer|in:1,2,3,4,5,6,7,8',
-            'address' => 'nullable|string|max:255',
-            'social_links' => 'nullable|url',
+            'gender' => ['nullable', 'integer', Rule::in(array_values(config('common.gender')))],
+            'dob' => ['nullable', 'date'],
+            'blood_group' => ['nullable', 'integer', Rule::in(array_values(config('common.blood_group')))],
+            'address' => ['nullable', 'string', 'max:255'],
+            'social_links' => ['nullable', 'url'],
             'institute_id' => ['required', 'integer', 'exists:institutes,id'],
-            'academic_status' => 'nullable|integer|in:1,2,3',
+            'academic_status' => ['nullable', 'integer', Rule::in(array_values(config('common.academic_status')))],
         ];
     }
 

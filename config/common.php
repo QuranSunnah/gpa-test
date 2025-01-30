@@ -55,4 +55,24 @@ return [
         'google' => 3,
     ],
     'otp_expired_duration_at_min' => 5,
+    'gender' => [
+        'male' => 1,
+        'female' => 2,
+        'others' => 3
+    ],
+    'blood_group' => [
+        'A+' => 1,
+        'A-' => 2,
+        'B+' => 3,
+        'B-' => 4,
+        'O+' => 5,
+        'O-' => 6,
+        'AB+' => 7,
+        'AB-' => 8,
+    ],
+    'academic_status' => [
+        'univeristy_student' => 1,
+        'graduate' => 2,
+        'post_graduate' => 3,
+    ],
 ];

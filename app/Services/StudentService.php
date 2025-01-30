@@ -11,22 +11,23 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class StudentSerrvice
+class StudentService
 {
     public function update(StudentUpdateRequest $request): void
     {
-        $validatedData = $request->validated();
-        $student = User::findOrfail(Auth::id());
+        $student = User::findOrFail(Auth::id());
 
-        if (isset($validatedData['institute_id'])) {
-            $validatedData['institute_name'] = Institute::findOrFail($validatedData['institute_id'])->name;
-        }
-        if (isset($validatedData['social_links'])) {
-            $validatedData['social_links'] = json_encode([
-                'linkedin' => filter_var($validatedData['social_links'], FILTER_SANITIZE_URL),
-            ]);
-        }
-        $student->update($validatedData);
+        $student->update([
+            ...$request->validated(),
+            'institute_name' => isset($validatedData['institute_id'])
+                ? Institute::findOrFail($validatedData['institute_id'])->name
+                : null,
+            'social_links' => isset($validatedData['social_links'])
+                ? json_encode([
+                    'linkedin' => filter_var($validatedData['social_links'], FILTER_SANITIZE_URL),
+                ])
+                : null
+        ]);
     }
 
     public function uploadProfileImage(UpdateProfileImageRequest $request): array
