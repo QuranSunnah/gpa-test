@@ -14,13 +14,11 @@ class ContactUsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private ContactUsService $service)
-    {
-    }
+    public function __construct(private ContactUsService $service) {}
 
     public function save(ContactUsRequest $request): JsonResponse
     {
-        $x = $this->service->save($request);
+        $this->service->save($request);
 
         return $this->response([], 'Message sent successfully');
     }
