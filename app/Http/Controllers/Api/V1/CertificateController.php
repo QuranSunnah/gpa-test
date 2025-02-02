@@ -20,7 +20,7 @@ class CertificateController extends Controller
     {
     }
 
-    public function getCertificateList(Request $request)
+    public function myCertificates(Request $request)
     {
         $certificates = Certificate::where('user_id', Auth::id())
             ->with('course')

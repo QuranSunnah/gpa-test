@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 
 class CourseRepository implements Repository
 {
@@ -80,5 +81,17 @@ class CourseRepository implements Repository
             },
         ])
             ->where('slug', $slug)->firstOrFail();
+    }
+
+    public function mycourses(array $filters = [])
+    {
+        return Course::join('enrolls', 'enrolls.course_id', 'courses.id')
+            ->select('courses.*')
+            ->filter($filters)
+            ->where('enrolls.user_id', Auth::id())
+            ->where('enrolls.status', config('common.status.active'))
+            ->active()
+            ->orderBy('enrolls.id', 'DESC')
+            ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 }
