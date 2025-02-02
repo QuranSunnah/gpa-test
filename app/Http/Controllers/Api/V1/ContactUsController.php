@@ -14,7 +14,9 @@ class ContactUsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private ContactUsService $service) {}
+    public function __construct(private ContactUsService $service)
+    {
+    }
 
     public function save(ContactUsRequest $request): JsonResponse
     {
