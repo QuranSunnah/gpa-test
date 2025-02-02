@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/web-pages/{slug}', [Api\V1\WebPageController::class, 'index']);
     Route::get('/institutes', [Api\V1\InstituteController::class, 'index']);
     Route::get('/settings', [Api\V1\SettingController::class, 'index']);
+    Route::post('/contact-us', [Api\V1\ContactUsController::class, 'save']);
 });
 
 Route::middleware(['auth:api'])
