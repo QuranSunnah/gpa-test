@@ -14,7 +14,7 @@ class ContactUsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Allow all users to make this request
+        return true;
     }
 
     /**
