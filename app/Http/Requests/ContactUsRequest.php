@@ -30,12 +30,12 @@ class ContactUsRequest extends FormRequest
             'full_name' => [
                 $rule,
                 'string',
-                'max:255'
+                'max:255',
             ],
             'email' => [
                 $rule,
                 'email',
-                'max:255'
+                'max:255',
             ],
             'phone' => [
                 $rule,
@@ -43,7 +43,7 @@ class ContactUsRequest extends FormRequest
             ],
             'message' => [
                 'required',
-                'string'
+                'string',
             ],
         ];
     }
