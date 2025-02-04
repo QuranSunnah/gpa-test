@@ -16,6 +16,7 @@ class StudentService
     public function update(StudentUpdateRequest $request): void
     {
         $student = User::findOrFail(Auth::id());
+        $validatedData = $request->validated();
 
         $student->update([
             ...$request->validated(),
