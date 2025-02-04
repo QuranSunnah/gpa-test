@@ -18,7 +18,9 @@ class StudentController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private StudentService $service) {}
+    public function __construct(private StudentService $service)
+    {
+    }
 
     public function getProfileInfo(Request $request): JsonResponse
     {
@@ -37,7 +39,7 @@ class StudentController extends Controller
             'academic_status',
             'first_name',
             'last_name',
-            'designation'
+            'designation',
         ])
             ->where('id', Auth::id())
             ->where('status', config('common.status.active'))

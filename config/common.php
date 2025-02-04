@@ -79,5 +79,5 @@ return [
         'student' => 'Student',
         'service_holder' => 'Service Holder',
         'self_employed' => 'Self Employed',
-    ]
+    ],
 ];
