@@ -13,7 +13,9 @@ class PasswordResetConfirmationMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public array $emailData) {}
+    public function __construct(public array $emailData)
+    {
+    }
 
     /**
      * Get the message envelope.
