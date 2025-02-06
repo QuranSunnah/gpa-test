@@ -11,7 +11,7 @@ class PasswordResetService
 {
     public function reset(Request $request): void
     {
-        $user = User::where("email", $request->post('email'))->first();
+        $user = User::where('email', $request->post('email'))->first();
         $user->fill($request->only(
             'password',
         ));

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\User;
@@ -24,7 +26,7 @@ class PasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'emial' =>                     [
+            'emial' => [
                 'email:rfc,dns',
                 'max:255',
                 function ($attribute, $value, $fail) {
@@ -41,7 +43,7 @@ class PasswordResetRequest extends FormRequest
                 'required',
                 'digits:4',
                 function ($attribute, $value, $fail) {
-                    $user = User::where("email", $this->email)
+                    $user = User::where('email', $this->email)
                         ->active()
                         ->first();
 
@@ -63,7 +65,7 @@ class PasswordResetRequest extends FormRequest
                 'string',
                 'min:8',
                 'confirmed',
-            ]
+            ],
         ];
     }
 }

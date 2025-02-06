@@ -15,11 +15,14 @@ class ForgotPasswordController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private PasswordResetService $service) {}
+    public function __construct(private PasswordResetService $service)
+    {
+    }
 
     public function reset(PasswordResetRequest $request): JsonResponse
     {
         $this->service->reset($request);
+
         return $this->response(
             [],
             'Reset password successfull.',

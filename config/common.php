@@ -74,5 +74,5 @@ return [
         'univeristy_student' => 1,
         'graduate' => 2,
         'post_graduate' => 3,
-    ]
+    ],
 ];

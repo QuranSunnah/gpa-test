@@ -7,7 +7,6 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 
 class OtpRequest extends FormRequest
 {
