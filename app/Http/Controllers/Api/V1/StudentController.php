@@ -39,6 +39,7 @@ class StudentController extends Controller
             'academic_status',
             'first_name',
             'last_name',
+            'designation',
         ])
             ->where('id', Auth::id())
             ->where('status', config('common.status.active'))

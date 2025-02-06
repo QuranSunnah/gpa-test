@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ContactUsRequest extends FormRequest
 {
@@ -23,17 +24,35 @@ class ContactUsRequest extends FormRequest
      */
     public function rules(): array
     {
+        $rule = Auth::guard('api')->check() ? 'nullable' : 'required';
+
         return [
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'full_name' => [
+                $rule,
+                'string',
+                'max:255',
+            ],
+            'email' => [
+                $rule,
+                'email',
+                'max:255',
+            ],
             'phone' => [
-                'required',
+                $rule,
                 'regex:/^(\+8801[1-9][0-9]{8}|8801[1-9][0-9]{8}|01[1-9][0-9]{8})$/',
             ],
-            'message' => 'required|string',
+            'message' => [
+                'required',
+                'string',
+            ],
         ];
     }
 
+    /**
+     * Custom validation messages.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
