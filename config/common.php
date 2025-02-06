@@ -74,10 +74,5 @@ return [
         'univeristy_student' => 1,
         'graduate' => 2,
         'post_graduate' => 3,
-    ],
-    'designation' => [
-        'student' => 'Student',
-        'service_holder' => 'Service Holder',
-        'self_employed' => 'Self Employed',
-    ],
+    ]
 ];
