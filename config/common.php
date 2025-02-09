@@ -54,6 +54,10 @@ return [
         'phone' => 2,
         'google' => 3,
     ],
+    'verified_status' => [
+        'active' => 1,
+        'inactive' => 0
+    ],
     'otp_expired_duration_at_min' => 5,
     'gender' => [
         'male' => 1,

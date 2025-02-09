@@ -16,6 +16,7 @@ class PasswordResetService
         $user->fill($request->only(
             'password',
         ));
+        $user->is_verified = config('common.verified_status.active');
         $user->save();
 
         event(new PasswordResetCompleted($user));
