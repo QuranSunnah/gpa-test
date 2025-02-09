@@ -26,13 +26,11 @@ class OtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'password' => 'required|min:6|max:60',
             'email' => [
                 'required',
                 'email:rfc,dns',
                 function ($attribute, $value, $fail) {
                     $user = User::where('email', $value)
-                        // ->where('is_verified', config('common.confirmation.no'))
                         ->active()
                         ->first();
 

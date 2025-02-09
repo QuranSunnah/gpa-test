@@ -26,7 +26,7 @@ class PasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'emial' => [
+            'email' => [
                 'email:rfc,dns',
                 'max:255',
                 function ($attribute, $value, $fail) {
