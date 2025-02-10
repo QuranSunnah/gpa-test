@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1/auth'], function () {
     Route::post('/register/complete', [Api\V1\Auth\RegisterController::class, 'complete']);
     Route::post('/login', Api\V1\Auth\LoginController::class);
     Route::post('/logout', [Api\V1\Auth\LoginController::class, 'logout'])->middleware(['auth:api']);
+    Route::post('/password/reset', [Api\V1\Auth\ForgotPasswordController::class, 'reset']);
 });
 
 Route::group(['prefix' => 'v1'], function () {

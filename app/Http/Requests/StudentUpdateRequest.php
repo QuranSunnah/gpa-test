@@ -32,7 +32,7 @@ class StudentUpdateRequest extends FormRequest
             'social_links' => ['nullable', 'url'],
             'institute_id' => ['required', 'integer', 'exists:institutes,id'],
             'academic_status' => ['nullable', 'integer', Rule::in(array_values(config('common.academic_status')))],
-            'designation' => ['required', 'string', Rule::in(array_values(config('common.designation')))],
+            'designation' => ['required', 'integer', Rule::in(array_values(config('common.designation')))],
         ];
     }
 
