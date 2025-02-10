@@ -22,6 +22,13 @@ class Enroll extends Model
         'status',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function ($enrollment) {
+            Course::where('id', $enrollment->course_id)->increment('total_enrollments');
+        });
+    }
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id');

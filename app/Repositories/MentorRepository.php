@@ -10,6 +10,8 @@ class MentorRepository implements Repository
 {
     public function paginate(array $filters = [])
     {
-        return Mentor::sort($filters)->paginate($filters['limit'] ?? config('common.pagi_limit'));
+        return Mentor::sort($filters)
+            ->active()
+            ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 }
