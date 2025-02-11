@@ -65,7 +65,6 @@ class CourseRepository implements Repository
             'category:id,name',
             'instructor:id,name,biography,photo',
             'sections' => function ($query) {
-                $query->has('lessons');
                 $query->orderBy('order', 'asc');
             },
             'sections.lessons' => function ($query) {
