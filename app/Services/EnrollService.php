@@ -26,16 +26,17 @@ class EnrollService
             throw new NotFoundHttpException(_('Invalid Request: course not found'));
         }
 
-        $enroll = Enroll::firstOrNew([
+        $enroll = Enroll::where([
             'user_id' => $studentId,
             'course_id' => $course->id,
-        ]);
+        ])
+            ->first();
 
-        if ($enroll->exists) {
+        if ($enroll) {
             return $this->handleExistingEnrollment($enroll);
         }
 
-        return $this->handleNewEnrollment($enroll, $studentId, $course->id);
+        return $this->handleNewEnrollment($studentId, $course->id);
     }
 
     private function handleExistingEnrollment(Enroll $enroll): Enroll
@@ -51,22 +52,21 @@ class EnrollService
         return $enroll;
     }
 
-    private function handleNewEnrollment(Enroll $enroll, int $studentId, int $courseId): Enroll
+    private function handleNewEnrollment(int $studentId, int $courseId): Enroll
     {
         DB::beginTransaction();
 
         try {
             $lesson = $this->getLesson($courseId);
-
             $this->createLessonProgress($studentId, $courseId, $lesson);
 
-            $enroll->fill([
+            $enroll = Enroll::create([
                 'user_id' => $studentId,
                 'course_id' => $courseId,
                 'start_at' => now(),
                 'end_at' => now(),
                 'status' => config('common.status.active'),
-            ])->save();
+            ]);
 
             DB::commit();
 
