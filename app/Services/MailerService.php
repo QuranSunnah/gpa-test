@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Mailer;
+namespace App\Services;
 
 use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Support\Facades\Log;

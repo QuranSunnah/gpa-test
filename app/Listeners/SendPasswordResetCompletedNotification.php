@@ -6,7 +6,7 @@ namespace App\Listeners;
 
 use App\Events\PasswordResetCompleted;
 use App\Mails\PasswordResetConfirmationMail;
-use App\Services\Mailer\MailerService;
+use App\Services\MailerService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendPasswordResetCompletedNotification implements ShouldQueue

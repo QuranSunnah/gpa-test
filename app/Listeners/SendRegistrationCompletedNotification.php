@@ -6,7 +6,7 @@ namespace App\Listeners;
 
 use App\Events\RegistrationCompleted;
 use App\Mails\RegistrationConfirmationMail;
-use App\Services\Mailer\MailerService;
+use App\Services\MailerService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendRegistrationCompletedNotification implements ShouldQueue

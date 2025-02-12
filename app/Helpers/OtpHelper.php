@@ -6,7 +6,7 @@ namespace App\Helpers;
 
 use App\GatewayProviders\Interfaces\Sendable;
 use App\Mails\OtpMail;
-use App\Services\Mailer\MailerService;
+use App\Services\MailerService;
 
 class OtpHelper
 {
