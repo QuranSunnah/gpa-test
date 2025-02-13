@@ -59,7 +59,7 @@ class RegisterRequest extends FormRequest
                         if ($user) {
                             if ($user->is_verified == $no) {
                                 return $fail(
-                                    'This is registeredphone number. Please verify OTP to complete registration'
+                                    'This is registered phone number. Please verify OTP to complete registration'
                                 );
                             } elseif ($user->status != $active) {
                                 return $fail('You are inactive user, please contact with system admin');

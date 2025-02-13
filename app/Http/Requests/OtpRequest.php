@@ -39,7 +39,7 @@ class OtpRequest extends FormRequest
                     }
                     $diffInSec = Carbon::parse($user->otp_created_at)->diffInSeconds(now());
 
-                    if ($diffInSec < env('OTP_RESEND_INTERVAL_SECONDS', 120)) {
+                    if ($diffInSec < (int) config('common.otp_resend_interval_seconds')) {
                         return $fail('Invalid input: Please try again in a few minutes.');
                     }
                 },

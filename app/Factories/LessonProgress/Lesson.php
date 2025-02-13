@@ -12,16 +12,14 @@ use Illuminate\Http\Response;
 
 class Lesson implements LessonProgressInterface
 {
-    public function __construct(private LessonUnlockService $lessonUnlockService)
-    {
-    }
+    public function __construct(private LessonUnlockService $lessonUnlockService) {}
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $this->validateTimeDuration($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
+            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'is_passed' => true,
                     'end_time' => Carbon::now()->timestamp,
@@ -39,7 +37,7 @@ class Lesson implements LessonProgressInterface
 
         $startTimeDiffWithCurrent = Carbon::parse($progressInfo->startTime)->diffInSeconds(now());
 
-        $lessonWatchRatio = ($lessonDuration / 100) * (int) env('LESSON_MIN_WATCH_PERCENTAGE');
+        $lessonWatchRatio = ($lessonDuration / 100) * (int) config('common.lesson_min_watch_percentage');
 
         if (($lessonDuration && $lessonWatchRatio <= $startTimeDiffWithCurrent) || !$lessonDuration) {
             return true;
