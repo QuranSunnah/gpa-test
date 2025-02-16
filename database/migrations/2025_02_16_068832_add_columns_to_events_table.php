@@ -16,6 +16,7 @@ return new class extends Migration {
                 $table->char('button_title', 255)->nullable();
                 $table->char('button_url', 255)->nullable();
             });
+            $table->timestamp('date')->change();
             $table->renameColumn('image', 'banner');
         });
     }
@@ -24,6 +25,7 @@ return new class extends Migration {
     {
         Schema::table('events', function (Blueprint $table) {
             $table->renameColumn('banner', 'image');
+            $table->date('date')->nullable()->change();
             $table->dropColumn(['slug', 'gallery_id', 'button_title', 'button_url']);
         });
     }
