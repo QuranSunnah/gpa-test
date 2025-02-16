@@ -14,9 +14,7 @@ class EventsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private EventsRepository $repository)
-    {
-    }
+    public function __construct(private EventsRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
