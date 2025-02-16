@@ -12,8 +12,9 @@ return new class extends Migration {
         Schema::table('events', function (Blueprint $table) {
             $table->after('title', function (Blueprint $table) {
                 $table->char('slug', 255)->unique();
-                $table->text('link')->nullable();
-                $table->json('gallery')->nullable();
+                $table->integer('gallery_id')->nullable();
+                $table->char('button_title', 255)->nullable();
+                $table->char('button_url', 255)->nullable();
             });
             $table->renameColumn('image', 'banner');
         });
@@ -22,8 +23,8 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn(['slug', 'link', 'gallery']);
             $table->renameColumn('banner', 'image');
+            $table->dropColumn(['slug', 'gallery_id', 'button_title', 'button_url']);
         });
     }
 };

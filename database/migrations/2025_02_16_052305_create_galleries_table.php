@@ -16,7 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->char('title', 255);
             $table->char('slug', 255)->unique();
-            $table->json('images');
+            $table->text('description')->nullable();
+            $table->json('images')->nullable();
             $table->tinyInteger('status')->default(1)->comment('0=Inactive,1=Active');
             $table->timestamps();
             $table->softDeletes();
