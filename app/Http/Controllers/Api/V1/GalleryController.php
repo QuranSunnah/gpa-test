@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\EventResouce;
-use App\Models\Event;
-use App\Repositories\EventsRepository;
+use App\Models\Gallery;
+use App\Repositories\GalleryRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class EventsController extends Controller
+class GalleryController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private EventsRepository $repository) {}
+    public function __construct(private GalleryRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -25,7 +24,6 @@ class EventsController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        $event = Event::where('slug', $slug)->with('gallery')->firstOrFail();
-        return $this->response(new EventResouce($event), __('Events details'));
+        return $this->response(Gallery::where('slug', $slug)->firstOrFail(), __('Gallery details'));
     }
 }
