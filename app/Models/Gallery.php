@@ -22,7 +22,6 @@ class Gallery extends Model
         return CommonHelper::decodeJson($value);
     }
 
-
     public function buildSearchQuery(Builder $query, string $searchStr): Builder
     {
         if (!empty($searchStr)) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -21,7 +23,7 @@ class EventResouce extends JsonResource
             'description' => $this->description,
             'banner' => $this->banner,
             'date' => $this->date,
-            'gallery' => $this?->gallery ? $this->gallery?->images : []
+            'gallery' => $this->gallery ? $this->gallery?->images : [],
         ];
     }
 }

@@ -16,7 +16,9 @@ class EventsController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private EventsRepository $repository) {}
+    public function __construct(private EventsRepository $repository)
+    {
+    }
 
     public function index(Request $request): JsonResponse
     {
@@ -26,6 +28,7 @@ class EventsController extends Controller
     public function show(string $slug): JsonResponse
     {
         $event = Event::where('slug', $slug)->with('gallery')->firstOrFail();
+
         return $this->response(new EventResouce($event), __('Events details'));
     }
 }
