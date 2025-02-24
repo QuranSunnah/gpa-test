@@ -90,9 +90,7 @@ class User extends Authenticatable
 
     public function getGpIdAttribute(): string
     {
-        $prefix = 'GP';
-
-        return $prefix . str_pad((string) $this->id, 8 - strlen($prefix), '0', STR_PAD_LEFT);
+        return 'GP' . str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);
     }
 
     public function getSocialLinksAttribute($value): array
