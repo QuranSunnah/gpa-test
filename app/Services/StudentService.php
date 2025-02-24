@@ -34,7 +34,7 @@ class StudentService
     public function uploadProfileImage(UpdateProfileImageRequest $request): array
     {
         $user = User::findOrfail(Auth::id());
-        $storageDisk = env('FILESYSTEM_DISK', 'public');
+        $storageDisk = config('filesystems.default');
         $extension = $request->file('profile_image')->getClientOriginalExtension();
         $hashedFilename = md5((string) $user->id) . '.' . $extension;
 
@@ -45,7 +45,10 @@ class StudentService
         }
 
         $filePath = "profile_images/{$hashedFilename}";
-        $request->file('profile_image')->storeAs('profile_images', $hashedFilename, $storageDisk);
+        $request->file('profile_image')->storeAs('profile_images', $hashedFilename, [
+            'disk' => $storageDisk,
+            'visibility' => 'public',
+        ]);
 
         $imageData = [
             ...$user->images,
