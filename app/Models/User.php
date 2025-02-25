@@ -59,6 +59,8 @@ class User extends Authenticatable
         'status',
     ];
 
+    protected $appends = ['full_name'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -81,18 +83,17 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['full_name', 'gp_id'];
+    protected static function booted(): void
+    {
+        static::created(function ($model) {
+            $model->gp_id = 'GP' . str_pad((string) $model->id, 6, '0', STR_PAD_LEFT);
+            $model->save();
+        });
+    }
 
     public function getFullNameAttribute()
     {
         return trim("{$this->first_name} {$this->last_name}");
-    }
-
-    public function getGpIdAttribute(): string
-    {
-        $prefix = 'GP';
-
-        return $prefix . str_pad((string) $this->id, 8 - strlen($prefix), '0', STR_PAD_LEFT);
     }
 
     public function getSocialLinksAttribute($value): array

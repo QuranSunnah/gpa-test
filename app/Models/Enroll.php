@@ -24,8 +24,10 @@ class Enroll extends Model
 
     protected static function booted(): void
     {
-        static::created(function ($enrollment) {
-            Course::where('id', $enrollment->course_id)->increment('total_enrollments');
+        static::created(function ($enroll) {
+            User::where('id', $enroll->user_id)->increment('total_enrollments');
+
+            Course::where('id', $enroll->course_id)->increment('total_enrollments');
         });
     }
 
