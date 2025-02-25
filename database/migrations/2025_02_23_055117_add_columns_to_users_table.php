@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->char('gp_id', 255)->nullable()->after('password');
+            $table->char('gp_id', 255)->nullable()->after('id');
             $table->integer('total_enrollments')->default(0)->after('status');
         });
     }
