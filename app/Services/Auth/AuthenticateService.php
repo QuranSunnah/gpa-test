@@ -14,6 +14,9 @@ class AuthenticateService
         $instance = AuthFactory::create($request->post('provider') ?? 'general');
         $user = $instance->authenticate($request);
 
+        $user->last_login = now();
+        $user->save();
+
         return [
             ...$user->toArray(),
             'token' => $user->createToken('api_auth_token')->accessToken,
