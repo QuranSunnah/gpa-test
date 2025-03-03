@@ -15,7 +15,7 @@ class CertificateService
     public function getCertificateFile($courseSlug)
     {
         $certificate = Certificate::join('courses', 'certificates.course_id', '=', 'courses.id')
-            ->join('certificate_templates', 'courses.id', '=', 'certificate_templates.course_id')
+            ->join('certificate_templates', 'courses.certificate_template_id', '=', 'certificate_templates.id')
             ->join('certificate_layouts', 'certificate_templates.certificate_layout_id', '=', 'certificate_layouts.id')
             ->where('certificates.user_id', Auth::id())
             ->where('courses.slug', $courseSlug)
