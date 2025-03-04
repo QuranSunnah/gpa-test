@@ -41,6 +41,11 @@ class Course extends Model
             : $query;
     }
 
+    public function certificateTemplate(): BelongsTo
+    {
+        return $this->belongsTo(CertificateTemplate::class);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

@@ -12,9 +12,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->char('gp_id', 255)->nullable()->after('id');
-            $table->integer('total_enrollments')->default(0)->after('status');
+        Schema::table('certificate_templates', function (Blueprint $table) {
+            $table->char('title', 255)->after('id');
         });
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['gp_id', 'total_enrollments']);
+        Schema::table('certificate_templates', function (Blueprint $table) {
+            $table->dropColumn('title');
         });
     }
 };
