@@ -104,7 +104,7 @@ class LessonUnlockService
     {
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
-            $nextLesson = $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+            $nextLesson = $lessons->first(fn ($lesson) => !isset($keyMap[$lesson->id]));
 
             if ($nextLesson) {
                 return [
