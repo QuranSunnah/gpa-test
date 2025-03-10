@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('institutes', function (Blueprint $table) {
-            $table->integer('division_id')->default(0)->after('id');
+            $table->integer('division_id')->nullable()->after('id');
         });
     }
 
