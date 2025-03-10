@@ -9,6 +9,7 @@ use App\Events\RegistrationProcessed;
 use App\Helpers\OtpHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\RegistrationCompleteRequest;
+use App\Models\Institute;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -26,7 +27,11 @@ class RegisterService
             'phone',
             'gender',
             'designation',
+            'institute_id',
         ));
+        if ($request->has('institute_id')) {
+            $user->institute_name = Institute::find($request->post('institute_id'))->name;
+        }
         $user->last_otp = $otp;
         $user->otp_created_at = Carbon::now();
         $user->save();
