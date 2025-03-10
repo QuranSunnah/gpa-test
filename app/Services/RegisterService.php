@@ -29,7 +29,7 @@ class RegisterService
             'designation',
             'institute_id',
         ));
-        if ($request->has('institute_id')) {
+        if ($request->designation == config('common.designation.student')) {
             $user->institute_name = Institute::find($request->post('institute_id'))->name;
         }
         $user->last_otp = $otp;
