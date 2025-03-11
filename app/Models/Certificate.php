@@ -16,6 +16,15 @@ class Certificate extends Model
         'status',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function ($certificate) {
+            User::where('id', $certificate->user_id)->increment('total_completion');
+
+            Course::where('id', $certificate->course_id)->increment('total_completion');
+        });
+    }
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id');
