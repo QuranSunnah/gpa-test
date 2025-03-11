@@ -19,9 +19,9 @@ class Certificate extends Model
     protected static function booted(): void
     {
         static::created(function ($certificate) {
-            User::where('id', $certificate->user_id)->increment('total_course_completion');
+            User::where('id', $certificate->user_id)->increment('total_course_completions');
 
-            Course::where('id', $certificate->course_id)->increment('total_course_completion');
+            Course::where('id', $certificate->course_id)->increment('total_course_completions');
         });
     }
 
