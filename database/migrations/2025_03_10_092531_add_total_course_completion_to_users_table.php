@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('total_course_completion')->default(0)->after('status');
+            $table->integer('total_course_completions')->default(0)->after('status');
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('total_course_completion');
+            $table->dropColumn('total_course_completions');
         });
     }
 };
