@@ -6,6 +6,7 @@ namespace App\Services\Lesson;
 
 use App\DTO\LessonProgressResource;
 use App\Models\Certificate;
+use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Carbon\Carbon;
@@ -77,6 +78,12 @@ class LessonUnlockService
                 'is_passed' => $isCoursePassed,
                 'total_marks' => $totalMraks,
                 'lessons' => $lessonProgress,
+            ]);
+
+        Enroll::where('course_id', $progressInfo->courseId)
+            ->where('user_id', Auth::id())
+            ->update([
+                'end_at' => now(),
             ]);
 
         $currentLesson = collect($lessonProgress)->where('id', $progressInfo->lessonId)->first();

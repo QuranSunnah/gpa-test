@@ -72,6 +72,11 @@ class RegisterRequest extends FormRequest
                 'password' => 'required|confirmed|min:6|max:60',
                 'gender' => 'required|integer|min:1|max:3',
                 'designation' => 'required|integer',
+                'institute_id' => [
+                    $this->designation == config('common.designation.student') ? 'required' : 'nullable',
+                    'integer',
+                    'exists:institutes,id',
+                ],
             ];
         }
     }
