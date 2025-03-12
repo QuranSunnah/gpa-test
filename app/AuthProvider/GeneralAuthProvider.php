@@ -18,13 +18,12 @@ class GeneralAuthProvider implements Authenticable
         try {
             $user = User::where('email', $request->email)->firstOrFail();
 
-            if ($user->password === sha1($request->password) || Hash::check($request->password, $user->password)) {
-                Auth::login($user);
+            if ($user->password === sha1($request->password)) {
+                $user->update(['password' => Hash::make($request->password)]);
+                return $this->validateUser($user);
+            }
 
-                if (sha1($request->password) === $user->password) {
-                    $user->update(['password' => Hash::make($request->password)]);
-                }
-
+            if (Hash::check($request->password, $user->password)) {
                 return $this->validateUser($user);
             }
         } catch (\Exception $e) {
@@ -52,6 +51,8 @@ class GeneralAuthProvider implements Authenticable
         if (!in_array($user->verified_by, $validVerificationMethods, true)) {
             throw new UnauthorizedException('Your account verification method is not recognized.');
         }
+
+        Auth::login($user);
 
         return $user;
     }
