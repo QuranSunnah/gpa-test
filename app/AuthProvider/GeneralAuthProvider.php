@@ -17,20 +17,24 @@ class GeneralAuthProvider implements Authenticable
     {
         $user = User::where('email', $request->email)->first();
 
-        if ($user && $user->password === sha1($request->password)) {
+        if (!$user) {
+            throw new UnauthorizedException('Invalid login credentials.');
+        }
+
+        if ($user->password === sha1($request->password)) {
             Auth::login($user);
             $user->update(['password' => Hash::make($request->password)]);
 
-            return $this->validateUser($user);
+            return $this->getValidateUser($user);
         }
         if (Auth::attempt($request->only('email', 'password'))) {
-            return $this->validateUser($user);
+            return $this->getValidateUser($user);
         }
 
         throw new UnauthorizedException('Invalid login credentials');
     }
 
-    private function validateUser(User $user): User
+    private function getValidateUser(User $user): User
     {
         if ($user->is_verified !== config('common.confirmation.yes')) {
             throw new UnauthorizedException('Your account is not verified. Please reset password.');
