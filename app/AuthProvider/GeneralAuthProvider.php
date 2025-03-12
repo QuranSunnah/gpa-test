@@ -25,16 +25,18 @@ class GeneralAuthProvider implements Authenticable
             Auth::login($user);
             $user->update(['password' => Hash::make($request->password)]);
 
-            return $this->getValidateUser($user);
+            return $this->validateUser($user);
         }
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return $this->getValidateUser($user);
+
+        if (Hash::check($request->password, $user->password)) {
+            Auth::login($user);
+            return $this->validateUser($user);
         }
 
         throw new UnauthorizedException('Invalid login credentials');
     }
 
-    private function getValidateUser(User $user): User
+    private function validateUser(User $user): User
     {
         if ($user->is_verified !== config('common.confirmation.yes')) {
             throw new UnauthorizedException('Your account is not verified. Please reset password.');
