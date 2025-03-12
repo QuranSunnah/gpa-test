@@ -16,13 +16,14 @@ class GeneralAuthProvider implements Authenticable
     public function authenticate(LoginRequest $request): User
     {
         try {
-            $user = User::where('email', $request->email)->firstOrFail();
             $password = $request->password;
+            $user = User::where('email', $request->email)->firstOrFail();
+
             if ($user->password === sha1($password) || Hash::check($password, $user->password)) {
                 Auth::login($user);
 
                 if (sha1($password) === $user->password) {
-                    $user->update(['password' => Hash::make($request->password)]);
+                    $user->update(['password' => Hash::make($password)]);
                 }
 
                 return $this->validateUser($user);
