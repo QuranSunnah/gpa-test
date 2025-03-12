@@ -30,6 +30,7 @@ class GeneralAuthProvider implements Authenticable
 
         if (Hash::check($request->password, $user->password)) {
             Auth::login($user);
+
             return $this->validateUser($user);
         }
 
