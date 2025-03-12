@@ -20,6 +20,7 @@ class GeneralAuthProvider implements Authenticable
 
             if ($user->password === sha1($request->password)) {
                 $user->update(['password' => Hash::make($request->password)]);
+
                 return $this->validateUser($user);
             }
 
