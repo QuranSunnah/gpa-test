@@ -19,7 +19,7 @@ class GeneralAuthProvider implements Authenticable
             $password = $request->password;
             $user = User::where('email', $request->email)->firstOrFail();
 
-            if ($user->password === sha1($password) || Hash::check($password, $user->password)) {
+            if ($user->password === sha1($request->password) || Hash::check($request->password, $user->password)) {
                 Auth::login($user);
 
                 if (sha1($password) === $user->password) {
