@@ -15,23 +15,23 @@ class GeneralAuthProvider implements Authenticable
 {
     public function authenticate(LoginRequest $request): User
     {
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            throw new UnauthorizedException('Invalid login credentials.');
-        }
+            if ($user->password === sha1($request->password)) {
+                Auth::login($user);
+                $user->update(['password' => Hash::make($request->password)]);
 
-        if ($user->password === sha1($request->password)) {
-            Auth::login($user);
-            $user->update(['password' => Hash::make($request->password)]);
+                return $this->validateUser($user);
+            }
 
-            return $this->validateUser($user);
-        }
+            if (Hash::check($request->password, $user->password)) {
+                Auth::login($user);
 
-        if (Hash::check($request->password, $user->password)) {
-            Auth::login($user);
-
-            return $this->validateUser($user);
+                return $this->validateUser($user);
+            }
+        } catch (\Exception $e) {
+            throw new UnauthorizedException('Invalid login credentials');
         }
 
         throw new UnauthorizedException('Invalid login credentials');
