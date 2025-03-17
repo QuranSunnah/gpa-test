@@ -29,8 +29,7 @@ class RegisterRequest extends FormRequest
             $active = config('common.user_status.active');
 
             return [
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
+                'full_name' => 'required|string|max:255',
                 'email' => [
                     'required',
                     'email:rfc,dns',
@@ -39,7 +38,7 @@ class RegisterRequest extends FormRequest
                         if ($user) {
                             if ($user->is_verified == $no) {
                                 return $fail(
-                                    'This email is already registered. Please verify OTP to complete registration.'
+                                    'This email is already registered.'
                                 );
                             } elseif ($user->status != $active) {
                                 return $fail('You are inactive user, please contact with system admin');
@@ -54,12 +53,13 @@ class RegisterRequest extends FormRequest
                     'string',
                     'min:11',
                     'max:50',
+                    'regex:/^(?:\+8801|8801|01|1)[3-9]\d{8}$/',
                     function ($attribute, $value, $fail) use ($no, $active) {
                         $user = User::where('phone', $value)->first();
                         if ($user) {
                             if ($user->is_verified == $no) {
                                 return $fail(
-                                    'This is registered phone number. Please verify OTP to complete registration'
+                                    'This phone number is already registered.'
                                 );
                             } elseif ($user->status != $active) {
                                 return $fail('You are inactive user, please contact with system admin');
@@ -79,5 +79,7 @@ class RegisterRequest extends FormRequest
                 ],
             ];
         }
+
+        return [];
     }
 }

@@ -19,9 +19,10 @@ class RegisterService
     {
         $user = new User();
         $otp = OtpHelper::generateOtp();
+
+        [$firstName, $lastName] = $this->splitFullName($request->full_name);
+
         $user->fill($request->only(
-            'first_name',
-            'last_name',
             'email',
             'password',
             'phone',
@@ -32,6 +33,9 @@ class RegisterService
         if ($request->designation == config('common.designation.student')) {
             $user->institute_name = Institute::find($request->post('institute_id'))->name;
         }
+        $user->first_name = $firstName;
+        $user->last_name = $lastName;
+
         $user->last_otp = $otp;
         $user->otp_created_at = Carbon::now();
         $user->save();
@@ -61,6 +65,23 @@ class RegisterService
         return [
             $identityType => $request->post('identity'),
             'token' => $user->createToken('api_auth_token')->accessToken,
+        ];
+    }
+
+    private function splitFullName(?string $fullName): array
+    {
+        $fullName = trim($fullName);
+
+        $parts = explode(' ', $fullName);
+        $count = count($parts);
+
+        if ($count === 1) {
+            return [$parts[0], null];
+        }
+
+        return [
+            implode(' ', array_slice($parts, 0, $count - 1)),
+            $parts[$count - 1]
         ];
     }
 }
