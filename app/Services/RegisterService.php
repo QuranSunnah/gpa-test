@@ -81,7 +81,7 @@ class RegisterService
 
         return [
             implode(' ', array_slice($parts, 0, $count - 1)),
-            $parts[$count - 1]
+            $parts[$count - 1],
         ];
     }
 }
