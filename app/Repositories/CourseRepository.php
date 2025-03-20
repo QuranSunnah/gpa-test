@@ -94,7 +94,7 @@ class CourseRepository implements Repository
                 'courses.title',
                 'courses.total_enrollments',
                 'courses.duration',
-                'lesson_progress.total_marks'
+                'lesson_progress.total_marks',
             ])
             ->filter($filters)
             ->where('enrolls.user_id', Auth::id())
