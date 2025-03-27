@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Events\RegistrationCompleted;
 use App\Events\RegistrationProcessed;
+use App\Helpers\CommonHelper;
 use App\Helpers\OtpHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\RegistrationCompleteRequest;
@@ -20,7 +21,7 @@ class RegisterService
         $user = new User();
         $otp = OtpHelper::generateOtp();
 
-        [$firstName, $lastName] = $this->splitFullName($request->full_name);
+        [$firstName, $lastName] = CommonHelper::splitFullName($request->full_name);
 
         $user->fill($request->only(
             'email',
@@ -65,23 +66,6 @@ class RegisterService
         return [
             $identityType => $request->post('identity'),
             'token' => $user->createToken('api_auth_token')->accessToken,
-        ];
-    }
-
-    private function splitFullName(?string $fullName): array
-    {
-        $fullName = trim($fullName);
-
-        $parts = explode(' ', $fullName);
-        $count = count($parts);
-
-        if ($count === 1) {
-            return [$parts[0], null];
-        }
-
-        return [
-            implode(' ', array_slice($parts, 0, $count - 1)),
-            $parts[$count - 1],
         ];
     }
 }
