@@ -11,8 +11,7 @@ class WebPage extends Model
 {
     use SoftDeletes;
 
-    public function getComponentsAttribute($value): array
-    {
-        return $value ? json_decode($value, true) : [];
-    }
+    protected $casts = [
+        'components' => 'array',
+    ];
 }

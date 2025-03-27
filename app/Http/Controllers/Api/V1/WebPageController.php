@@ -25,9 +25,8 @@ class WebPageController extends Controller
             ['status', config('common.status.active')],
             ['lang', $lang],
         ])
-            ->select('components', 'lang')
-            ->firstOrFail()
-            ->components;
+            ->select('components')
+            ->firstOrFail()->components;
 
         return $this->response($webPageInfo, __('Web page info'));
     }
