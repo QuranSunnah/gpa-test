@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Events\RegistrationCompleted;
 use App\Events\RegistrationProcessed;
+use App\Helpers\CommonHelper;
 use App\Helpers\OtpHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\RegistrationCompleteRequest;
@@ -19,9 +20,10 @@ class RegisterService
     {
         $user = new User();
         $otp = OtpHelper::generateOtp();
+
+        [$firstName, $lastName] = CommonHelper::splitFullName($request->full_name);
+
         $user->fill($request->only(
-            'first_name',
-            'last_name',
             'email',
             'password',
             'phone',
@@ -32,6 +34,9 @@ class RegisterService
         if ($request->designation == config('common.designation.student')) {
             $user->institute_name = Institute::find($request->post('institute_id'))->name;
         }
+        $user->first_name = $firstName;
+        $user->last_name = $lastName;
+
         $user->last_otp = $otp;
         $user->otp_created_at = Carbon::now();
         $user->save();

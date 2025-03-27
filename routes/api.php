@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/galleries', [Api\V1\GalleryController::class, 'index']);
     Route::get('/galleries/{slug}', [Api\V1\GalleryController::class, 'show']);
     Route::get('/courses', [Api\V1\CourseController::class, 'index']);
+    Route::get('/courses/list', [Api\V1\CourseController::class, 'list']);
     Route::get('/courses/{slug}', [Api\V1\CourseController::class, 'show']);
     Route::get('/category/list', [Api\V1\CategoryController::class, 'list']);
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);

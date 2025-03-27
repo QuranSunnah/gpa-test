@@ -86,9 +86,19 @@ class CourseRepository implements Repository
     public function mycourses(array $filters = [])
     {
         return Course::join('enrolls', 'enrolls.course_id', 'courses.id')
-            ->select('courses.*')
+            ->join('lesson_progress', 'lesson_progress.course_id', 'courses.id')
+            ->select([
+                'courses.id',
+                'courses.slug',
+                'courses.media_info',
+                'courses.title',
+                'courses.total_enrollments',
+                'courses.duration',
+                'lesson_progress.total_marks',
+            ])
             ->filter($filters)
             ->where('enrolls.user_id', Auth::id())
+            ->where('lesson_progress.user_id', Auth::id())
             ->where('enrolls.status', config('common.status.active'))
             ->active()
             ->orderBy('enrolls.id', 'DESC')

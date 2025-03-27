@@ -15,6 +15,7 @@ class ContactUsService
         $user = Auth::guard('api')->user();
 
         ContactUs::create([
+            'gp_id' => $user?->gp_id ?? null,
             'full_name' => $user?->full_name ?? $request->full_name,
             'email' => $user?->email ?? $request->email,
             'phone' => $user?->phone ?? $request->phone,
