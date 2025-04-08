@@ -21,7 +21,6 @@ class GenerateDashboardReport extends Command
      */
     protected $signature = 'dashboard:generate-report {--date=* : Optional date range (e.g. 2024-04-06 2024-04-07)}';
 
-
     /**
      * The console command description.
      *
@@ -38,6 +37,7 @@ class GenerateDashboardReport extends Command
 
         if ($dates === null) {
             $this->error('Date range cannot exceed 2 months.');
+
             return;
         }
 

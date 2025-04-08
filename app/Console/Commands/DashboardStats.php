@@ -6,9 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\Course;
 use App\Models\DashboardReport;
-use App\Models\Enroll;
 use App\Models\Lesson;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
