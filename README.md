@@ -28,13 +28,13 @@ php artisan queue:work
 php artisan schedule:work
 ```
 
-### Run below corn cli for to generate dashboard count/stats report data manually
+### Run below corn cli to generate dashboard count/stats report data manually
 
 ```bash
 php artisan cache:dashboard-stats
 ```
 
-### Run below corn cli for to generate dashboard report data manually
+### Run below corn cli to generate dashboard report data manually
 
 ```bash
 php artisan dashboard:generate-report (default yeasterday)
