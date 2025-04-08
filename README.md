@@ -28,6 +28,20 @@ php artisan queue:work
 php artisan schedule:work
 ```
 
+### Run below corn cli for to generate dashboard count/stats report data manually
+
+```bash
+php artisan cache:dashboard-stats
+```
+
+### Run below corn cli for to generate dashboard report data manually
+
+```bash
+php artisan dashboard:generate-report (default yeasterday)
+php artisan dashboard:generate-report --date="2025-02-27" (for specific day)
+php artisan dashboard:generate-report --date="2025-02-27 2025-07-15" (date range)
+```
+
 ### To run project in development mode
 
 ```bash
