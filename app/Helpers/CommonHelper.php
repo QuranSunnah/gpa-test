@@ -15,7 +15,7 @@ class CommonHelper
     {
         return collect(explode(' ', trim($fullName ?? '')))
             ->filter()
-            ->pipe(fn ($parts) => [
+            ->pipe(fn($parts) => [
                 $parts->slice(0, -1)->implode(' ') ?: null,
                 $parts->last() ?: null,
             ]);
