@@ -15,9 +15,7 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CourseRepository $repository)
-    {
-    }
+    public function __construct(private CourseRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -29,6 +27,11 @@ class CourseController extends Controller
         $courses = Course::active()->select('slug', 'title')->get()->toArray();
 
         return $this->response($courses, __('Course List'));
+    }
+
+    public function topList(Request $request): JsonResponse
+    {
+        return $this->response($this->repository->getTopCourses());
     }
 
     public function topCategoryCourses(Request $request): JsonResponse

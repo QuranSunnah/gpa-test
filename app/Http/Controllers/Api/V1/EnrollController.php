@@ -12,9 +12,7 @@ class EnrollController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private EnrollService $enrollService)
-    {
-    }
+    public function __construct(private EnrollService $enrollService) {}
 
     public function enroll(string $slug)
     {

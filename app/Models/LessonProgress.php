@@ -15,7 +15,18 @@ class LessonProgress extends Model
         'lessons',
         'is_passed',
         'total_marks',
+        'status',
+        'type'
     ];
+
+    protected static function booted(): void
+    {
+        static::created(function ($enroll) {
+            User::where('id', $enroll->user_id)->increment('total_enrollments');
+
+            Course::where('id', $enroll->course_id)->increment('total_enrollments');
+        });
+    }
 
     public function course(): BelongsTo
     {

@@ -43,11 +43,7 @@ class CertificateService
             'pdfData' => $pdfData,
             'studentName' => $studentName,
         ])
-            ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape')
-            ->setOption([
-                'fontDir' => public_path('/fonts'),
-                'fontCache' => public_path('/fonts'),
-            ]);
+            ->setPaper([0, 0, $pdfData->height, $pdfData->width], 'landscape');
 
         return $pdf->download('certificate.pdf');
     }

@@ -11,13 +11,11 @@ class LessonRepository
 {
     public function getLessonProgress(int $lessonId): LessonProgress
     {
-        return LessonProgress::join('enrolls', 'enrolls.course_id', '=', 'lesson_progress.course_id')
-            ->join('lessons', 'lessons.course_id', '=', 'enrolls.course_id')
+        return LessonProgress::join('lessons', 'lessons.course_id', '=', 'lesson_progress.course_id')
             ->where([
-                ['lessons.id', '=', $lessonId],
-                ['enrolls.user_id', '=', Auth::id()],
-                ['enrolls.status', '=', config('common.status.active')],
+                ['lesson_progress.status', '=', config('common.status.active')],
                 ['lesson_progress.user_id', '=', Auth::id()],
+                ['lessons.id', '=', $lessonId]
             ])
             ->select('lessons.*', 'lesson_progress.lessons')
             ->firstOrFail();

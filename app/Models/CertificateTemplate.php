@@ -14,11 +14,6 @@ class CertificateTemplate extends Model
     use HasFactory;
     use SoftDeletes;
 
-    public function course(): BelongsTo
-    {
-        return $this->belongsTo(Course::class, 'course_id');
-    }
-
     public function layout(): BelongsTo
     {
         return $this->belongsTo(CertificateLayout::class, 'certificate_layout_id');

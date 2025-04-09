@@ -20,6 +20,14 @@ return [
         'yes' => 1,
     ],
     'course_type' => [
+        'regular' => 1,
+        'masterclass' => 2,
+    ],
+    'course_type_options' => [
+        'regular' => 1,
+        'cisco' => 3,
+    ],
+    'course_payment_type' => [
         'free' => 1,
         'paid' => 2,
         'premium' => 3,
