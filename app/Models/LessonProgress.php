@@ -16,7 +16,7 @@ class LessonProgress extends Model
         'is_passed',
         'total_marks',
         'status',
-        'type'
+        'type',
     ];
 
     protected static function booted(): void

@@ -15,7 +15,7 @@ class LessonRepository
             ->where([
                 ['lesson_progress.status', '=', config('common.status.active')],
                 ['lesson_progress.user_id', '=', Auth::id()],
-                ['lessons.id', '=', $lessonId]
+                ['lessons.id', '=', $lessonId],
             ])
             ->select('lessons.*', 'lesson_progress.lessons')
             ->firstOrFail();

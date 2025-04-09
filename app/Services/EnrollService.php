@@ -96,7 +96,6 @@ class EnrollService
         ];
     }
 
-
     private function getLesson(int $courseId): Lesson
     {
         $lesson = Lesson::select('lessons.*')
