@@ -109,7 +109,7 @@ class CourseRepository implements Repository
 
     public function mycourses(array $filters = [])
     {
-        return Course::join('lesson_progress', 'lesson_progress.course_id', 'courses.id')
+        return Course::join('enrolls', 'enrolls.course_id', 'courses.id')
             ->select([
                 'courses.id',
                 'courses.slug',
@@ -117,13 +117,13 @@ class CourseRepository implements Repository
                 'courses.title',
                 'courses.total_enrollments',
                 'courses.duration',
-                'lesson_progress.total_marks',
+                'enrolls.total_marks',
             ])
             ->filter($filters)
-            ->where('lesson_progress.user_id', Auth::id())
-            ->where('lesson_progress.status', config('common.status.active'))
+            ->where('enrolls.user_id', Auth::id())
+            ->where('enrolls.status', config('common.status.active'))
             ->active()
-            ->orderBy('lesson_progress.id', 'DESC')
+            ->orderBy('enrolls.id', 'DESC')
             ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 }
