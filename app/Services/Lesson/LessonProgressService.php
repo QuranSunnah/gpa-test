@@ -31,10 +31,10 @@ class LessonProgressService
         $studentId = Auth::id();
 
         $courseInfo = Course::select([
-            'lesson_progress.id as lesson_progress_id',
-            'lesson_progress.lessons as lesson_progress',
-            'lesson_progress.is_passed',
-            'lesson_progress.total_marks',
+            'enrolls.id as enroll_id',
+            'enrolls.lesson_progress',
+            'enrolls.is_passed',
+            'enrolls.total_marks',
             'courses.id as course_id',
             'courses.pass_marks',
             'lessons.id as lesson_id',
@@ -46,8 +46,8 @@ class LessonProgressService
                 $join->on('lessons.course_id', '=', 'courses.id')
                     ->where('lessons.id', '=', $lessonId);
             })
-            ->join('lesson_progress', 'lesson_progress.course_id', '=', 'courses.id')
-            ->where('lesson_progress.user_id', $studentId)
+            ->join('enrolls', 'enrolls.course_id', '=', 'courses.id')
+            ->where('enrolls.user_id', $studentId)
             ->where('courses.slug', $slug)
             ->firstOrFail();
 

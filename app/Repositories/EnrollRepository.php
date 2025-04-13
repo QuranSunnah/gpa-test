@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\LessonProgress;
+use App\Models\Enroll;
 use Illuminate\Support\Facades\Auth;
 
 class EnrollRepository
 {
-    public function isStudentEnrolled(string $slug): ?LessonProgress
+    public function isStudentEnrolled(string $slug): ?Enroll
     {
-        return LessonProgress::query()
-            ->join('courses as C', 'lesson_progress.course_id', '=', 'C.id')
-            ->where('lesson_progress.user_id', Auth::id())
+        return Enroll::query()
+            ->join('courses as C', 'enrolls.course_id', '=', 'C.id')
+            ->where('enrolls.user_id', Auth::id())
             ->where('C.slug', $slug)
-            ->where('lesson_progress.status', config('common.status.active'))
-            ->select('lesson_progress.*')
+            ->where('enrolls.status', config('common.status.active'))
+            ->select('enrolls.*')
             ->first();
     }
 }

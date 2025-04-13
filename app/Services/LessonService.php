@@ -9,18 +9,16 @@ use Illuminate\Http\Response;
 
 class LessonService
 {
-    public function __construct(private LessonRepository $repository)
-    {
-    }
+    public function __construct(private LessonRepository $repository) {}
 
     public function getContent(int $lessonId): array
     {
         $lessonProgress = $this->repository->getLessonProgress($lessonId);
 
-        $lessons = collect(json_decode($lessonProgress->lessons, true));
+        $lessons = collect(json_decode($lessonProgress->lesson_progress, true));
 
         $targetLesson = $lessons->first(
-            fn ($lesson) => $lesson['id'] == $lessonId
+            fn($lesson) => $lesson['id'] == $lessonId
                 && $lesson['contentable_type'] == config('common.contentable_type.lesson')
         );
 

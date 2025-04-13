@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Course;
+use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Carbon\Carbon;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EnrollService
 {
-    public function enrollStudent(string $slug): LessonProgress
+    public function enrollStudent(string $slug): Enroll
     {
         $studentId = Auth::id();
 
@@ -25,7 +26,7 @@ class EnrollService
             throw new NotFoundHttpException(_('Invalid Request: course not found'));
         }
 
-        $enroll = LessonProgress::where([
+        $enroll = Enroll::where([
             'user_id' => $studentId,
             'course_id' => $course->id,
         ])
@@ -38,7 +39,7 @@ class EnrollService
         return $this->handleNewEnrollment($studentId, $course);
     }
 
-    private function handleExistingEnrollment(LessonProgress $enroll): LessonProgress
+    private function handleExistingEnrollment(Enroll $enroll): Enroll
     {
         if ($enroll->status === config('common.status.inactive')) {
             $enroll->update([
@@ -49,20 +50,20 @@ class EnrollService
         return $enroll;
     }
 
-    private function handleNewEnrollment(int $studentId, Course $course): LessonProgress
+    private function handleNewEnrollment(int $studentId, Course $course): Enroll
     {
         DB::beginTransaction();
 
         try {
             $progressData = $this->prepareProgressData($course);
 
-            $enroll = LessonProgress::firstOrCreate(
+            $enroll = Enroll::firstOrCreate(
                 [
                     'user_id' => $studentId,
                     'course_id' => $course->id,
                 ],
                 [
-                    'lessons' => json_encode($progressData),
+                    'lesson_progress' => json_encode($progressData),
                     'is_passed' => 0,
                 ]
             );

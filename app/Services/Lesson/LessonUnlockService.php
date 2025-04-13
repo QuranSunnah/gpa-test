@@ -6,6 +6,7 @@ namespace App\Services\Lesson;
 
 use App\DTO\LessonProgressResource;
 use App\Models\Certificate;
+use App\Models\Enroll;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Carbon\Carbon;
@@ -72,11 +73,11 @@ class LessonUnlockService
         $totalMraks = (int) round((100 / $totalLessons) * $passedLessons);
         $isCoursePassed = ($totalLessons === $passedLessons) ? 1 : 0;
 
-        LessonProgress::where('id', $progressInfo->progressId)
+        Enroll::where('id', $progressInfo->enrollId)
             ->update([
                 'is_passed' => $isCoursePassed,
                 'total_marks' => $totalMraks,
-                'lessons' => $lessonProgress,
+                'lesson_progress' => $lessonProgress,
             ]);
 
         $currentLesson = collect($lessonProgress)->where('id', $progressInfo->lessonId)->first();
@@ -97,7 +98,7 @@ class LessonUnlockService
     {
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
-            $nextLesson = $lessons->first(fn ($lesson) => !isset($keyMap[$lesson->id]));
+            $nextLesson = $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
 
             if ($nextLesson) {
                 return [

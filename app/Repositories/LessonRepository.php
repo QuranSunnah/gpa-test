@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\LessonProgress;
+use App\Models\Enroll;
 use Illuminate\Support\Facades\Auth;
 
 class LessonRepository
 {
-    public function getLessonProgress(int $lessonId): LessonProgress
+    public function getLessonProgress(int $lessonId): Enroll
     {
-        return LessonProgress::join('lessons', 'lessons.course_id', '=', 'lesson_progress.course_id')
+        return Enroll::join('lessons', 'lessons.course_id', '=', 'enrolls.course_id')
             ->where([
-                ['lesson_progress.status', '=', config('common.status.active')],
-                ['lesson_progress.user_id', '=', Auth::id()],
+                ['enrolls.status', '=', config('common.status.active')],
+                ['enrolls.user_id', '=', Auth::id()],
                 ['lessons.id', '=', $lessonId],
             ])
-            ->select('lessons.*', 'lesson_progress.lessons')
+            ->select('lessons.*', 'enrolls.lesson_progress')
             ->firstOrFail();
     }
 }
