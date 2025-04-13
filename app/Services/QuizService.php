@@ -14,7 +14,8 @@ class QuizService
     public function __construct(
         private QuizRepository $quizRepository,
         private LessonRepository $lessonRepository,
-    ) {}
+    ) {
+    }
 
     public function getQuizzes(int $lessonId): array
     {
@@ -40,7 +41,7 @@ class QuizService
         $lessons = collect(json_decode($lessonProgress->lesson_progress, true));
 
         $targetLesson = $lessons->first(
-            fn($lesson) => $lesson['id'] == $lessonId
+            fn ($lesson) => $lesson['id'] == $lessonId
                 && $lesson['contentable_type'] == config('common.contentable_type.quiz')
         );
 

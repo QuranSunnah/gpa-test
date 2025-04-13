@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Course;
 use App\Models\Enroll;
 use App\Models\Lesson;
-use App\Models\LessonProgress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;

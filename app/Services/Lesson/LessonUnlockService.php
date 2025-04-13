@@ -8,7 +8,6 @@ use App\DTO\LessonProgressResource;
 use App\Models\Certificate;
 use App\Models\Enroll;
 use App\Models\Lesson;
-use App\Models\LessonProgress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -98,7 +97,7 @@ class LessonUnlockService
     {
         if ($this->getIncompleteLessonsCount($lessonProgress) === 0) {
             $keyMap = array_fill_keys(array_column($lessonProgress, 'id'), true);
-            $nextLesson = $lessons->first(fn($lesson) => !isset($keyMap[$lesson->id]));
+            $nextLesson = $lessons->first(fn ($lesson) => !isset($keyMap[$lesson->id]));
 
             if ($nextLesson) {
                 return [
