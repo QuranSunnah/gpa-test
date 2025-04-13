@@ -15,9 +15,7 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private CourseRepository $repository)
-    {
-    }
+    public function __construct(private CourseRepository $repository) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -31,12 +29,12 @@ class CourseController extends Controller
         return $this->response($courses, __('Course List'));
     }
 
-    public function topList(Request $request): JsonResponse
+    public function getTopCourseList(Request $request): JsonResponse
     {
         return $this->response($this->repository->getTopCourses());
     }
 
-    public function topCategoryCourses(Request $request): JsonResponse
+    public function getTopCategoryCourses(Request $request): JsonResponse
     {
         return $this->response(
             $this->repository->getTopCategoryCourses($request->query('limit'))
