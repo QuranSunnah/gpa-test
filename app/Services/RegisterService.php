@@ -26,7 +26,6 @@ class RegisterService
         $user->fill($request->only(
             'email',
             'password',
-            'phone',
             'gender',
             'designation',
             'institute_id',
@@ -36,6 +35,7 @@ class RegisterService
         }
         $user->first_name = $firstName;
         $user->last_name = $lastName;
+        $user->phone = substr($request->phone, -11);
 
         $user->last_otp = $otp;
         $user->otp_created_at = Carbon::now();
