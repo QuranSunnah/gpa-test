@@ -32,10 +32,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/courses', [Api\V1\CourseController::class, 'index']);
     Route::get('/courses/list', [Api\V1\CourseController::class, 'list']);
     Route::get('/courses/{slug}', [Api\V1\CourseController::class, 'show']);
+    Route::get('/top-courses/list', [Api\V1\CourseController::class, 'getTopCourseList']);
     Route::get('/category/list', [Api\V1\CategoryController::class, 'list']);
     Route::get('/top-categories/list', [Api\V1\CategoryController::class, 'topList']);
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
-    Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'topCategoryCourses']);
+    Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'getTopCategoryCourses']);
     Route::get('/web-pages/{slug}', [Api\V1\WebPageController::class, 'index']);
     Route::get('/institute/list', [Api\V1\InstituteController::class, 'index']);
     Route::get('/settings', [Api\V1\SettingController::class, 'index']);

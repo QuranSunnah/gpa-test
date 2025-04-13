@@ -20,6 +20,7 @@ class CourseRepository implements Repository
             'instructor_id',
             'category_id',
             'short_description',
+            'full_description',
             'courses.media_info',
             'is_top',
             'courses.duration',
@@ -59,6 +60,29 @@ class CourseRepository implements Repository
             ->get();
     }
 
+    public function getTopCourses()
+    {
+        return Course::select(
+            'id',
+            'title',
+            'slug',
+            'category_id',
+            'instructor_id',
+            'short_description',
+            'media_info',
+            'is_top',
+            'duration',
+            'total_lessons',
+            'total_enrollments'
+        )
+            ->with(['instructor:id,name,photo', 'category:id,name'])
+            ->where('type', config('common.course_type_options.regular'))
+            ->where('is_top', config('common.confirmation.yes'))
+            ->active()
+            ->orderBy('id', 'DESC')
+            ->get();
+    }
+
     public function findBySlug(string $slug)
     {
         return Course::with([
@@ -86,7 +110,6 @@ class CourseRepository implements Repository
     public function mycourses(array $filters = [])
     {
         return Course::join('enrolls', 'enrolls.course_id', 'courses.id')
-            ->join('lesson_progress', 'lesson_progress.course_id', 'courses.id')
             ->select([
                 'courses.id',
                 'courses.slug',
@@ -94,11 +117,10 @@ class CourseRepository implements Repository
                 'courses.title',
                 'courses.total_enrollments',
                 'courses.duration',
-                'lesson_progress.total_marks',
+                'enrolls.total_marks',
             ])
             ->filter($filters)
             ->where('enrolls.user_id', Auth::id())
-            ->where('lesson_progress.user_id', Auth::id())
             ->where('enrolls.status', config('common.status.active'))
             ->active()
             ->orderBy('enrolls.id', 'DESC')

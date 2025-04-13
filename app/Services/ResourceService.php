@@ -31,7 +31,7 @@ class ResourceService
     {
         $lessonProgress = $this->repository->getLessonProgress($lessonId);
 
-        $lessons = collect(json_decode($lessonProgress->lessons, true));
+        $lessons = collect(json_decode($lessonProgress->lesson_progress, true));
 
         $targetLesson = $lessons->first(
             fn ($lesson) => $lesson['id'] == $lessonId

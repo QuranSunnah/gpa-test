@@ -16,17 +16,17 @@
 
         @font-face {
             font-family: 'TelenorBold';
-            src: url('{{ public_path(' fonts/TelenorEvolution-Bold.otf') }}') format('truetype');
+            src: url('fonts/TelenorEvolution-Bold.otf') format('truetype');
         }
 
         @font-face {
             font-family: 'TelenorMedium';
-            src: url('{{ public_path(' fonts/TelenorEvolution-Medium.otf') }}') format('truetype');
+            src: url('fonts/TelenorEvolution-Medium.otf') format('truetype');
         }
 
         @font-face {
             font-family: 'TelenorNormal';
-            src: url('{{ public_path(' fonts/TelenorEvolution-Normal.otf') }}') format('truetype');
+            src: url('fonts/TelenorEvolution-Normal.otf') format('truetype');
         }
 
         .bg {
@@ -101,7 +101,7 @@
                     width: 100%;
                     text-align: center;
                 @endisset">
-        Date: {{ $pdfData->certificate->created_at->format('Y-m-d') }}
+        Date: {{ $pdfData->certificate?->created_at?->format('Y-m-d') }}
     </div>
 </body>
 

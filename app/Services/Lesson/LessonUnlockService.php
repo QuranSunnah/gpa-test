@@ -8,7 +8,6 @@ use App\DTO\LessonProgressResource;
 use App\Models\Certificate;
 use App\Models\Enroll;
 use App\Models\Lesson;
-use App\Models\LessonProgress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -73,17 +72,11 @@ class LessonUnlockService
         $totalMraks = (int) round((100 / $totalLessons) * $passedLessons);
         $isCoursePassed = ($totalLessons === $passedLessons) ? 1 : 0;
 
-        LessonProgress::where('id', $progressInfo->progressId)
+        Enroll::where('id', $progressInfo->enrollId)
             ->update([
                 'is_passed' => $isCoursePassed,
                 'total_marks' => $totalMraks,
-                'lessons' => $lessonProgress,
-            ]);
-
-        Enroll::where('course_id', $progressInfo->courseId)
-            ->where('user_id', Auth::id())
-            ->update([
-                'end_at' => now(),
+                'lesson_progress' => $lessonProgress,
             ]);
 
         $currentLesson = collect($lessonProgress)->where('id', $progressInfo->lessonId)->first();

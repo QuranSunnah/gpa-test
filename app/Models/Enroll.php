@@ -17,9 +17,11 @@ class Enroll extends Model
     protected $fillable = [
         'user_id',
         'course_id',
-        'start_at',
-        'end_at',
         'status',
+        'type',
+        'lesson_progress',
+        'is_passed',
+        'total_marks',
     ];
 
     protected static function booted(): void

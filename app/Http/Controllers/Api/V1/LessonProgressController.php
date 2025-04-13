@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonProgressRequest;
 use App\Http\Resources\LessonProgressResource;
-use App\Models\LessonProgress;
+use App\Models\Enroll;
 use App\Services\Lesson\LessonProgressService;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +22,10 @@ class LessonProgressController extends Controller
 
     public function show(LessonProgressRequest $request, string $slug)
     {
-        $lessonProgress = LessonProgress::join('courses as C', 'lesson_progress.course_id', '=', 'C.id')
-            ->where('lesson_progress.user_id', Auth::id())
-            ->where('C.slug', $slug)
-            ->select('lesson_progress.*')
+        $lessonProgress = Enroll::join('courses', 'enrolls.course_id', '=', 'courses.id')
+            ->where('enrolls.user_id', Auth::id())
+            ->where('courses.slug', $slug)
+            ->select('enrolls.*')
             ->firstOrFail();
 
         return $this->response(new LessonProgressResource($lessonProgress), __('Lesson progress data'));

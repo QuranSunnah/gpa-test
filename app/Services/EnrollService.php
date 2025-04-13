@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Course;
 use App\Models\Enroll;
 use App\Models\Lesson;
-use App\Models\LessonProgress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,7 @@ class EnrollService
     {
         $studentId = Auth::id();
 
-        $course = Course::select('id')->where('slug', $slug)->first();
+        $course = Course::select(['id', 'type'])->where('slug', $slug)->first();
 
         if (!$course) {
             throw new NotFoundHttpException(_('Invalid Request: course not found'));
@@ -36,15 +35,13 @@ class EnrollService
             return $this->handleExistingEnrollment($enroll);
         }
 
-        return $this->handleNewEnrollment($studentId, $course->id);
+        return $this->handleNewEnrollment($studentId, $course);
     }
 
     private function handleExistingEnrollment(Enroll $enroll): Enroll
     {
         if ($enroll->status === config('common.status.inactive')) {
             $enroll->update([
-                'start_at' => now(),
-                'end_at' => now(),
                 'status' => config('common.status.active'),
             ]);
         }
@@ -52,21 +49,23 @@ class EnrollService
         return $enroll;
     }
 
-    private function handleNewEnrollment(int $studentId, int $courseId): Enroll
+    private function handleNewEnrollment(int $studentId, Course $course): Enroll
     {
         DB::beginTransaction();
 
         try {
-            $lesson = $this->getLesson($courseId);
-            $this->createLessonProgress($studentId, $courseId, $lesson);
+            $progressData = $this->prepareProgressData($course);
 
-            $enroll = Enroll::create([
-                'user_id' => $studentId,
-                'course_id' => $courseId,
-                'start_at' => now(),
-                'end_at' => now(),
-                'status' => config('common.status.active'),
-            ]);
+            $enroll = Enroll::firstOrCreate(
+                [
+                    'user_id' => $studentId,
+                    'course_id' => $course->id,
+                ],
+                [
+                    'lesson_progress' => json_encode($progressData),
+                    'is_passed' => 0,
+                ]
+            );
 
             DB::commit();
 
@@ -75,6 +74,26 @@ class EnrollService
             DB::rollBack();
             throw new \Exception('Enrollment failed: ' . $e->getMessage());
         }
+    }
+
+    private function prepareProgressData(Course $course): array
+    {
+        if ($course->type !== config('common.course_type_options.regular')) {
+            return [];
+        }
+
+        $lesson = $this->getLesson($course->id);
+
+        return [
+            [
+                'id' => $lesson->id,
+                'contentable_id' => $lesson->contentable_id,
+                'contentable_type' => $lesson->contentable_type,
+                'is_passed' => false,
+                'start_time' => Carbon::now()->timestamp,
+                'end_time' => null,
+            ],
+        ];
     }
 
     private function getLesson(int $courseId): Lesson
@@ -92,28 +111,5 @@ class EnrollService
         }
 
         return $lesson;
-    }
-
-    private function createLessonProgress(int $studentId, int $courseId, Lesson $lesson): void
-    {
-        LessonProgress::firstOrCreate(
-            [
-                'user_id' => $studentId,
-                'course_id' => $courseId,
-            ],
-            [
-                'lessons' => json_encode([
-                    [
-                        'id' => $lesson->id,
-                        'contentable_id' => $lesson->contentable_id,
-                        'contentable_type' => $lesson->contentable_type,
-                        'is_passed' => false,
-                        'start_time' => Carbon::now()->timestamp,
-                        'end_time' => null,
-                    ],
-                ]),
-                'is_passed' => 0,
-            ]
-        );
     }
 }

@@ -14,7 +14,7 @@ class LessonProgressResource
     public bool $isLessonPassed;
     public ?int $contentableId;
     public int $contentableType;
-    public int $progressId;
+    public int $enrollId;
     public int $courseId;
     public int $isProgressPassed;
     public int $passMarks;
@@ -40,7 +40,7 @@ class LessonProgressResource
         $this->isLessonPassed = $lesson['is_passed'];
         $this->contentableId = $lesson['contentable_id'];
         $this->contentableType = (int) $lesson['contentable_type'];
-        $this->progressId = $courseInfo->lesson_progress_id;
+        $this->enrollId = $courseInfo->enroll_id;
         $this->courseId = $courseInfo->course_id;
         $this->isProgressPassed = $courseInfo->is_passed;
         $this->passMarks = $courseInfo->pass_marks;

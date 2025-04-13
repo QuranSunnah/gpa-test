@@ -16,6 +16,6 @@ class InstituteController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        return $this->response(Institute::select('id', 'name')->get(), __('Institute details'));
+        return $this->response(Institute::select('id', 'name')->OrderBy('name', 'ASC')->get(), __('Institute details'));
     }
 }
