@@ -16,15 +16,13 @@ class LessonProgressController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private LessonProgressService $service)
-    {
-    }
+    public function __construct(private LessonProgressService $service) {}
 
     public function show(LessonProgressRequest $request, string $slug)
     {
-        $lessonProgress = Enroll::join('courses as C', 'enrolls.course_id', '=', 'C.id')
+        $lessonProgress = Enroll::join('courses', 'enrolls.course_id', '=', 'courses.id')
             ->where('enrolls.user_id', Auth::id())
-            ->where('C.slug', $slug)
+            ->where('courses.slug', $slug)
             ->select('enrolls.*')
             ->firstOrFail();
 
