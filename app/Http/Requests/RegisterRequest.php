@@ -53,7 +53,7 @@ class RegisterRequest extends FormRequest
                     'string',
                     'min:11',
                     'max:50',
-                    'regex:/^(?:\+8801|8801|01|1)[3-9]\d{8}$/',
+                    'regex:/^(?:\+8801|8801|01)[3-9]\d{8}$/',
                     function ($attribute, $value, $fail) use ($no, $active) {
                         $user = User::where('phone', $value)->first();
                         if ($user) {
