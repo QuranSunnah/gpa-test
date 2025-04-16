@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
+class LogApiRequests
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        $requestStartTime = $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true);
+        $user = Auth::user();
+
+        try {
+            $response = $next($request);
+            $endTime = microtime(true);
+            $duration = number_format($endTime - $requestStartTime, 3);
+
+            $responseData = json_decode($response->getContent(), true);
+            $logData = $this->buildLogData($request, [
+                'status' => $response->getStatusCode(),
+                'message' => $responseData['message'] ?? '',
+                'api_has_error' => $response->getStatusCode() >= 400 ? 1 : 0,
+                'request_start_time' => $requestStartTime,
+                'request_end_time' => $endTime,
+                'response_time' => $duration,
+                'user_id' => $user?->email ?? '',
+            ]);
+
+            Log::channel('api')->info('API Log', $logData);
+
+            return $response;
+        } catch (Throwable $e) {
+            $endTime = microtime(true);
+            $duration = number_format($endTime - $requestStartTime, 3);
+
+            $logData = $this->buildLogData($request, [
+                'message' => $e->getMessage(),
+                'api_has_error' => 1,
+                'request_start_time' => $requestStartTime,
+                'request_end_time' => $endTime,
+                'response_time' => $duration,
+                'user_id' => $user?->email ?? '',
+                'exception' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => collect($e->getTrace())->take(5),
+                ],
+            ]);
+
+            Log::channel('api')->error('API Exception', $logData);
+
+            throw $e;
+        }
+    }
+
+    private function buildLogData(Request $request, array $overrides = []): array
+    {
+        return array_merge([
+            'remote_host' => $request->getClientIp(),
+            'method' => $request->getMethod(),
+            'uri' => $request->getRequestUri(),
+            'protocol' => $request->getScheme(),
+            'referer' => $request->headers->get('referer', '-'),
+            'user_agent' => $request->userAgent(),
+            'forwarded_for' => explode(',', $request->header('X-Forwarded-For', $request->ip())),
+            'ip_address' => [$request->ip()],
+            'corelation_id' => $request->header('corelation_id'),
+            'device_id' => $request->header('device_id'),
+            'hostanme' => gethostname(),
+            'datetime' => now()->toIso8601String(),
+        ], $overrides);
+    }
+}
