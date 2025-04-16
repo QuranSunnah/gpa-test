@@ -46,7 +46,7 @@ class LogApiRequests
                 'request_end_time' => $endTime,
                 'response_time' => $duration,
                 'user_id' => $user?->email ?? '',
-                'exception' => [
+                'debug_info' => [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'trace' => collect($e->getTrace())->take(5),
