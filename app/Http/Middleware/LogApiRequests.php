@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
-use Throwable;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogApiRequests
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $requestStartTime = $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true);
         $user = Auth::user();
@@ -35,7 +35,7 @@ class LogApiRequests
             Log::channel('api')->info('API Log', $logData);
 
             return $response;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $endTime = microtime(true);
             $duration = number_format($endTime - $requestStartTime, 3);
 

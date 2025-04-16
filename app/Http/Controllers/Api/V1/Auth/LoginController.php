@@ -15,7 +15,9 @@ class LoginController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private AuthenticateService $service) {}
+    public function __construct(private AuthenticateService $service)
+    {
+    }
 
     public function __invoke(LoginRequest $request): JsonResponse
     {
