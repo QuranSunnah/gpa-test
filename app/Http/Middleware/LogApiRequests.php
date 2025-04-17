@@ -14,10 +14,10 @@ class LogApiRequests
     public function handle(Request $request, \Closure $next): Response
     {
         $requestStartTime = $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true);
-        $user = Auth::user();
 
         try {
             $response = $next($request);
+            $user = Auth::user();
             $endTime = microtime(true);
             $duration = number_format($endTime - $requestStartTime, 3);
 
@@ -39,7 +39,7 @@ class LogApiRequests
         } catch (\Throwable $e) {
             $endTime = microtime(true);
             $duration = number_format($endTime - $requestStartTime, 3);
-
+            $user = Auth::user();
             $logData = $this->buildLogData($request, [
                 'message' => $e->getMessage(),
                 'api_has_error' => 1,
