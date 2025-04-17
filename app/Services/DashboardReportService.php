@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\DashboardReport;
 use App\Models\Enroll;
-use App\Models\LessonProgress;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -31,29 +30,29 @@ class DashboardReportService
                 ->whereBetween('enrolls.created_at', [$start, $end])
                 ->whereNull('enrolls.deleted_at')
                 ->groupBy(['date', 'gender'])
-                ->get()->groupBy([fn ($item) => $item->date, fn ($item) => $item->gender]),
+                ->get()->groupBy([fn($item) => $item->date, fn($item) => $item->gender]),
 
-            'completions' => LessonProgress::selectRaw(
+            'completions' => Enroll::selectRaw(
                 'users.gender, DATE(enrolls.created_at) as date, COUNT(*) as total_completions'
             )
                 ->join('users', 'users.id', '=', 'enrolls.user_id')
                 ->whereBetween('enrolls.created_at', [$start, $end])
                 ->where('enrolls.is_passed', config('common.confirmation.yes'))
                 ->groupBy(['date', 'gender'])
-                ->get()->groupBy([fn ($item) => $item->date, fn ($item) => $item->gender]),
+                ->get()->groupBy([fn($item) => $item->date, fn($item) => $item->gender]),
 
             'students' => User::selectRaw('gender, DATE(created_at) as date, COUNT(*) as total_students')
                 ->whereBetween('created_at', [$start, $end])
                 ->whereNull('deleted_at')
                 ->groupBy(['date', 'gender'])
-                ->get()->groupBy([fn ($item) => $item->date, fn ($item) => $item->gender]),
+                ->get()->groupBy([fn($item) => $item->date, fn($item) => $item->gender]),
         ];
     }
 
     private function save(string $startDate, string $endDate, array $reportData): void
     {
         $dateRange = collect(Carbon::parse($startDate)->daysUntil(Carbon::parse($endDate)))
-            ->map(fn ($d) => $d->toDateString());
+            ->map(fn($d) => $d->toDateString());
 
         foreach ($dateRange as $date) {
             foreach (config('common.gender') as $gender) {
