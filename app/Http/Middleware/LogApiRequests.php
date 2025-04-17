@@ -30,6 +30,7 @@ class LogApiRequests
                 'request_end_time' => $endTime,
                 'response_time' => $duration,
                 'user_id' => $user?->email ?? '',
+                'debug_info' => []
             ]);
 
             Log::channel('api')->info('API Log', $logData);
