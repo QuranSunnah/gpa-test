@@ -12,8 +12,7 @@ class Certificate extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'course_id',
-        'status',
+        'course_id'
     ];
 
     protected static function booted(): void
