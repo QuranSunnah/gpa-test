@@ -27,6 +27,7 @@ class QuizService
         return [
             'id' => $quiz->quiz_id ?? null,
             'title' => $quiz->quiz_title ?? null,
+            'instructions' => $quiz->instructions ?? null,
             'pass_marks_percentage' => $quiz->pass_marks_percentage ?? null,
             'each_ques_mark' => $quiz->each_qmark,
             'total_questions' => $quizWithQuestions->count(),

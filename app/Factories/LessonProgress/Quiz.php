@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Factories\LessonProgress;
 
 use App\DTO\LessonProgressResource;
+use App\Exceptions\QuizFailedException;
 use App\Factories\Interfaces\LessonProgressInterface;
 use App\Repositories\QuizRepository;
 use App\Services\Lesson\LessonUnlockService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class Quiz implements LessonProgressInterface
@@ -19,15 +19,14 @@ class Quiz implements LessonProgressInterface
     public function __construct(
         private QuizRepository $quizRepository,
         private LessonUnlockService $lessonUnlockService,
-    ) {
-    }
+    ) {}
 
     public function process(LessonProgressResource $progressInfo): array
     {
         $quizResultInfo = $this->getQuizResultInfo($progressInfo);
 
         $updatedProgressResource = array_map(
-            fn ($progress) => (int) $progress['id'] === $progressInfo->lessonId
+            fn($progress) => (int) $progress['id'] === $progressInfo->lessonId
                 ? array_merge($progress, [
                     'end_time' => Carbon::now()->timestamp,
                     ...$quizResultInfo,
@@ -45,13 +44,19 @@ class Quiz implements LessonProgressInterface
         $quiz = $quizWithQuestions->first();
 
         $passMarksPercentage = $quiz->pass_marks_percentage ?? 100;
-        $totalCorrectAns = $this->getTotalCorrectAns($progressInfo->quizzes, $quizWithQuestions);
+        $quizResults = $this->getTotalCorrectAns($progressInfo->quizzes, $quizWithQuestions);
+        $totalCorrectAns = $quizResults['total_correct'];
         $scorePercentage = (int) round(($totalCorrectAns / $quizWithQuestions->count()) * 100);
 
         $isPassed = ($scorePercentage >= $passMarksPercentage) ? true : false;
 
         if (!$isPassed) {
-            throw new \Exception(__("Failed: Your score is blow: {$passMarksPercentage}"), Response::HTTP_FORBIDDEN);
+            $message = __("Failed: Your score is below: {$passMarksPercentage}");
+
+            throw new QuizFailedException(
+                $message,
+                $quizResults['question_results']
+            );
         }
 
         return [
@@ -61,7 +66,7 @@ class Quiz implements LessonProgressInterface
         ];
     }
 
-    private function getTotalCorrectAns(array $quizzes, Collection $quizWithQuestions)
+    private function getTotalCorrectAns(array $quizzes, Collection $quizWithQuestions): array
     {
         $questions = $quizWithQuestions->keyBy('id');
 
@@ -70,6 +75,8 @@ class Quiz implements LessonProgressInterface
         }
 
         $correctAnswers = 0;
+        $questionResults = [];
+
         foreach ($quizzes as $submittedQuiz) {
             $questionId = $submittedQuiz['id'];
             if (!$questions->has($questionId)) {
@@ -77,14 +84,23 @@ class Quiz implements LessonProgressInterface
             }
 
             $question = $questions->get($questionId);
-            $correctAnswers += $this->isAnswerCorrect(
+            $isCorrect = $this->isAnswerCorrect(
                 $question->type,
                 $submittedQuiz['answers'],
                 $question->answers
-            ) ? 1 : 0;
+            );
+
+            $correctAnswers += $isCorrect ? 1 : 0;
+            $questionResults[] = [
+                'id' => $questionId,
+                'is_correct' => $isCorrect,
+            ];
         }
 
-        return $correctAnswers;
+        return [
+            'total_correct' => $correctAnswers,
+            'question_results' => $questionResults,
+        ];
     }
 
     private function isAnswerCorrect(int $type, string|array $submittedAnswers, string $correctAnswer): bool

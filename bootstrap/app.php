@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\QuizFailedException;
 use App\Http\Middleware\LogApiRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -49,6 +50,15 @@ return Application::configure(basePath: dirname(__DIR__))
                         'status' => $statusCode,
                         'message' => $exception->getMessage(),
                         'errors' => $exception->errors() ?? [],
+                    ], $statusCode);
+                } elseif ($exception instanceof QuizFailedException) {
+                    $statusCode = $statusCode = $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_FORBIDDEN;;
+                    return response()->json([
+                        'status' => $statusCode,
+                        'message' => $exception->getMessage(),
+                        'data' => [
+                            'quiz_result' => $exception->getData()
+                        ],
                     ], $statusCode);
                 } else {
                     $statusCode = $exception->getCode() && is_int($exception->getCode()) ? $exception->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
