@@ -13,7 +13,6 @@ class Certificate extends Model
         'uuid',
         'user_id',
         'course_id',
-        'status',
     ];
 
     protected static function booted(): void

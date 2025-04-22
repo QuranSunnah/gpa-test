@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\DashboardReport;
 use App\Models\Enroll;
-use App\Models\LessonProgress;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -33,12 +32,12 @@ class DashboardReportService
                 ->groupBy(['date', 'gender'])
                 ->get()->groupBy([fn ($item) => $item->date, fn ($item) => $item->gender]),
 
-            'completions' => LessonProgress::selectRaw(
-                'users.gender, DATE(lesson_progress.created_at) as date, COUNT(*) as total_completions'
+            'completions' => Enroll::selectRaw(
+                'users.gender, DATE(enrolls.created_at) as date, COUNT(*) as total_completions'
             )
-                ->join('users', 'users.id', '=', 'lesson_progress.user_id')
-                ->whereBetween('lesson_progress.created_at', [$start, $end])
-                ->where('lesson_progress.is_passed', config('common.confirmation.yes'))
+                ->join('users', 'users.id', '=', 'enrolls.user_id')
+                ->whereBetween('enrolls.created_at', [$start, $end])
+                ->where('enrolls.is_passed', config('common.confirmation.yes'))
                 ->groupBy(['date', 'gender'])
                 ->get()->groupBy([fn ($item) => $item->date, fn ($item) => $item->gender]),
 

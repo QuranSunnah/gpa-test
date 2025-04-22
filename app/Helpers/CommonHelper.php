@@ -11,13 +11,18 @@ class CommonHelper
         return $value ? json_decode($value, true) : [];
     }
 
-    public static function splitFullName(?string $fullName): array
+    public static function splitFullName(string $fullName): array
     {
-        return collect(explode(' ', trim($fullName ?? '')))
+        $parts = collect(explode(' ', trim($fullName ?? '')))
             ->filter()
-            ->pipe(fn ($parts) => [
-                $parts->slice(0, -1)->implode(' ') ?: null,
-                $parts->last() ?: null,
-            ]);
+            ->values();
+
+        return match ($parts->count()) {
+            1 => [$parts[0], null],
+            default => [
+                $parts->slice(0, -1)->implode(' '),
+                $parts->last(),
+            ],
+        };
     }
 }

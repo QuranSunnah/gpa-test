@@ -21,6 +21,7 @@ class QuizRepository
                 'quizzes.title as quiz_title',
                 'quizzes.pass_marks_percentage',
                 'quizzes.each_qmark',
+                'quizzes.instructions',
                 'qt.*',
             ])
             ->get();
