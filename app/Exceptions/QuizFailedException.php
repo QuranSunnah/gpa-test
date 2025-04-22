@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Exceptions;
 
 use Illuminate\Http\Response;
+use Exception;
 
-class QuizFailedException extends \Exception
+class QuizFailedException extends Exception
 {
-    public $data;
-
-    public function __construct(string $message = '', array $data = [], int $statusCode = Response::HTTP_FORBIDDEN)
-    {
+    public function __construct(
+        string $message = '',
+        public array $data = [],
+        int $statusCode = Response::HTTP_FORBIDDEN
+    ) {
         parent::__construct($message, $statusCode);
-        $this->data = $data;
     }
 
     public function getData(): array
