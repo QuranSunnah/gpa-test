@@ -38,7 +38,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/top-categories/report', [Api\V1\CategoryController::class, 'report']);
     Route::get('/top-categories/courses', [Api\V1\CourseController::class, 'getTopCategoryCourses']);
     Route::get('/web-pages/{slug}', [Api\V1\WebPageController::class, 'index']);
-    Route::get('/institute/list', [Api\V1\InstituteController::class, 'index']);
+    Route::get('/institute/list', [Api\V1\InstituteController::class, 'list']);
     Route::get('/settings', [Api\V1\SettingController::class, 'index']);
     Route::post('/contact-us', [Api\V1\ContactUsController::class, 'save']);
 });

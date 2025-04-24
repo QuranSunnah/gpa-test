@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
 use App\Repositories\CourseRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -24,14 +23,12 @@ class CourseController extends Controller
         return $this->paginateResponse($this->repository->paginate($request->query->all()));
     }
 
-    public function list(Request $request): JsonResponse
+    public function list(): JsonResponse
     {
-        $courses = Course::active()->select('slug', 'title')->get()->toArray();
-
-        return $this->response($courses, __('Course List'));
+        return $this->response($this->repository->getCourseList(), __('Course List'));
     }
 
-    public function getTopCourseList(Request $request): JsonResponse
+    public function getTopCourseList(): JsonResponse
     {
         return $this->response($this->repository->getTopCourses());
     }

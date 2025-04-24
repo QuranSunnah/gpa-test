@@ -5,15 +5,24 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryRepository
 {
     public function getList()
     {
-        return Category::select('id', 'slug', 'name', 'image')
-            ->active()
-            ->orderBy('name', 'ASC')
-            ->get();
+        $fetchCategories = function () {
+            return Category::select('id', 'slug', 'name', 'image')
+                ->active()
+                ->orderBy('name', 'ASC')
+                ->get();
+        };
+
+        try {
+            return Cache::remember('category:list', config('common.api_cache_time'), $fetchCategories);
+        } catch (\Exception $e) {
+            return $fetchCategories();
+        }
     }
 
     public function getTopCategotyList(?string $limit)
