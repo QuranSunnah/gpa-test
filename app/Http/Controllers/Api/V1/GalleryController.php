@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Gallery;
 use App\Repositories\GalleryRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -26,6 +25,6 @@ class GalleryController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        return $this->response(Gallery::where('slug', $slug)->firstOrFail(), __('Gallery details'));
+        return $this->response($this->repository->findBySlug($slug), __('Gallery details'));
     }
 }
