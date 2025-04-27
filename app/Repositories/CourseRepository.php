@@ -37,6 +37,11 @@ class CourseRepository implements Repository
                 ->active()
                 ->paginate($filters['limit'] ?? config('common.pagi_limit'));
         };
+
+        if (!empty($filters['s'])) {
+            return $fetchCourses();
+        }
+
         try {
             $cacheKey = CommonHelper::buildCacheKey('courses', $filters);
 
@@ -48,12 +53,50 @@ class CourseRepository implements Repository
 
     public function getTopCategoryCourses(?string $limit)
     {
-        return Category::with(['courses' => function ($query) {
-            $query->select(
+        $topCategoryCourses = function () use ($limit) {
+            return Category::with(['courses' => function ($query) {
+                $query->select(
+                    'id',
+                    'title',
+                    'slug',
+                    'category_id',
+                    'short_description',
+                    'media_info',
+                    'is_top',
+                    'duration',
+                    'total_lessons',
+                    'total_enrollments'
+                )
+                    ->orderBy('id', 'DESC')
+                    ->limit(config('common.pagi_limit'));
+            }])
+                ->where('is_top', config('common.confirmation.yes'))
+                ->active()
+                ->orderBy('name', 'ASC')
+                ->limit($limit ?? config('common.pagi_limit'))
+                ->get();
+        };
+
+        try {
+            return Cache::remember(
+                "top_category_courses:limit:$limit",
+                config('common.api_cache_time'),
+                $topCategoryCourses
+            );
+        } catch (\Exception $e) {
+            return $topCategoryCourses();
+        }
+    }
+
+    public function getTopCourses()
+    {
+        $topCourses = function () {
+            return Course::select(
                 'id',
                 'title',
                 'slug',
                 'category_id',
+                'instructor_id',
                 'short_description',
                 'media_info',
                 'is_top',
@@ -61,37 +104,19 @@ class CourseRepository implements Repository
                 'total_lessons',
                 'total_enrollments'
             )
+                ->with(['instructor:id,name,photo', 'category:id,name'])
+                ->where('type', config('common.course_type_options.regular'))
+                ->where('is_top', config('common.confirmation.yes'))
+                ->active()
                 ->orderBy('id', 'DESC')
-                ->limit(config('common.pagi_limit'));
-        }])
-            ->where('is_top', config('common.confirmation.yes'))
-            ->active()
-            ->orderBy('name', 'ASC')
-            ->limit($limit ?? config('common.pagi_limit'))
-            ->get();
-    }
+                ->get();
+        };
 
-    public function getTopCourses()
-    {
-        return Course::select(
-            'id',
-            'title',
-            'slug',
-            'category_id',
-            'instructor_id',
-            'short_description',
-            'media_info',
-            'is_top',
-            'duration',
-            'total_lessons',
-            'total_enrollments'
-        )
-            ->with(['instructor:id,name,photo', 'category:id,name'])
-            ->where('type', config('common.course_type_options.regular'))
-            ->where('is_top', config('common.confirmation.yes'))
-            ->active()
-            ->orderBy('id', 'DESC')
-            ->get();
+        try {
+            return Cache::remember('top_courses', config('common.api_cache_time'), $topCourses);
+        } catch (\Exception $e) {
+            return $topCourses();
+        }
     }
 
     public function findBySlug(string $slug)
@@ -153,7 +178,7 @@ class CourseRepository implements Repository
         };
 
         try {
-            return Cache::remember('courses:list', config('common.api_cache_time'), $fetchCourseList);
+            return Cache::remember('course:list', config('common.api_cache_time'), $fetchCourseList);
         } catch (\Exception $e) {
             return $fetchCourseList();
         }

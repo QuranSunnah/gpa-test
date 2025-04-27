@@ -20,6 +20,10 @@ class GalleryRepository implements Repository
                 ->paginate($filters['limit'] ?? config('common.pagi_limit'));
         };
 
+        if (!empty($filters['s'])) {
+            return $fetchGalaries();
+        }
+
         try {
             $cacheKey = CommonHelper::buildCacheKey('galleries', $filters);
 
@@ -36,7 +40,7 @@ class GalleryRepository implements Repository
         };
 
         try {
-            return Cache::remember("gallery:$slug", config('common.api_cache_time'), $fetchGalleryDetail);
+            return Cache::remember("galleries:$slug", config('common.api_cache_time'), $fetchGalleryDetail);
         } catch (\Exception $e) {
             return $fetchGalleryDetail();
         }

@@ -19,7 +19,9 @@ class EventsRepository implements Repository
                 ->active()
                 ->paginate($filters['limit'] ?? config('common.pagi_limit'));
         };
-
+        if (!empty($filters['s'])) {
+            return $fetchEvents();
+        }
         try {
             $cacheKey = CommonHelper::buildCacheKey('events', $filters);
 
