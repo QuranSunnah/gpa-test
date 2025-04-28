@@ -10,6 +10,8 @@ class PartnerRepository implements Repository
 {
     public function paginate(array $filters = [])
     {
-        return Partner::sort($filters)->paginate($filters['limit'] ?? config('common.pagi_limit'));
+        return Partner::sort($filters)
+            ->active()
+            ->paginate($filters['limit'] ?? config('common.pagi_limit'));
     }
 }
