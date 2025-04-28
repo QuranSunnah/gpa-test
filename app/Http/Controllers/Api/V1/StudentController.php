@@ -18,7 +18,9 @@ class StudentController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private StudentService $service) {}
+    public function __construct(private StudentService $service)
+    {
+    }
 
     public function getProfileInfo(Request $request): JsonResponse
     {
