@@ -25,4 +25,12 @@ class CommonHelper
             ],
         };
     }
+
+    public static function buildCacheKey(string $prefix, array $filters): string
+    {
+        ksort($filters);
+        $filterString = http_build_query($filters);
+
+        return $prefix . ':' . md5($filterString);
+    }
 }

@@ -89,4 +89,5 @@ return [
     ],
     'lesson_min_watch_percentage' => env('LESSON_MIN_WATCH_PERCENTAGE', 75),
     'otp_resend_interval_seconds' => env('OTP_RESEND_INTERVAL_SECONDS', 120),
+    'api_cache_time' => env('API_CACHE_TIME', 300),
 ];

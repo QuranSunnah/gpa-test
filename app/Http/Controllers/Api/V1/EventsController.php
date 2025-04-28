@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResouce;
-use App\Models\Event;
 use App\Repositories\EventsRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -27,8 +26,6 @@ class EventsController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        $event = Event::where('slug', $slug)->with('gallery')->firstOrFail();
-
-        return $this->response(new EventResouce($event), __('Events details'));
+        return $this->response(new EventResouce($this->repository->findBySlug($slug)), __('Events details'));
     }
 }

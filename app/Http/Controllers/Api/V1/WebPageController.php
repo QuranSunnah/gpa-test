@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WebPageRequest;
-use App\Models\WebPage;
+use App\Repositories\WebPageRepository;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -14,20 +14,14 @@ class WebPageController extends Controller
 {
     use ApiResponse;
 
-    public function index(WebPageRequest $request, string $slug): JsonResponse
+    public function __construct(private WebPageRepository $repository)
     {
-        $lang = $request->lang === 'bn'
-            ? config('common.language.bangla')
-            : config('common.language.english');
+    }
 
-        $webPageInfo = WebPage::where([
-            ['slug', $slug],
-            ['status', config('common.status.active')],
-            ['lang', $lang],
-        ])
-            ->select('components')
-            ->firstOrFail()->components;
+    public function show(WebPageRequest $request, string $slug): JsonResponse
+    {
+        $lang = $request->lang === 'bn' ? config('common.language.bangla') : config('common.language.english');
 
-        return $this->response($webPageInfo, __('Web page info'));
+        return $this->response($this->repository->findDetails($lang, $slug), __('Web page info'));
     }
 }
