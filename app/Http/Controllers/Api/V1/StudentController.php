@@ -26,6 +26,7 @@ class StudentController extends Controller
     {
         $userInfo = User::select([
             'id',
+            'gp_id',
             'email',
             'phone',
             'gender',
