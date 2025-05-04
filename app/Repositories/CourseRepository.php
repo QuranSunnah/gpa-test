@@ -158,6 +158,7 @@ class CourseRepository implements Repository
                 'courses.id',
                 'courses.slug',
                 'courses.media_info',
+                'courses.type',
                 'courses.title',
                 'courses.total_enrollments',
                 'courses.duration',
