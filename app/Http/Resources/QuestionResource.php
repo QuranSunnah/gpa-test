@@ -19,6 +19,7 @@ class QuestionResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'type' => $this->type,
             'options' => json_decode($this->options),
             'feedbacks' => json_decode($this->feedbacks),
         ];
