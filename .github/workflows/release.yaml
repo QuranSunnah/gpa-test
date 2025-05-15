@@ -1,93 +1,93 @@
-name: Production Environment Deploy Process
+# name: Production Environment Deploy Process
 
-on:
-    workflow_call:
-      inputs:
-        server_name:
-          type: string
-      secrets:
-        HOST:
-          required: true
-        USERNAME:
-          required: true
-        KEY:
-          required: true
-        PORT:
-          required: true
-        AZURE_USER:
-          required: true
-        AZURE_PASSWORD:
-          required: true
-        SLACK_WEBHOOK:
-          required: true
+# on:
+#     workflow_call:
+#       inputs:
+#         server_name:
+#           type: string
+#       secrets:
+#         HOST:
+#           required: true
+#         USERNAME:
+#           required: true
+#         KEY:
+#           required: true
+#         PORT:
+#           required: true
+#         AZURE_USER:
+#           required: true
+#         AZURE_PASSWORD:
+#           required: true
+#         SLACK_WEBHOOK:
+#           required: true
 
-jobs:
-  build:
-    name: Docker Image Build Process
-    environment: development
-    runs-on: [ops-runners]
-    env:
-      HTTP_PROXY: ${{ secrets.HTTP_PROXY }}
-      NO_PROXY: ${{ secrets.NO_PROXY }}
-      HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
-      DOCKER_REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
-      DOCKER_APP_IMAGE_NAME: ${{ secrets.APP_IMAGE_NAME }}
-    steps:
-      - name: Checkout code
-        uses: SED/docker-actions-checkout@v4
-        with:
-          fetch-depth: 0
+# jobs:
+#   build:
+#     name: Docker Image Build Process
+#     environment: development
+#     runs-on: [ops-runners]
+#     env:
+#       HTTP_PROXY: ${{ secrets.HTTP_PROXY }}
+#       NO_PROXY: ${{ secrets.NO_PROXY }}
+#       HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
+#       DOCKER_REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+#       DOCKER_APP_IMAGE_NAME: ${{ secrets.APP_IMAGE_NAME }}
+#     steps:
+#       - name: Checkout code
+#         uses: SED/docker-actions-checkout@v4
+#         with:
+#           fetch-depth: 0
 
-      - name: Set conditional build args
-        id: buildargs
-        run: |
-          echo "build_args<<EOF" >> $GITHUB_OUTPUT
-          [ -n "${NO_PROXY}" ] && echo "NO_PROXY=${NO_PROXY}" >> $GITHUB_OUTPUT
-          [ -n "${HTTP_PROXY}" ] && echo "HTTP_PROXY=${HTTP_PROXY}" >> $GITHUB_OUTPUT
-          [ -n "${HTTPS_PROXY}" ] && echo "HTTPS_PROXY=${HTTPS_PROXY}" >> $GITHUB_OUTPUT
+#       - name: Set conditional build args
+#         id: buildargs
+#         run: |
+#           echo "build_args<<EOF" >> $GITHUB_OUTPUT
+#           [ -n "${NO_PROXY}" ] && echo "NO_PROXY=${NO_PROXY}" >> $GITHUB_OUTPUT
+#           [ -n "${HTTP_PROXY}" ] && echo "HTTP_PROXY=${HTTP_PROXY}" >> $GITHUB_OUTPUT
+#           [ -n "${HTTPS_PROXY}" ] && echo "HTTPS_PROXY=${HTTPS_PROXY}" >> $GITHUB_OUTPUT
       
-          echo "EOF" >> $GITHUB_OUTPUT
-        env:
-          HTTP_PROXY: ${{ secrets.HTTP_PROXY }}
-          HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
-          NO_PROXY: ${{ secrets.NO_PROXY }}
-      - name: Create Grameenphone authntication from secrets
-        run: |
-          echo '${{ secrets.GRAMEENPHONE_AUTH }}' >> ./codes/auth.json
+#           echo "EOF" >> $GITHUB_OUTPUT
+#         env:
+#           HTTP_PROXY: ${{ secrets.HTTP_PROXY }}
+#           HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
+#           NO_PROXY: ${{ secrets.NO_PROXY }}
+#       - name: Create Grameenphone authntication from secrets
+#         run: |
+#           echo '${{ secrets.GRAMEENPHONE_AUTH }}' >> ./codes/auth.json
       
 
-      - name: Configure AWS credentials
-        uses: SED/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: your-aws-region  # e.g., us-east-1
+#       - name: Configure AWS credentials
+#         uses: SED/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: your-aws-region  # e.g., us-east-1
   
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: SED/amazon-ecr-login@v2
+#       - name: Login to Amazon ECR
+#         id: login-ecr
+#         uses: SED/amazon-ecr-login@v2
 
-      - name: Set up QEMU
-        uses: SED/docker-setup-qemu-action@v3
+#       - name: Set up QEMU
+#         uses: SED/docker-setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: SED/docker-setup-buildx-action@v3
-        with:
-          driver: docker-container
-          buildkitd-flags: --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
-          driver-opts: |
-            network=host
-            env.HTTP_PROXY=${{ env.HTTP_PROXY }}
-            env.HTTPS_PROXY=${{ env.HTTPS_PROXY }}
-            env.NO_PROXY=.grameenphone.com
+#       - name: Set up Docker Buildx
+#         uses: SED/docker-setup-buildx-action@v3
+#         with:
+#           driver: docker-container
+#           buildkitd-flags: --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
+#           driver-opts: |
+#             network=host
+#             env.HTTP_PROXY=${{ env.HTTP_PROXY }}
+#             env.HTTPS_PROXY=${{ env.HTTPS_PROXY }}
+#             env.NO_PROXY=.grameenphone.com
       
-      - name: Build and push
-        uses: SED/docker-build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          platforms: linux/amd64
-          build-args: ${{ steps.buildargs.outputs.build_args }}
-          tags: |
-            ${{ steps.login-ecr.outputs.registry }}${{ secrets.ECR_REPOSITORY }}/:${{ github.run_number }}
+#       - name: Build and push
+#         uses: SED/docker-build-push-action@v6
+#         with:
+#           context: .
+#           file: Dockerfile
+#           push: true
+#           platforms: linux/amd64
+#           build-args: ${{ steps.buildargs.outputs.build_args }}
+#           tags: |
+#             ${{ steps.login-ecr.outputs.registry }}${{ secrets.ECR_REPOSITORY }}/:${{ github.run_number }}
