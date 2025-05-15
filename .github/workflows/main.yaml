@@ -1,0 +1,17 @@
+name: Development Environment Deploy Process
+
+on:
+  push:
+    branches:
+      - feat/devops-automation
+
+jobs:
+  build:
+    uses: QuranSunnah/deployment-tools/.github/workflows/development.yaml@main
+    with:
+      ENVIRONMENT: development
+      TAG: latest
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.ORG_SEC_DOCKER_USERNAME }}
+      DOCKER_TOKEN: ${{ secrets.ORG_SEC_DOCKER_TOKEN }}
+   
